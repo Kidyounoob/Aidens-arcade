@@ -1,38 +1,55 @@
 <!-- /index.html -->
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-mode="dark" data-theme="wave">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
     <title>Arcade Hub</title>
-    <meta name="description" content="A clean base site for an arcade on GitHub Pages." />
+    <meta name="description" content="Arcade Hub — base site with Japanese wave ocean theme + YouTube section." />
 
     <style>
       :root {
-        --bg: #0b1020;
+        --container: 1100px;
+        --r: 18px;
+
+        --bg: #070a12;
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.72);
+        --border: rgba(255, 255, 255, 0.14);
         --panel: rgba(255, 255, 255, 0.06);
         --panel2: rgba(255, 255, 255, 0.1);
-        --text: rgba(255, 255, 255, 0.92);
-        --muted: rgba(255, 255, 255, 0.7);
-        --border: rgba(255, 255, 255, 0.14);
         --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-        --a: #8b5cf6;
-        --b: #22d3ee;
-        --r: 18px;
-        --container: 1100px;
+
+        --a: #1d4ed8; /* indigo ocean */
+        --b: #06b6d4; /* teal spray */
+        --stamp: #fb7185; /* small accent (optional) */
+
+        --pattern: none;
       }
 
-      html[data-theme="light"] {
-        --bg: #f6f8ff;
-        --panel: rgba(255, 255, 255, 0.7);
-        --panel2: rgba(255, 255, 255, 0.9);
+      html[data-mode="light"] {
+        --bg: #f6fbff;
         --text: rgba(10, 14, 25, 0.92);
         --muted: rgba(10, 14, 25, 0.68);
         --border: rgba(10, 14, 25, 0.14);
+        --panel: rgba(255, 255, 255, 0.75);
+        --panel2: rgba(255, 255, 255, 0.92);
         --shadow: 0 16px 40px rgba(10, 14, 25, 0.12);
-        --a: #6d28d9;
-        --b: #0891b2;
+      }
+
+      /* Theme palettes */
+      html[data-theme="wave"] { --a: #1d4ed8; --b: #06b6d4; --stamp: #fb7185; }
+      html[data-theme="deepsea"] { --a: #0ea5e9; --b: #22c55e; --stamp: #f97316; }
+      html[data-theme="ink"] { --a: #94a3b8; --b: #38bdf8; --stamp: #f43f5e; }
+
+      /* Seigaiha wave patterns (no external files) */
+      html[data-mode="dark"] {
+        --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.12' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.10'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.08'/%3E%3C/g%3E%3C/svg%3E");
+      }
+
+      html[data-mode="light"] {
+        --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%230b1b3a' stroke-opacity='0.14' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.11'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.08'/%3E%3C/g%3E%3C/svg%3E");
       }
 
       * { box-sizing: border-box; }
@@ -40,14 +57,17 @@
       body {
         margin: 0;
         font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-        background: radial-gradient(1200px 800px at 15% 10%, rgba(139, 92, 246, 0.18), transparent 55%),
-          radial-gradient(900px 700px at 85% 20%, rgba(34, 211, 238, 0.16), transparent 55%),
-          linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--bg), #000 10%));
         color: var(--text);
+        background:
+          radial-gradient(1000px 700px at 18% 10%, rgba(29, 78, 216, 0.18), transparent 60%),
+          radial-gradient(1000px 700px at 82% 20%, rgba(6, 182, 212, 0.14), transparent 60%),
+          linear-gradient(180deg, var(--bg), rgba(0,0,0,0.15));
         overflow-x: hidden;
       }
 
       a { color: inherit; text-decoration: none; }
+      code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
       .container { width: min(var(--container), calc(100% - 40px)); margin: 0 auto; }
 
       .skip {
@@ -69,18 +89,28 @@
         pointer-events: none;
         overflow: hidden;
       }
+
+      .pattern {
+        position: absolute;
+        inset: 0;
+        background-image: var(--pattern);
+        background-size: 140px 70px;
+        opacity: 0.55;
+        mask-image: radial-gradient(900px 520px at 50% 0%, black 40%, transparent 75%);
+      }
+
       .blob {
         position: absolute;
-        width: 560px;
-        height: 560px;
+        width: 640px;
+        height: 640px;
         border-radius: 999px;
-        filter: blur(46px);
-        opacity: 0.35;
+        filter: blur(52px);
+        opacity: 0.32;
         animation: float 12s ease-in-out infinite;
       }
-      .blob.a { left: -220px; top: -220px; background: radial-gradient(circle at 30% 30%, var(--a), transparent 65%); }
-      .blob.b { right: -260px; top: -220px; background: radial-gradient(circle at 30% 30%, var(--b), transparent 65%); animation-delay: -4s; }
-      .blob.c { left: 10%; bottom: -360px; background: radial-gradient(circle at 30% 30%, rgba(34,211,238,0.95), transparent 65%); animation-delay: -7s; }
+      .blob.a { left: -260px; top: -260px; background: radial-gradient(circle at 30% 30%, var(--a), transparent 65%); }
+      .blob.b { right: -300px; top: -260px; background: radial-gradient(circle at 30% 30%, var(--b), transparent 65%); animation-delay: -4s; }
+      .blob.c { left: 12%; bottom: -420px; background: radial-gradient(circle at 30% 30%, rgba(6,182,212,0.95), transparent 65%); animation-delay: -7s; }
 
       @keyframes float {
         0%, 100% { transform: translate(0, 0) scale(1); }
@@ -95,7 +125,7 @@
         background: rgba(10, 14, 25, 0.45);
         border-bottom: 1px solid var(--border);
       }
-      html[data-theme="light"] header { background: rgba(246, 248, 255, 0.6); }
+      html[data-mode="light"] header { background: rgba(246, 251, 255, 0.7); }
 
       .nav {
         display: flex;
@@ -109,19 +139,21 @@
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        font-weight: 900;
+        font-weight: 950;
         letter-spacing: -0.02em;
       }
+
       .mark {
-        width: 42px;
-        height: 42px;
+        width: 44px;
+        height: 44px;
         display: grid;
         place-items: center;
         border-radius: 14px;
         border: 1px solid var(--border);
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(34, 211, 238, 0.18));
+        background: linear-gradient(135deg, rgba(29,78,216,0.25), rgba(6,182,212,0.18));
         box-shadow: var(--shadow);
       }
+
       .accent {
         background: linear-gradient(90deg, var(--a), var(--b));
         -webkit-background-clip: text;
@@ -129,14 +161,10 @@
         color: transparent;
       }
 
-      .links {
-        display: none;
-        gap: 14px;
-        align-items: center;
-      }
+      .links { display: none; gap: 14px; align-items: center; }
       .link {
         color: var(--muted);
-        font-weight: 750;
+        font-weight: 850;
         padding: 10px 10px;
         border-radius: 12px;
         transition: transform 160ms ease, background 160ms ease, color 160ms ease;
@@ -144,11 +172,8 @@
       .link:hover { color: var(--text); background: rgba(255,255,255,0.07); transform: translateY(-1px); }
       .link[aria-current="true"] { color: var(--text); border: 1px solid var(--border); background: rgba(255,255,255,0.08); }
 
-      .actions {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
+      .actions { display: flex; align-items: center; gap: 10px; }
+
       .icon {
         width: 44px;
         height: 44px;
@@ -163,18 +188,27 @@
       }
       .icon:hover { transform: translateY(-1px); background: rgba(255,255,255,0.1); }
 
-      .burger { display: grid; }
-      .mobile {
-        display: grid;
-        gap: 10px;
-        padding: 10px 0 16px;
+      .select {
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.06);
+        color: var(--text);
+        padding: 0 12px;
+        font-weight: 850;
+        cursor: pointer;
+        outline: none;
       }
+      html[data-mode="light"] .select { background: rgba(255,255,255,0.85); }
+
+      .burger { display: grid; }
+      .mobile { display: grid; gap: 10px; padding: 10px 0 16px; }
       .mobile a {
         padding: 12px 12px;
         border-radius: 14px;
         border: 1px solid var(--border);
         background: rgba(255,255,255,0.08);
-        font-weight: 800;
+        font-weight: 900;
       }
 
       @media (min-width: 860px) {
@@ -186,13 +220,13 @@
       main { padding-bottom: 30px; }
 
       .hero {
-        padding: 56px 0 26px;
+        padding: 64px 0 22px;
         display: grid;
         gap: 18px;
         align-items: center;
       }
       @media (min-width: 980px) {
-        .hero { grid-template-columns: 1.1fr 0.9fr; gap: 26px; padding: 70px 0 26px; }
+        .hero { grid-template-columns: 1.08fr 0.92fr; gap: 26px; padding: 78px 0 22px; }
       }
 
       .pill {
@@ -205,43 +239,39 @@
         background: rgba(255,255,255,0.08);
         width: fit-content;
         color: var(--muted);
-        font-weight: 800;
+        font-weight: 900;
       }
       .dot {
         width: 10px;
         height: 10px;
         border-radius: 999px;
         background: linear-gradient(135deg, var(--a), var(--b));
-        box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.12);
+        box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.14);
       }
 
       h1 {
         margin: 10px 0 6px;
-        font-size: clamp(34px, 4.2vw, 56px);
+        font-size: clamp(34px, 4.2vw, 58px);
         line-height: 1.02;
         letter-spacing: -0.05em;
       }
       .sub {
         margin: 0;
         color: var(--muted);
-        font-weight: 650;
+        font-weight: 700;
         line-height: 1.55;
-        max-width: 58ch;
+        max-width: 62ch;
       }
 
-      .cta {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-top: 16px;
-      }
+      .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+
       .btn {
         border: 1px solid var(--border);
         background: rgba(255,255,255,0.06);
         color: var(--text);
         padding: 12px 14px;
         border-radius: 16px;
-        font-weight: 900;
+        font-weight: 950;
         letter-spacing: -0.01em;
         cursor: pointer;
         transition: transform 160ms ease, filter 160ms ease, background 160ms ease;
@@ -250,8 +280,9 @@
         justify-content: center;
       }
       .btn:hover { transform: translateY(-1px); filter: brightness(1.03); background: rgba(255,255,255,0.1); }
+
       .btn.primary {
-        background: linear-gradient(135deg, rgba(139,92,246,0.35), rgba(34,211,238,0.25));
+        background: linear-gradient(135deg, rgba(29,78,216,0.35), rgba(6,182,212,0.25));
         box-shadow: var(--shadow);
       }
 
@@ -277,34 +308,12 @@
       .dots span { width: 10px; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.35); }
       .panelBody { padding: 14px; display: grid; gap: 12px; }
 
-      .statGrid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-      }
-      .stat {
-        border-radius: 16px;
-        border: 1px solid var(--border);
-        background: rgba(255,255,255,0.06);
-        padding: 12px;
-      }
-      .stat .k { font-size: 12px; color: var(--muted); font-weight: 900; }
-      .stat .v { font-size: 20px; font-weight: 950; letter-spacing: -0.03em; margin-top: 3px; }
-
       section.section { padding: 34px 0; }
       .head { margin-bottom: 14px; }
-      .head h2 {
-        margin: 0;
-        font-size: clamp(22px, 2.2vw, 30px);
-        letter-spacing: -0.03em;
-      }
-      .head p { margin: 8px 0 0; color: var(--muted); max-width: 70ch; }
+      .head h2 { margin: 0; font-size: clamp(22px, 2.2vw, 30px); letter-spacing: -0.03em; }
+      .head p { margin: 8px 0 0; color: var(--muted); max-width: 72ch; }
 
-      .grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
+      .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
       @media (min-width: 740px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
       @media (min-width: 980px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
@@ -320,55 +329,41 @@
       .card h3 { margin: 0 0 6px; letter-spacing: -0.02em; }
       .card p { margin: 0; color: var(--muted); line-height: 1.5; }
 
-      .slots {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-      @media (min-width: 900px) { .slots { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-
-      .slot {
-        border-radius: calc(var(--r) + 6px);
+      /* YouTube */
+      .watch {
+        border-radius: calc(var(--r) + 8px);
         border: 1px solid var(--border);
         background: rgba(255,255,255,0.07);
-        padding: 16px;
         box-shadow: var(--shadow);
-        display: grid;
-        gap: 10px;
-        min-height: 200px;
+        overflow: hidden;
       }
-      .slot .top {
+      .watchTop {
+        padding: 14px;
+        border-bottom: 1px solid var(--border);
         display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
+        background: rgba(255,255,255,0.05);
       }
-      .tag {
-        font-size: 12px;
-        font-weight: 950;
-        padding: 7px 10px;
-        border-radius: 999px;
+      .inputRow { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; width: 100%; }
+      .input {
+        flex: 1 1 280px;
+        min-width: 200px;
+        height: 44px;
+        border-radius: 14px;
         border: 1px solid var(--border);
-        background: rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.06);
+        color: var(--text);
+        padding: 0 12px;
+        font-weight: 800;
+        outline: none;
       }
-      .glint {
-        width: 14px;
-        height: 14px;
-        border-radius: 999px;
-        background: linear-gradient(135deg, var(--a), var(--b));
-        opacity: 0.6;
-        box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.12);
-      }
-      .slot .title { font-weight: 950; font-size: 18px; letter-spacing: -0.02em; }
-      .slot .desc { color: var(--muted); line-height: 1.5; margin-top: -4px; }
+      html[data-mode="light"] .input { background: rgba(255,255,255,0.9); }
 
-      details {
-        border-radius: var(--r);
-        border: 1px solid var(--border);
-        background: rgba(255,255,255,0.07);
-        padding: 12px 14px;
-      }
-      summary { cursor: pointer; font-weight: 950; letter-spacing: -0.02em; }
-      details p { margin: 10px 0 0; color: var(--muted); line-height: 1.55; }
+      .ratio { aspect-ratio: 16 / 9; width: 100%; background: rgba(0,0,0,0.18); }
+      .ratio iframe { width: 100%; height: 100%; border: 0; display: block; }
 
       footer {
         padding: 26px 0 40px;
@@ -382,7 +377,7 @@
         flex-wrap: wrap;
         align-items: center;
       }
-      .foot .small { color: var(--muted); font-weight: 700; }
+      .small { color: var(--muted); font-weight: 750; }
 
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
@@ -396,6 +391,7 @@
     <a class="skip" href="#main">Skip to content</a>
 
     <div class="bg" aria-hidden="true">
+      <div class="pattern"></div>
       <div class="blob a"></div>
       <div class="blob b"></div>
       <div class="blob c"></div>
@@ -405,31 +401,33 @@
       <div class="container nav">
         <a class="brand" href="#top" aria-label="Arcade Hub home">
           <span class="mark" aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M7 9V7a5 5 0 0 1 10 0v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-              <path
-                d="M6.5 9h11a2 2 0 0 1 2 2v6.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 5.5 17.5V11a2 2 0 0 1 1-2Z"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linejoin="round"
-              />
-              <path d="M9 14h.01M15 14h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
-              <path d="M11 16h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            <!-- wave mark -->
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+              <path d="M3 15c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M3 10c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+              <path d="M4 19h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
             </svg>
           </span>
           <span>Arcade <span class="accent">Hub</span></span>
         </a>
 
-        <div class="links" aria-label="Sections">
+        <nav class="links" aria-label="Sections">
           <a class="link" href="#features">Features</a>
-          <a class="link" href="#slots">Coming soon</a>
+          <a class="link" href="#watch">Watch</a>
           <a class="link" href="#faq">FAQ</a>
-        </div>
+        </nav>
 
         <div class="actions">
-          <button class="icon" id="themeBtn" type="button" aria-label="Toggle theme">
-            <span id="themeIcon" aria-hidden="true">☾</span>
+          <select class="select" id="themeSelect" aria-label="Theme">
+            <option value="wave">Wave (Japanese)</option>
+            <option value="deepsea">Deep Sea</option>
+            <option value="ink">Ink + Water</option>
+          </select>
+
+          <button class="icon" id="modeBtn" type="button" aria-label="Toggle dark/light">
+            <span id="modeIcon" aria-hidden="true">☾</span>
           </button>
+
           <button class="icon burger" id="burgerBtn" type="button" aria-label="Open menu" aria-expanded="false">
             <span aria-hidden="true">≡</span>
           </button>
@@ -438,7 +436,7 @@
 
       <div class="container mobile" id="mobileMenu" hidden>
         <a href="#features">Features</a>
-        <a href="#slots">Coming soon</a>
+        <a href="#watch">Watch</a>
         <a href="#faq">FAQ</a>
       </div>
     </header>
@@ -446,56 +444,45 @@
     <main id="main">
       <section class="container hero" id="top">
         <div>
-          <div class="pill"><span class="dot"></span> Base site ready • games later</div>
+          <div class="pill"><span class="dot"></span> Ocean wave theme • base site</div>
 
           <h1>
-            Clean arcade base.
-            <span class="accent">Premium</span> vibes.
+            Japanese wave vibes.
+            <span class="accent">Clean</span> layout.
           </h1>
 
           <p class="sub">
-            This is the shell: layout, style, theme, navigation. We’ll drop games in later.
+            This is your polished shell. Games later. Right now: structure, style, theme switching, and a YouTube watch section.
           </p>
 
           <div class="cta">
-            <a class="btn primary" href="#slots">See layout</a>
-            <a class="btn" href="#features">What’s included</a>
+            <a class="btn primary" href="#watch">Open YouTube</a>
+            <a class="btn" href="#features">See features</a>
           </div>
         </div>
 
         <aside class="panel" aria-label="Preview panel">
           <div class="panelTop">
             <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
-            <div style="font-weight: 950; color: var(--muted)">Preview</div>
+            <div style="font-weight: 950; color: var(--muted)">Wave UI</div>
           </div>
-
           <div class="panelBody">
             <div class="card" style="margin: 0">
-              <h3 style="margin: 0 0 6px">Now playing</h3>
-              <p style="margin: 0; color: var(--muted)">Coming soon</p>
+              <h3 style="margin: 0 0 6px">Theme</h3>
+              <p style="margin: 0; color: var(--muted)">Seigaiha pattern + ocean gradients</p>
             </div>
-
-            <div class="statGrid">
-              <div class="stat">
-                <div class="k">Theme</div>
-                <div class="v" id="themeLabel">Dark</div>
+            <div class="grid" style="grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px;">
+              <div class="card" style="margin:0; padding:12px;">
+                <div class="small">Mode</div>
+                <div style="font-weight: 950; font-size: 18px; letter-spacing:-0.02em;" id="modeLabel">Dark</div>
               </div>
-              <div class="stat">
-                <div class="k">Deploy</div>
-                <div class="v">Pages</div>
-              </div>
-              <div class="stat">
-                <div class="k">Games</div>
-                <div class="v">0</div>
-              </div>
-              <div class="stat">
-                <div class="k">Build</div>
-                <div class="v">Fast</div>
+              <div class="card" style="margin:0; padding:12px;">
+                <div class="small">Deploy</div>
+                <div style="font-weight: 950; font-size: 18px; letter-spacing:-0.02em;">Pages</div>
               </div>
             </div>
-
             <p class="sub" style="margin: 0; font-size: 13px">
-              Tip: hit the moon/sun to switch themes.
+              Tip: use the dropdown for different ocean vibes.
             </p>
           </div>
         </aside>
@@ -504,63 +491,70 @@
       <section class="section container" id="features">
         <div class="head">
           <h2>Features</h2>
-          <p>Actual structure + spacing + responsive layout (not a wall of text).</p>
+          <p>Wave-pattern background, clean cards, theme select, dark/light mode, mobile menu, scroll highlight.</p>
         </div>
 
         <div class="grid">
           <article class="card">
-            <h3>Sticky glass nav</h3>
-            <p>Looks modern and stays clean while you scroll.</p>
+            <h3>Seigaiha background</h3>
+            <p>Japanese wave pattern layered under gradients.</p>
           </article>
           <article class="card">
-            <h3>Theme toggle</h3>
-            <p>Dark/light mode saved to your browser.</p>
+            <h3>Theme selector</h3>
+            <p>Wave / Deep Sea / Ink + Water (saved).</p>
           </article>
           <article class="card">
-            <h3>Responsive grid</h3>
-            <p>Chromebook + phone + desktop all look right.</p>
+            <h3>Dark/Light mode</h3>
+            <p>One click toggle, saved in your browser.</p>
           </article>
           <article class="card">
-            <h3>Scrollspy</h3>
-            <p>Nav highlights the section you’re on.</p>
+            <h3>YouTube inside site</h3>
+            <p>Paste a link/ID and it loads in the player.</p>
           </article>
           <article class="card">
-            <h3>Clean sections</h3>
-            <p>Hero → features → slots → FAQ → footer.</p>
+            <h3>Mobile menu</h3>
+            <p>Hamburger menu on small screens.</p>
           </article>
           <article class="card">
-            <h3>No external assets</h3>
-            <p>Nothing to break. Great for GitHub Pages.</p>
+            <h3>Scroll highlight</h3>
+            <p>Nav shows the section you’re on.</p>
           </article>
         </div>
       </section>
 
-      <section class="section container" id="slots">
+      <section class="section container" id="watch">
         <div class="head">
-          <h2>Coming soon</h2>
-          <p>These are placeholders where games will go later.</p>
+          <h2>Watch (YouTube)</h2>
+          <p>
+            Paste a YouTube link or video ID. If YouTube is blocked on your network/device, this won’t work.
+          </p>
         </div>
 
-        <div class="slots">
-          <div class="slot">
-            <div class="top"><span class="tag">Slot</span><span class="glint" aria-hidden="true"></span></div>
-            <div class="title">Game #1</div>
-            <div class="desc">A clean card ready for your first game.</div>
-            <button class="btn" disabled style="opacity:.65; cursor:not-allowed;">Coming soon</button>
+        <div class="watch">
+          <div class="watchTop">
+            <div class="inputRow">
+              <input
+                class="input"
+                id="ytInput"
+                placeholder="Paste YouTube link or video ID (e.g. https://youtu.be/VIDEOID)"
+                inputmode="url"
+                autocomplete="off"
+              />
+              <button class="btn primary" id="loadBtn" type="button">Load</button>
+              <button class="btn" id="resetBtn" type="button">Reset</button>
+            </div>
           </div>
 
-          <div class="slot">
-            <div class="top"><span class="tag">Slot</span><span class="glint" aria-hidden="true"></span></div>
-            <div class="title">Game #2</div>
-            <div class="desc">Canvas game or embed later.</div>
-            <button class="btn" disabled style="opacity:.65; cursor:not-allowed;">Coming soon</button>
-          </div>
-
-          <div class="slot">
-            <div class="top"><span class="tag">Slot</span><span class="glint" aria-hidden="true"></span></div>
-            <div class="title">Game #3</div>
-            <div class="desc">Same style = instant consistency.</div>
-            <button class="btn" disabled style="opacity:.65; cursor:not-allowed;">Coming soon</button>
+          <div class="ratio">
+            <iframe
+              id="ytFrame"
+              src="https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ"
+              title="YouTube player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+            ></iframe>
           </div>
         </div>
       </section>
@@ -568,21 +562,29 @@
       <section class="section container" id="faq">
         <div class="head">
           <h2>FAQ</h2>
-          <p>Simple, clean, and not bloated.</p>
+          <p>Quick answers.</p>
         </div>
 
-        <div style="display:grid; gap:10px">
-          <details>
-            <summary>Why did mine look like a wall of text?</summary>
-            <p>Your CSS/JS got pasted into the page without proper <code>&lt;style&gt;</code>/<code>&lt;script&gt;</code>, so it printed as text.</p>
+        <div style="display:grid; gap:10px;">
+          <details class="card">
+            <summary style="cursor:pointer; font-weight:950;">Can I put Netflix inside my site?</summary>
+            <p style="margin:10px 0 0; color:var(--muted); line-height:1.55;">
+              Usually no — Netflix blocks being embedded in iframes. YouTube embeds are the normal way.
+            </p>
           </details>
-          <details>
-            <summary>Can I add games later?</summary>
-            <p>Yep. We’ll just swap the “slots” into real game cards/pages.</p>
+
+          <details class="card">
+            <summary style="cursor:pointer; font-weight:950;">Will this unblock YouTube at school?</summary>
+            <p style="margin:10px 0 0; color:var(--muted); line-height:1.55;">
+              No. If YouTube is blocked, embeds are blocked too. This is just a UI.
+            </p>
           </details>
-          <details>
-            <summary>Does theme save?</summary>
-            <p>Yes—localStorage remembers it.</p>
+
+          <details class="card">
+            <summary style="cursor:pointer; font-weight:950;">How do I change the vibe?</summary>
+            <p style="margin:10px 0 0; color:var(--muted); line-height:1.55;">
+              Use the theme dropdown + dark/light button. It saves automatically.
+            </p>
           </details>
         </div>
       </section>
@@ -597,20 +599,20 @@
         <div class="small" style="display:flex; gap:10px">
           <a href="#top">Top</a>
           <span aria-hidden="true">•</span>
-          <a href="#features">Features</a>
+          <a href="#watch">Watch</a>
         </div>
       </div>
     </footer>
 
     <script>
-      /**
-       * Why: small JS to make it feel premium (theme + mobile menu + scrollspy).
-       */
+      const STORAGE_MODE = "arcadehub-mode";
       const STORAGE_THEME = "arcadehub-theme";
-      const themeBtn = document.getElementById("themeBtn");
-      const themeIcon = document.getElementById("themeIcon");
-      const themeLabel = document.getElementById("themeLabel");
-      const yearEl = document.getElementById("year");
+
+      const modeBtn = document.getElementById("modeBtn");
+      const modeIcon = document.getElementById("modeIcon");
+      const modeLabel = document.getElementById("modeLabel");
+
+      const themeSelect = document.getElementById("themeSelect");
 
       const burgerBtn = document.getElementById("burgerBtn");
       const mobileMenu = document.getElementById("mobileMenu");
@@ -620,25 +622,48 @@
         .map((a) => document.querySelector(a.getAttribute("href")))
         .filter(Boolean);
 
+      const yearEl = document.getElementById("year");
+
+      const ytInput = document.getElementById("ytInput");
+      const loadBtn = document.getElementById("loadBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const ytFrame = document.getElementById("ytFrame");
+
+      const DEFAULT_VIDEO = "aqz-KE-bpKQ";
+
+      function setMode(mode) {
+        document.documentElement.setAttribute("data-mode", mode);
+        localStorage.setItem(STORAGE_MODE, mode);
+
+        const isDark = mode === "dark";
+        modeIcon.textContent = isDark ? "☾" : "☀";
+        if (modeLabel) modeLabel.textContent = isDark ? "Dark" : "Light";
+      }
+
+      function initMode() {
+        const saved = localStorage.getItem(STORAGE_MODE);
+        if (saved === "dark" || saved === "light") return setMode(saved);
+
+        const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
+        setMode(prefersDark ? "dark" : "light");
+      }
+
+      function toggleMode() {
+        const current = document.documentElement.getAttribute("data-mode") || "dark";
+        setMode(current === "dark" ? "light" : "dark");
+      }
+
       function setTheme(theme) {
         document.documentElement.setAttribute("data-theme", theme);
         localStorage.setItem(STORAGE_THEME, theme);
-        const isDark = theme === "dark";
-        themeIcon.textContent = isDark ? "☾" : "☀";
-        if (themeLabel) themeLabel.textContent = isDark ? "Dark" : "Light";
+        if (themeSelect) themeSelect.value = theme;
       }
 
       function initTheme() {
         const saved = localStorage.getItem(STORAGE_THEME);
-        if (saved === "dark" || saved === "light") return setTheme(saved);
-        const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
-        setTheme(prefersDark ? "dark" : "light");
+        if (saved) setTheme(saved);
+        else setTheme(document.documentElement.getAttribute("data-theme") || "wave");
       }
-
-      themeBtn?.addEventListener("click", () => {
-        const current = document.documentElement.getAttribute("data-theme") || "dark";
-        setTheme(current === "dark" ? "light" : "dark");
-      });
 
       function initYear() {
         yearEl.textContent = String(new Date().getFullYear());
@@ -694,6 +719,72 @@
         for (const s of sections) obs.observe(s);
       }
 
+      function parseYouTubeId(input) {
+        const raw = (input || "").trim();
+
+        // direct ID (11 chars typical)
+        if (/^[a-zA-Z0-9_-]{11}$/.test(raw)) return raw;
+
+        try {
+          const url = new URL(raw);
+
+          // youtu.be/ID
+          if (url.hostname.includes("youtu.be")) {
+            const id = url.pathname.replace("/", "").trim();
+            if (/^[a-zA-Z0-9_-]{11}$/.test(id)) return id;
+          }
+
+          // youtube.com/watch?v=ID
+          const v = url.searchParams.get("v");
+          if (v && /^[a-zA-Z0-9_-]{11}$/.test(v)) return v;
+
+          // youtube.com/shorts/ID or /embed/ID
+          const parts = url.pathname.split("/").filter(Boolean);
+          const idxShorts = parts.indexOf("shorts");
+          if (idxShorts !== -1 && parts[idxShorts + 1] && /^[a-zA-Z0-9_-]{11}$/.test(parts[idxShorts + 1])) {
+            return parts[idxShorts + 1];
+          }
+
+          const idxEmbed = parts.indexOf("embed");
+          if (idxEmbed !== -1 && parts[idxEmbed + 1] && /^[a-zA-Z0-9_-]{11}$/.test(parts[idxEmbed + 1])) {
+            return parts[idxEmbed + 1];
+          }
+        } catch {
+          // not a URL
+        }
+
+        return null;
+      }
+
+      function loadYouTube(id) {
+        const safe = id && /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : DEFAULT_VIDEO;
+        ytFrame.src = `https://www.youtube-nocookie.com/embed/${safe}`;
+      }
+
+      modeBtn.addEventListener("click", toggleMode);
+
+      themeSelect.addEventListener("change", (e) => {
+        const val = e.target.value;
+        setTheme(val);
+      });
+
+      loadBtn.addEventListener("click", () => {
+        const id = parseYouTubeId(ytInput.value);
+        if (!id) {
+          ytInput.value = "";
+          ytInput.placeholder = "Invalid link/ID. Try again (must be a YouTube link or 11-char ID).";
+          return;
+        }
+        loadYouTube(id);
+      });
+
+      resetBtn.addEventListener("click", () => {
+        ytInput.value = "";
+        ytInput.placeholder = "Paste YouTube link or video ID...";
+        loadYouTube(DEFAULT_VIDEO);
+      });
+
+      initMode();
       initTheme();
       initYear();
       initMobileMenu();
