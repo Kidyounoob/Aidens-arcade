@@ -1,56 +1,53 @@
 <!-- /index.html -->
 <!doctype html>
-<html lang="en" data-mode="dark" data-theme="wave">
+<html lang="en" data-mode="dark" data-theme="darkwater">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
     <title>Arcade Hub</title>
-    <meta name="description" content="Arcade Hub — base site with Japanese wave ocean theme + YouTube section." />
+    <meta name="description" content="Arcade Hub — Japanese ocean wave theme + YouTube section." />
 
     <style>
       :root {
         --container: 1100px;
         --r: 18px;
 
-        --bg: #070a12;
+        /* Mode tokens (overridden by [data-mode]) */
+        --bg0: #020617; /* deep navy */
+        --bg1: #04142a; /* ocean depth */
         --text: rgba(255, 255, 255, 0.92);
         --muted: rgba(255, 255, 255, 0.72);
         --border: rgba(255, 255, 255, 0.14);
+
         --panel: rgba(255, 255, 255, 0.06);
         --panel2: rgba(255, 255, 255, 0.1);
-        --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
 
-        --a: #1d4ed8; /* indigo ocean */
-        --b: #06b6d4; /* teal spray */
-        --stamp: #fb7185; /* small accent (optional) */
+        --shadow: 0 22px 70px rgba(0, 0, 0, 0.55);
 
-        --pattern: none;
+        /* Theme tokens (overridden by [data-theme]) */
+        --a: #0ea5e9; /* glow A */
+        --b: #14b8a6; /* glow B */
+        --wavePatternDark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%2388e7ff' stroke-opacity='0.16' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.12'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.10'/%3E%3C/g%3E%3C/svg%3E");
+        --wavePatternLight: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%230b1b3a' stroke-opacity='0.14' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.11'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.08'/%3E%3C/g%3E%3C/svg%3E");
       }
 
       html[data-mode="light"] {
-        --bg: #f6fbff;
+        --bg0: #f6fbff;
+        --bg1: #eef6ff;
         --text: rgba(10, 14, 25, 0.92);
         --muted: rgba(10, 14, 25, 0.68);
         --border: rgba(10, 14, 25, 0.14);
-        --panel: rgba(255, 255, 255, 0.75);
+        --panel: rgba(255, 255, 255, 0.78);
         --panel2: rgba(255, 255, 255, 0.92);
         --shadow: 0 16px 40px rgba(10, 14, 25, 0.12);
       }
 
-      /* Theme palettes */
-      html[data-theme="wave"] { --a: #1d4ed8; --b: #06b6d4; --stamp: #fb7185; }
-      html[data-theme="deepsea"] { --a: #0ea5e9; --b: #22c55e; --stamp: #f97316; }
-      html[data-theme="ink"] { --a: #94a3b8; --b: #38bdf8; --stamp: #f43f5e; }
-
-      /* Seigaiha wave patterns (no external files) */
-      html[data-mode="dark"] {
-        --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.12' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.10'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.08'/%3E%3C/g%3E%3C/svg%3E");
-      }
-
-      html[data-mode="light"] {
-        --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%230b1b3a' stroke-opacity='0.14' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.11'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.08'/%3E%3C/g%3E%3C/svg%3E");
-      }
+      /* Themes (accent palettes) */
+      html[data-theme="darkwater"] { --a: #0ea5e9; --b: #14b8a6; }
+      html[data-theme="wave"] { --a: #1d4ed8; --b: #06b6d4; }
+      html[data-theme="deepsea"] { --a: #22c55e; --b: #0ea5e9; }
+      html[data-theme="ink"] { --a: #94a3b8; --b: #38bdf8; }
 
       * { box-sizing: border-box; }
       html { scroll-behavior: smooth; }
@@ -59,9 +56,9 @@
         font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
         color: var(--text);
         background:
-          radial-gradient(1000px 700px at 18% 10%, rgba(29, 78, 216, 0.18), transparent 60%),
-          radial-gradient(1000px 700px at 82% 20%, rgba(6, 182, 212, 0.14), transparent 60%),
-          linear-gradient(180deg, var(--bg), rgba(0,0,0,0.15));
+          radial-gradient(1100px 780px at 18% 8%, color-mix(in oklab, var(--a), transparent 78%), transparent 60%),
+          radial-gradient(1100px 780px at 85% 18%, color-mix(in oklab, var(--b), transparent 80%), transparent 62%),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
         overflow-x: hidden;
       }
 
@@ -82,6 +79,7 @@
       }
       .skip:focus { left: 12px; }
 
+      /* Background layers */
       .bg {
         position: fixed;
         inset: 0;
@@ -93,39 +91,43 @@
       .pattern {
         position: absolute;
         inset: 0;
-        background-image: var(--pattern);
+        background-image: var(--wavePatternDark);
         background-size: 140px 70px;
+        opacity: 0.65;
+        mask-image: radial-gradient(900px 520px at 50% 0%, black 42%, transparent 78%);
+      }
+      html[data-mode="light"] .pattern {
+        background-image: var(--wavePatternLight);
         opacity: 0.55;
-        mask-image: radial-gradient(900px 520px at 50% 0%, black 40%, transparent 75%);
       }
 
       .blob {
         position: absolute;
-        width: 640px;
-        height: 640px;
+        width: 720px;
+        height: 720px;
         border-radius: 999px;
-        filter: blur(52px);
-        opacity: 0.32;
+        filter: blur(60px);
+        opacity: 0.28;
         animation: float 12s ease-in-out infinite;
       }
-      .blob.a { left: -260px; top: -260px; background: radial-gradient(circle at 30% 30%, var(--a), transparent 65%); }
-      .blob.b { right: -300px; top: -260px; background: radial-gradient(circle at 30% 30%, var(--b), transparent 65%); animation-delay: -4s; }
-      .blob.c { left: 12%; bottom: -420px; background: radial-gradient(circle at 30% 30%, rgba(6,182,212,0.95), transparent 65%); animation-delay: -7s; }
+      .blob.a { left: -320px; top: -320px; background: radial-gradient(circle at 30% 30%, var(--a), transparent 65%); }
+      .blob.b { right: -340px; top: -320px; background: radial-gradient(circle at 30% 30%, var(--b), transparent 65%); animation-delay: -4s; }
+      .blob.c { left: 12%; bottom: -520px; background: radial-gradient(circle at 30% 30%, color-mix(in oklab, var(--b), #fff 12%), transparent 65%); animation-delay: -7s; }
 
       @keyframes float {
         0%, 100% { transform: translate(0, 0) scale(1); }
         50% { transform: translate(18px, -22px) scale(1.03); }
       }
 
+      /* Header / nav */
       header {
         position: sticky;
         top: 0;
         z-index: 50;
         backdrop-filter: blur(14px);
-        background: rgba(10, 14, 25, 0.45);
+        background: color-mix(in oklab, var(--bg0), transparent 45%);
         border-bottom: 1px solid var(--border);
       }
-      html[data-mode="light"] header { background: rgba(246, 251, 255, 0.7); }
 
       .nav {
         display: flex;
@@ -150,7 +152,7 @@
         place-items: center;
         border-radius: 14px;
         border: 1px solid var(--border);
-        background: linear-gradient(135deg, rgba(29,78,216,0.25), rgba(6,182,212,0.18));
+        background: linear-gradient(135deg, color-mix(in oklab, var(--a), transparent 78%), color-mix(in oklab, var(--b), transparent 82%));
         box-shadow: var(--shadow);
       }
 
@@ -164,13 +166,13 @@
       .links { display: none; gap: 14px; align-items: center; }
       .link {
         color: var(--muted);
-        font-weight: 850;
+        font-weight: 900;
         padding: 10px 10px;
         border-radius: 12px;
         transition: transform 160ms ease, background 160ms ease, color 160ms ease;
       }
-      .link:hover { color: var(--text); background: rgba(255,255,255,0.07); transform: translateY(-1px); }
-      .link[aria-current="true"] { color: var(--text); border: 1px solid var(--border); background: rgba(255,255,255,0.08); }
+      .link:hover { color: var(--text); background: var(--panel); transform: translateY(-1px); }
+      .link[aria-current="true"] { color: var(--text); border: 1px solid var(--border); background: var(--panel2); }
 
       .actions { display: flex; align-items: center; gap: 10px; }
 
@@ -179,36 +181,36 @@
         height: 44px;
         border-radius: 14px;
         border: 1px solid var(--border);
-        background: rgba(255,255,255,0.06);
+        background: var(--panel);
         color: var(--text);
         display: grid;
         place-items: center;
         cursor: pointer;
         transition: transform 160ms ease, background 160ms ease;
       }
-      .icon:hover { transform: translateY(-1px); background: rgba(255,255,255,0.1); }
+      .icon:hover { transform: translateY(-1px); background: var(--panel2); }
 
       .select {
         height: 44px;
         border-radius: 14px;
         border: 1px solid var(--border);
-        background: rgba(255,255,255,0.06);
+        background: var(--panel);
         color: var(--text);
         padding: 0 12px;
-        font-weight: 850;
+        font-weight: 900;
         cursor: pointer;
         outline: none;
       }
-      html[data-mode="light"] .select { background: rgba(255,255,255,0.85); }
 
       .burger { display: grid; }
+
       .mobile { display: grid; gap: 10px; padding: 10px 0 16px; }
       .mobile a {
         padding: 12px 12px;
         border-radius: 14px;
         border: 1px solid var(--border);
-        background: rgba(255,255,255,0.08);
-        font-weight: 900;
+        background: var(--panel2);
+        font-weight: 950;
       }
 
       @media (min-width: 860px) {
@@ -217,16 +219,17 @@
         .mobile { display: none !important; }
       }
 
+      /* Hero */
       main { padding-bottom: 30px; }
 
       .hero {
-        padding: 64px 0 22px;
+        padding: 70px 0 22px;
         display: grid;
         gap: 18px;
         align-items: center;
       }
       @media (min-width: 980px) {
-        .hero { grid-template-columns: 1.08fr 0.92fr; gap: 26px; padding: 78px 0 22px; }
+        .hero { grid-template-columns: 1.08fr 0.92fr; gap: 26px; }
       }
 
       .pill {
@@ -236,38 +239,39 @@
         padding: 10px 12px;
         border-radius: 999px;
         border: 1px solid var(--border);
-        background: rgba(255,255,255,0.08);
+        background: var(--panel2);
         width: fit-content;
         color: var(--muted);
-        font-weight: 900;
+        font-weight: 950;
       }
       .dot {
         width: 10px;
         height: 10px;
         border-radius: 999px;
         background: linear-gradient(135deg, var(--a), var(--b));
-        box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.14);
+        box-shadow: 0 0 0 4px color-mix(in oklab, var(--b), transparent 86%);
       }
 
       h1 {
         margin: 10px 0 6px;
-        font-size: clamp(34px, 4.2vw, 58px);
+        font-size: clamp(34px, 4.2vw, 60px);
         line-height: 1.02;
         letter-spacing: -0.05em;
       }
+
       .sub {
         margin: 0;
         color: var(--muted);
-        font-weight: 700;
+        font-weight: 750;
         line-height: 1.55;
-        max-width: 62ch;
+        max-width: 64ch;
       }
 
       .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
 
       .btn {
         border: 1px solid var(--border);
-        background: rgba(255,255,255,0.06);
+        background: var(--panel);
         color: var(--text);
         padding: 12px 14px;
         border-radius: 16px;
@@ -279,17 +283,16 @@
         align-items: center;
         justify-content: center;
       }
-      .btn:hover { transform: translateY(-1px); filter: brightness(1.03); background: rgba(255,255,255,0.1); }
-
+      .btn:hover { transform: translateY(-1px); filter: brightness(1.05); background: var(--panel2); }
       .btn.primary {
-        background: linear-gradient(135deg, rgba(29,78,216,0.35), rgba(6,182,212,0.25));
+        background: linear-gradient(135deg, color-mix(in oklab, var(--a), transparent 70%), color-mix(in oklab, var(--b), transparent 74%));
         box-shadow: var(--shadow);
       }
 
       .panel {
-        border-radius: calc(var(--r) + 8px);
+        border-radius: calc(var(--r) + 10px);
         border: 1px solid var(--border);
-        background: rgba(255,255,255,0.06);
+        background: color-mix(in oklab, var(--panel2), transparent 10%);
         box-shadow: var(--shadow);
         overflow: hidden;
         display: none;
@@ -299,19 +302,38 @@
       .panelTop {
         padding: 12px 14px;
         border-bottom: 1px solid var(--border);
-        background: rgba(255,255,255,0.06);
+        background: var(--panel);
         display: flex;
         justify-content: space-between;
         align-items: center;
       }
       .dots { display: flex; gap: 8px; }
-      .dots span { width: 10px; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.35); }
-      .panelBody { padding: 14px; display: grid; gap: 12px; }
+      .dots span { width: 10px; height: 10px; border-radius: 999px; background: color-mix(in oklab, var(--text), transparent 70%); }
 
+      .panelBody { padding: 14px; display: grid; gap: 12px; }
+      .miniGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .mini {
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        padding: 12px;
+      }
+      .mini .k { font-size: 12px; color: var(--muted); font-weight: 950; }
+      .mini .v { font-size: 18px; font-weight: 950; letter-spacing: -0.02em; margin-top: 3px; }
+
+      /* Sections / cards */
       section.section { padding: 34px 0; }
       .head { margin-bottom: 14px; }
       .head h2 { margin: 0; font-size: clamp(22px, 2.2vw, 30px); letter-spacing: -0.03em; }
       .head p { margin: 8px 0 0; color: var(--muted); max-width: 72ch; }
+
+      .featureList {
+        margin: 12px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.55;
+        font-weight: 750;
+      }
 
       .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
       @media (min-width: 740px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -320,20 +342,20 @@
       .card {
         border-radius: var(--r);
         border: 1px solid var(--border);
-        background: rgba(255,255,255,0.07);
+        background: color-mix(in oklab, var(--panel2), transparent 10%);
         padding: 16px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.16);
+        box-shadow: 0 12px 34px rgba(0,0,0,0.22);
         transition: transform 160ms ease, background 160ms ease;
       }
-      .card:hover { transform: translateY(-2px); background: rgba(255,255,255,0.1); }
+      .card:hover { transform: translateY(-2px); background: color-mix(in oklab, var(--panel2), transparent 0%); }
       .card h3 { margin: 0 0 6px; letter-spacing: -0.02em; }
       .card p { margin: 0; color: var(--muted); line-height: 1.5; }
 
       /* YouTube */
       .watch {
-        border-radius: calc(var(--r) + 8px);
+        border-radius: calc(var(--r) + 10px);
         border: 1px solid var(--border);
-        background: rgba(255,255,255,0.07);
+        background: color-mix(in oklab, var(--panel2), transparent 10%);
         box-shadow: var(--shadow);
         overflow: hidden;
       }
@@ -345,7 +367,7 @@
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
-        background: rgba(255,255,255,0.05);
+        background: var(--panel);
       }
       .inputRow { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; width: 100%; }
       .input {
@@ -354,21 +376,21 @@
         height: 44px;
         border-radius: 14px;
         border: 1px solid var(--border);
-        background: rgba(255,255,255,0.06);
+        background: var(--panel);
         color: var(--text);
         padding: 0 12px;
-        font-weight: 800;
+        font-weight: 900;
         outline: none;
       }
-      html[data-mode="light"] .input { background: rgba(255,255,255,0.9); }
 
-      .ratio { aspect-ratio: 16 / 9; width: 100%; background: rgba(0,0,0,0.18); }
+      .ratio { aspect-ratio: 16 / 9; width: 100%; background: rgba(0,0,0,0.25); }
       .ratio iframe { width: 100%; height: 100%; border: 0; display: block; }
 
+      /* Footer */
       footer {
         padding: 26px 0 40px;
         border-top: 1px solid var(--border);
-        background: rgba(255,255,255,0.04);
+        background: color-mix(in oklab, var(--bg0), transparent 40%);
       }
       .foot {
         display: flex;
@@ -377,7 +399,7 @@
         flex-wrap: wrap;
         align-items: center;
       }
-      .small { color: var(--muted); font-weight: 750; }
+      .small { color: var(--muted); font-weight: 800; }
 
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
@@ -401,7 +423,6 @@
       <div class="container nav">
         <a class="brand" href="#top" aria-label="Arcade Hub home">
           <span class="mark" aria-hidden="true">
-            <!-- wave mark -->
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
               <path d="M3 15c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
               <path d="M3 10c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
@@ -419,6 +440,7 @@
 
         <div class="actions">
           <select class="select" id="themeSelect" aria-label="Theme">
+            <option value="darkwater">Dark Water</option>
             <option value="wave">Wave (Japanese)</option>
             <option value="deepsea">Deep Sea</option>
             <option value="ink">Ink + Water</option>
@@ -444,15 +466,15 @@
     <main id="main">
       <section class="container hero" id="top">
         <div>
-          <div class="pill"><span class="dot"></span> Ocean wave theme • base site</div>
+          <div class="pill"><span class="dot"></span> Dark water mode • Japanese wave UI</div>
 
           <h1>
             Japanese wave vibes.
-            <span class="accent">Clean</span> layout.
+            <span class="accent">Dark water</span>.
           </h1>
 
           <p class="sub">
-            This is your polished shell. Games later. Right now: structure, style, theme switching, and a YouTube watch section.
+            Base site first (structure + style). Games later. Includes theme select, dark/light mode, mobile menu, scroll highlight, and YouTube inside the site.
           </p>
 
           <div class="cta">
@@ -467,22 +489,24 @@
             <div style="font-weight: 950; color: var(--muted)">Wave UI</div>
           </div>
           <div class="panelBody">
-            <div class="card" style="margin: 0">
-              <h3 style="margin: 0 0 6px">Theme</h3>
-              <p style="margin: 0; color: var(--muted)">Seigaiha pattern + ocean gradients</p>
+            <div class="card" style="margin:0">
+              <h3 style="margin:0 0 6px">Theme</h3>
+              <p style="margin:0; color:var(--muted)">Seigaiha + deep ocean glows</p>
             </div>
-            <div class="grid" style="grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px;">
-              <div class="card" style="margin:0; padding:12px;">
-                <div class="small">Mode</div>
-                <div style="font-weight: 950; font-size: 18px; letter-spacing:-0.02em;" id="modeLabel">Dark</div>
+
+            <div class="miniGrid">
+              <div class="mini">
+                <div class="k">Mode</div>
+                <div class="v" id="modeLabel">Dark</div>
               </div>
-              <div class="card" style="margin:0; padding:12px;">
-                <div class="small">Deploy</div>
-                <div style="font-weight: 950; font-size: 18px; letter-spacing:-0.02em;">Pages</div>
+              <div class="mini">
+                <div class="k">Deploy</div>
+                <div class="v">Pages</div>
               </div>
             </div>
-            <p class="sub" style="margin: 0; font-size: 13px">
-              Tip: use the dropdown for different ocean vibes.
+
+            <p class="sub" style="margin:0; font-size:13px">
+              Tip: switch themes with the dropdown; toggle mode with the moon/sun.
             </p>
           </div>
         </aside>
@@ -491,7 +515,16 @@
       <section class="section container" id="features">
         <div class="head">
           <h2>Features</h2>
-          <p>Wave-pattern background, clean cards, theme select, dark/light mode, mobile menu, scroll highlight.</p>
+          <p>Everything you listed is included below.</p>
+          <ul class="featureList">
+            <li>Wave-pattern background, clean cards, theme select, dark/light mode, mobile menu, scroll highlight.</li>
+            <li>Seigaiha background: Japanese wave pattern layered under gradients.</li>
+            <li>Theme selector: Wave / Deep Sea / Ink + Water / Dark Water (saved).</li>
+            <li>Dark/Light mode: one click toggle, saved in your browser.</li>
+            <li>YouTube inside site: paste a link/ID and it loads in the player.</li>
+            <li>Mobile menu: hamburger menu on small screens.</li>
+            <li>Scroll highlight: nav shows the section you’re on.</li>
+          </ul>
         </div>
 
         <div class="grid">
@@ -501,7 +534,7 @@
           </article>
           <article class="card">
             <h3>Theme selector</h3>
-            <p>Wave / Deep Sea / Ink + Water (saved).</p>
+            <p>Wave / Deep Sea / Ink + Water / Dark Water (saved).</p>
           </article>
           <article class="card">
             <h3>Dark/Light mode</h3>
@@ -525,9 +558,7 @@
       <section class="section container" id="watch">
         <div class="head">
           <h2>Watch (YouTube)</h2>
-          <p>
-            Paste a YouTube link or video ID. If YouTube is blocked on your network/device, this won’t work.
-          </p>
+          <p>Paste a YouTube link or 11-char video ID. (If YouTube is blocked on your network/device, embeds won’t load.)</p>
         </div>
 
         <div class="watch">
@@ -565,25 +596,25 @@
           <p>Quick answers.</p>
         </div>
 
-        <div style="display:grid; gap:10px;">
+        <div style="display:grid; gap:12px;">
           <details class="card">
             <summary style="cursor:pointer; font-weight:950;">Can I put Netflix inside my site?</summary>
             <p style="margin:10px 0 0; color:var(--muted); line-height:1.55;">
-              Usually no — Netflix blocks being embedded in iframes. YouTube embeds are the normal way.
+              Usually no — Netflix blocks embedding in iframes. YouTube embeds are the normal approach.
             </p>
           </details>
 
           <details class="card">
-            <summary style="cursor:pointer; font-weight:950;">Will this unblock YouTube at school?</summary>
+            <summary style="cursor:pointer; font-weight:950;">Why does YouTube sometimes not load?</summary>
             <p style="margin:10px 0 0; color:var(--muted); line-height:1.55;">
-              No. If YouTube is blocked, embeds are blocked too. This is just a UI.
+              If the network/device blocks YouTube, the embed is blocked too.
             </p>
           </details>
 
           <details class="card">
-            <summary style="cursor:pointer; font-weight:950;">How do I change the vibe?</summary>
+            <summary style="cursor:pointer; font-weight:950;">Does it remember my theme?</summary>
             <p style="margin:10px 0 0; color:var(--muted); line-height:1.55;">
-              Use the theme dropdown + dark/light button. It saves automatically.
+              Yes — theme + dark/light are saved in localStorage.
             </p>
           </details>
         </div>
@@ -662,7 +693,7 @@
       function initTheme() {
         const saved = localStorage.getItem(STORAGE_THEME);
         if (saved) setTheme(saved);
-        else setTheme(document.documentElement.getAttribute("data-theme") || "wave");
+        else setTheme(document.documentElement.getAttribute("data-theme") || "darkwater");
       }
 
       function initYear() {
@@ -721,24 +752,19 @@
 
       function parseYouTubeId(input) {
         const raw = (input || "").trim();
-
-        // direct ID (11 chars typical)
         if (/^[a-zA-Z0-9_-]{11}$/.test(raw)) return raw;
 
         try {
           const url = new URL(raw);
 
-          // youtu.be/ID
           if (url.hostname.includes("youtu.be")) {
             const id = url.pathname.replace("/", "").trim();
             if (/^[a-zA-Z0-9_-]{11}$/.test(id)) return id;
           }
 
-          // youtube.com/watch?v=ID
           const v = url.searchParams.get("v");
           if (v && /^[a-zA-Z0-9_-]{11}$/.test(v)) return v;
 
-          // youtube.com/shorts/ID or /embed/ID
           const parts = url.pathname.split("/").filter(Boolean);
           const idxShorts = parts.indexOf("shorts");
           if (idxShorts !== -1 && parts[idxShorts + 1] && /^[a-zA-Z0-9_-]{11}$/.test(parts[idxShorts + 1])) {
@@ -764,8 +790,7 @@
       modeBtn.addEventListener("click", toggleMode);
 
       themeSelect.addEventListener("change", (e) => {
-        const val = e.target.value;
-        setTheme(val);
+        setTheme(e.target.value);
       });
 
       loadBtn.addEventListener("click", () => {
