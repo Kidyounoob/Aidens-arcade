@@ -1,53 +1,57 @@
 <!-- /index.html -->
 <!doctype html>
-<html lang="en" data-mode="dark" data-theme="darkwater">
+<html lang="en" data-mode="dark" data-theme="greatwave">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
     <title>Arcade Hub</title>
-    <meta name="description" content="Arcade Hub — Japanese ocean wave theme + YouTube section." />
+    <meta name="description" content="Arcade Hub — dark water Japanese wave theme + YouTube section." />
 
     <style>
       :root {
         --container: 1100px;
         --r: 18px;
 
-        /* Mode tokens (overridden by [data-mode]) */
-        --bg0: #020617; /* deep navy */
-        --bg1: #04142a; /* ocean depth */
+        /* Dark water base */
+        --bg0: #020611;
+        --bg1: #03162b;
         --text: rgba(255, 255, 255, 0.92);
         --muted: rgba(255, 255, 255, 0.72);
         --border: rgba(255, 255, 255, 0.14);
 
         --panel: rgba(255, 255, 255, 0.06);
-        --panel2: rgba(255, 255, 255, 0.1);
+        --panel2: rgba(255, 255, 255, 0.10);
 
-        --shadow: 0 22px 70px rgba(0, 0, 0, 0.55);
+        --shadow: 0 26px 90px rgba(0, 0, 0, 0.55);
 
-        /* Theme tokens (overridden by [data-theme]) */
-        --a: #0ea5e9; /* glow A */
-        --b: #14b8a6; /* glow B */
-        --wavePatternDark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%2388e7ff' stroke-opacity='0.16' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.12'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.10'/%3E%3C/g%3E%3C/svg%3E");
-        --wavePatternLight: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%230b1b3a' stroke-opacity='0.14' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.11'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.08'/%3E%3C/g%3E%3C/svg%3E");
+        /* Theme accents (overridden by [data-theme]) */
+        --a: #0ea5e9; /* spray */
+        --b: #14b8a6; /* deep teal */
+        --foam: rgba(255, 255, 255, 0.70);
       }
 
+      /* Keep toggle, but "light" becomes Moonlit Water (still dark, not white) */
       html[data-mode="light"] {
-        --bg0: #f6fbff;
-        --bg1: #eef6ff;
-        --text: rgba(10, 14, 25, 0.92);
-        --muted: rgba(10, 14, 25, 0.68);
-        --border: rgba(10, 14, 25, 0.14);
-        --panel: rgba(255, 255, 255, 0.78);
-        --panel2: rgba(255, 255, 255, 0.92);
-        --shadow: 0 16px 40px rgba(10, 14, 25, 0.12);
+        --bg0: #041426;
+        --bg1: #062a43;
+        --panel: rgba(255, 255, 255, 0.08);
+        --panel2: rgba(255, 255, 255, 0.12);
+        --border: rgba(255, 255, 255, 0.16);
+        --muted: rgba(255, 255, 255, 0.78);
       }
 
-      /* Themes (accent palettes) */
-      html[data-theme="darkwater"] { --a: #0ea5e9; --b: #14b8a6; }
-      html[data-theme="wave"] { --a: #1d4ed8; --b: #06b6d4; }
-      html[data-theme="deepsea"] { --a: #22c55e; --b: #0ea5e9; }
-      html[data-theme="ink"] { --a: #94a3b8; --b: #38bdf8; }
+      /* Themes */
+      html[data-theme="greatwave"] { --a: #38bdf8; --b: #1e40af; --foam: rgba(255,255,255,0.78); }
+      html[data-theme="darkwater"] { --a: #0ea5e9; --b: #14b8a6; --foam: rgba(255,255,255,0.74); }
+      html[data-theme="deepsea"] { --a: #22c55e; --b: #0ea5e9; --foam: rgba(255,255,255,0.70); }
+      html[data-theme="ink"] { --a: #94a3b8; --b: #38bdf8; --foam: rgba(255,255,255,0.66); }
+
+      /* Seigaiha patterns */
+      :root {
+        --wavePatternDark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%23bfeaff' stroke-opacity='0.16' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.12'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.10'/%3E%3C/g%3E%3C/svg%3E");
+        --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+      }
 
       * { box-sizing: border-box; }
       html { scroll-behavior: smooth; }
@@ -56,12 +60,11 @@
         font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
         color: var(--text);
         background:
-          radial-gradient(1100px 780px at 18% 8%, color-mix(in oklab, var(--a), transparent 78%), transparent 60%),
-          radial-gradient(1100px 780px at 85% 18%, color-mix(in oklab, var(--b), transparent 80%), transparent 62%),
+          radial-gradient(1000px 700px at 18% 10%, rgba(56, 189, 248, 0.18), transparent 60%),
+          radial-gradient(1100px 800px at 82% 16%, rgba(20, 184, 166, 0.14), transparent 60%),
           linear-gradient(180deg, var(--bg0), var(--bg1));
         overflow-x: hidden;
       }
-
       a { color: inherit; text-decoration: none; }
       code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
@@ -79,53 +82,52 @@
       }
       .skip:focus { left: 12px; }
 
-      /* Background layers */
-      .bg {
-        position: fixed;
-        inset: 0;
-        z-index: -1;
-        pointer-events: none;
-        overflow: hidden;
-      }
+      /* BG layers */
+      .bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 
       .pattern {
         position: absolute;
         inset: 0;
         background-image: var(--wavePatternDark);
         background-size: 140px 70px;
-        opacity: 0.65;
+        opacity: 0.60;
         mask-image: radial-gradient(900px 520px at 50% 0%, black 42%, transparent 78%);
       }
-      html[data-mode="light"] .pattern {
-        background-image: var(--wavePatternLight);
-        opacity: 0.55;
+
+      .grain {
+        position: absolute;
+        inset: -30%;
+        background-image: var(--grain);
+        opacity: 0.10;
+        mix-blend-mode: overlay;
+        transform: rotate(2deg);
       }
 
       .blob {
         position: absolute;
-        width: 720px;
-        height: 720px;
+        width: 760px;
+        height: 760px;
         border-radius: 999px;
-        filter: blur(60px);
-        opacity: 0.28;
+        filter: blur(62px);
+        opacity: 0.22;
         animation: float 12s ease-in-out infinite;
       }
-      .blob.a { left: -320px; top: -320px; background: radial-gradient(circle at 30% 30%, var(--a), transparent 65%); }
-      .blob.b { right: -340px; top: -320px; background: radial-gradient(circle at 30% 30%, var(--b), transparent 65%); animation-delay: -4s; }
-      .blob.c { left: 12%; bottom: -520px; background: radial-gradient(circle at 30% 30%, color-mix(in oklab, var(--b), #fff 12%), transparent 65%); animation-delay: -7s; }
+      .blob.a { left: -340px; top: -360px; background: radial-gradient(circle at 30% 30%, var(--b), transparent 65%); }
+      .blob.b { right: -380px; top: -320px; background: radial-gradient(circle at 30% 30%, var(--a), transparent 65%); animation-delay: -4s; }
+      .blob.c { left: 12%; bottom: -560px; background: radial-gradient(circle at 30% 30%, rgba(56,189,248,0.9), transparent 65%); animation-delay: -7s; }
 
       @keyframes float {
         0%, 100% { transform: translate(0, 0) scale(1); }
         50% { transform: translate(18px, -22px) scale(1.03); }
       }
 
-      /* Header / nav */
+      /* Header */
       header {
         position: sticky;
         top: 0;
         z-index: 50;
         backdrop-filter: blur(14px);
-        background: color-mix(in oklab, var(--bg0), transparent 45%);
+        background: rgba(2, 6, 17, 0.55);
         border-bottom: 1px solid var(--border);
       }
 
@@ -152,11 +154,14 @@
         place-items: center;
         border-radius: 14px;
         border: 1px solid var(--border);
-        background: linear-gradient(135deg, color-mix(in oklab, var(--a), transparent 78%), color-mix(in oklab, var(--b), transparent 82%));
+        background: linear-gradient(135deg, rgba(30,64,175,0.35), rgba(56,189,248,0.18));
         box-shadow: var(--shadow);
       }
 
+      /* FIX: prevent last letter clipping on gradient text */
       .accent {
+        display: inline-block;
+        padding-right: 0.10em; /* fixes clipped "r" */
         background: linear-gradient(90deg, var(--a), var(--b));
         -webkit-background-clip: text;
         background-clip: text;
@@ -203,7 +208,6 @@
       }
 
       .burger { display: grid; }
-
       .mobile { display: grid; gap: 10px; padding: 10px 0 16px; }
       .mobile a {
         padding: 12px 12px;
@@ -219,17 +223,30 @@
         .mobile { display: none !important; }
       }
 
-      /* Hero */
       main { padding-bottom: 30px; }
 
+      /* Hero */
+      .heroWrap { position: relative; }
       .hero {
-        padding: 70px 0 22px;
+        padding: 78px 0 22px;
         display: grid;
         gap: 18px;
         align-items: center;
+        position: relative;
+        z-index: 1;
       }
       @media (min-width: 980px) {
         .hero { grid-template-columns: 1.08fr 0.92fr; gap: 26px; }
+      }
+
+      .heroWaveArt {
+        position: absolute;
+        inset: -90px -40px auto -40px;
+        height: 420px;
+        pointer-events: none;
+        opacity: 0.38;
+        z-index: 0;
+        mask-image: radial-gradient(900px 420px at 40% 35%, black 55%, transparent 92%);
       }
 
       .pill {
@@ -249,22 +266,23 @@
         height: 10px;
         border-radius: 999px;
         background: linear-gradient(135deg, var(--a), var(--b));
-        box-shadow: 0 0 0 4px color-mix(in oklab, var(--b), transparent 86%);
+        box-shadow: 0 0 0 4px rgba(56,189,248,0.12);
       }
 
       h1 {
         margin: 10px 0 6px;
-        font-size: clamp(34px, 4.2vw, 60px);
-        line-height: 1.02;
-        letter-spacing: -0.05em;
+        font-size: clamp(34px, 4.2vw, 62px);
+        line-height: 1.06;
+        letter-spacing: -0.04em;
+        overflow: visible;
       }
 
       .sub {
         margin: 0;
         color: var(--muted);
-        font-weight: 750;
+        font-weight: 780;
         line-height: 1.55;
-        max-width: 64ch;
+        max-width: 66ch;
       }
 
       .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
@@ -285,14 +303,14 @@
       }
       .btn:hover { transform: translateY(-1px); filter: brightness(1.05); background: var(--panel2); }
       .btn.primary {
-        background: linear-gradient(135deg, color-mix(in oklab, var(--a), transparent 70%), color-mix(in oklab, var(--b), transparent 74%));
+        background: linear-gradient(135deg, rgba(30,64,175,0.40), rgba(56,189,248,0.22));
         box-shadow: var(--shadow);
       }
 
       .panel {
         border-radius: calc(var(--r) + 10px);
         border: 1px solid var(--border);
-        background: color-mix(in oklab, var(--panel2), transparent 10%);
+        background: rgba(255,255,255,0.07);
         box-shadow: var(--shadow);
         overflow: hidden;
         display: none;
@@ -308,7 +326,7 @@
         align-items: center;
       }
       .dots { display: flex; gap: 8px; }
-      .dots span { width: 10px; height: 10px; border-radius: 999px; background: color-mix(in oklab, var(--text), transparent 70%); }
+      .dots span { width: 10px; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.25); }
 
       .panelBody { padding: 14px; display: grid; gap: 12px; }
       .miniGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -321,7 +339,7 @@
       .mini .k { font-size: 12px; color: var(--muted); font-weight: 950; }
       .mini .v { font-size: 18px; font-weight: 950; letter-spacing: -0.02em; margin-top: 3px; }
 
-      /* Sections / cards */
+      /* Sections */
       section.section { padding: 34px 0; }
       .head { margin-bottom: 14px; }
       .head h2 { margin: 0; font-size: clamp(22px, 2.2vw, 30px); letter-spacing: -0.03em; }
@@ -332,7 +350,7 @@
         padding-left: 18px;
         color: var(--muted);
         line-height: 1.55;
-        font-weight: 750;
+        font-weight: 780;
       }
 
       .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
@@ -342,12 +360,12 @@
       .card {
         border-radius: var(--r);
         border: 1px solid var(--border);
-        background: color-mix(in oklab, var(--panel2), transparent 10%);
+        background: rgba(255,255,255,0.07);
         padding: 16px;
         box-shadow: 0 12px 34px rgba(0,0,0,0.22);
         transition: transform 160ms ease, background 160ms ease;
       }
-      .card:hover { transform: translateY(-2px); background: color-mix(in oklab, var(--panel2), transparent 0%); }
+      .card:hover { transform: translateY(-2px); background: rgba(255,255,255,0.10); }
       .card h3 { margin: 0 0 6px; letter-spacing: -0.02em; }
       .card p { margin: 0; color: var(--muted); line-height: 1.5; }
 
@@ -355,7 +373,7 @@
       .watch {
         border-radius: calc(var(--r) + 10px);
         border: 1px solid var(--border);
-        background: color-mix(in oklab, var(--panel2), transparent 10%);
+        background: rgba(255,255,255,0.07);
         box-shadow: var(--shadow);
         overflow: hidden;
       }
@@ -382,7 +400,6 @@
         font-weight: 900;
         outline: none;
       }
-
       .ratio { aspect-ratio: 16 / 9; width: 100%; background: rgba(0,0,0,0.25); }
       .ratio iframe { width: 100%; height: 100%; border: 0; display: block; }
 
@@ -390,7 +407,7 @@
       footer {
         padding: 26px 0 40px;
         border-top: 1px solid var(--border);
-        background: color-mix(in oklab, var(--bg0), transparent 40%);
+        background: rgba(255,255,255,0.03);
       }
       .foot {
         display: flex;
@@ -399,7 +416,7 @@
         flex-wrap: wrap;
         align-items: center;
       }
-      .small { color: var(--muted); font-weight: 800; }
+      .small { color: var(--muted); font-weight: 820; }
 
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
@@ -414,6 +431,7 @@
 
     <div class="bg" aria-hidden="true">
       <div class="pattern"></div>
+      <div class="grain"></div>
       <div class="blob a"></div>
       <div class="blob b"></div>
       <div class="blob c"></div>
@@ -440,13 +458,13 @@
 
         <div class="actions">
           <select class="select" id="themeSelect" aria-label="Theme">
+            <option value="greatwave">Great Wave</option>
             <option value="darkwater">Dark Water</option>
-            <option value="wave">Wave (Japanese)</option>
             <option value="deepsea">Deep Sea</option>
             <option value="ink">Ink + Water</option>
           </select>
 
-          <button class="icon" id="modeBtn" type="button" aria-label="Toggle dark/light">
+          <button class="icon" id="modeBtn" type="button" aria-label="Toggle mode">
             <span id="modeIcon" aria-hidden="true">☾</span>
           </button>
 
@@ -464,62 +482,114 @@
     </header>
 
     <main id="main">
-      <section class="container hero" id="top">
-        <div>
-          <div class="pill"><span class="dot"></span> Dark water mode • Japanese wave UI</div>
+      <section class="heroWrap" id="top">
+        <!-- Great Wave style hero art (SVG-only, no external files) -->
+        <svg class="heroWaveArt" viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="gw" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="rgba(56,189,248,0.75)"/>
+              <stop offset="1" stop-color="rgba(30,64,175,0.65)"/>
+            </linearGradient>
+          </defs>
 
-          <h1>
-            Japanese wave vibes.
-            <span class="accent">Dark water</span>.
-          </h1>
+          <!-- main crest -->
+          <path
+            d="M60,300
+               C140,170 260,130 360,180
+               C440,220 470,280 520,300
+               C600,330 690,260 780,210
+               C900,150 1030,160 1140,230
+               C1180,255 1210,280 1230,300"
+            fill="none"
+            stroke="url(#gw)"
+            stroke-width="10"
+            stroke-linecap="round"
+            opacity="0.9"
+          />
 
-          <p class="sub">
-            Base site first (structure + style). Games later. Includes theme select, dark/light mode, mobile menu, scroll highlight, and YouTube inside the site.
-          </p>
+          <!-- secondary wave lines -->
+          <path d="M70,340 C190,240 320,240 420,280 C520,320 620,310 740,250 C860,190 1010,190 1140,260"
+                fill="none" stroke="rgba(255,255,255,0.20)" stroke-width="6" stroke-linecap="round"/>
+          <path d="M90,375 C220,300 340,310 450,340 C560,370 700,350 820,300 C940,250 1050,255 1130,305"
+                fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="5" stroke-linecap="round"/>
 
-          <div class="cta">
-            <a class="btn primary" href="#watch">Open YouTube</a>
-            <a class="btn" href="#features">See features</a>
-          </div>
-        </div>
+          <!-- foam "claws" -->
+          <g fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="5" stroke-linecap="round" opacity="0.85">
+            <path d="M210,210 C200,180 220,160 245,165" />
+            <path d="M270,190 C260,160 285,145 310,150" />
+            <path d="M335,190 C330,160 360,150 385,160" />
+            <path d="M420,220 C415,190 450,180 475,195" />
+            <path d="M520,245 C515,215 550,205 575,220" />
+            <path d="M620,245 C615,215 650,205 675,220" />
+          </g>
 
-        <aside class="panel" aria-label="Preview panel">
-          <div class="panelTop">
-            <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
-            <div style="font-weight: 950; color: var(--muted)">Wave UI</div>
-          </div>
-          <div class="panelBody">
-            <div class="card" style="margin:0">
-              <h3 style="margin:0 0 6px">Theme</h3>
-              <p style="margin:0; color:var(--muted)">Seigaiha + deep ocean glows</p>
-            </div>
+          <!-- tiny spray dots -->
+          <g fill="rgba(255,255,255,0.35)">
+            <circle cx="235" cy="145" r="4"/><circle cx="280" cy="135" r="3"/>
+            <circle cx="330" cy="140" r="3"/><circle cx="410" cy="160" r="4"/>
+            <circle cx="520" cy="175" r="3"/><circle cx="610" cy="170" r="3"/>
+            <circle cx="700" cy="160" r="4"/>
+          </g>
+        </svg>
 
-            <div class="miniGrid">
-              <div class="mini">
-                <div class="k">Mode</div>
-                <div class="v" id="modeLabel">Dark</div>
-              </div>
-              <div class="mini">
-                <div class="k">Deploy</div>
-                <div class="v">Pages</div>
-              </div>
-            </div>
+        <div class="container hero">
+          <div>
+            <div class="pill"><span class="dot"></span> Great Wave vibe • dark water default</div>
 
-            <p class="sub" style="margin:0; font-size:13px">
-              Tip: switch themes with the dropdown; toggle mode with the moon/sun.
+            <h1>
+              Japanese wave vibes.
+              <span class="accent">Dark water</span>.
+            </h1>
+
+            <p class="sub">
+              Base site first (structure + style). Games later.
+              Includes: seigaiha background, theme selector, mode toggle, mobile menu, scroll highlight, and YouTube inside the site.
             </p>
+
+            <div class="cta">
+              <a class="btn primary" href="#watch">Open YouTube</a>
+              <a class="btn" href="#features">See features</a>
+            </div>
           </div>
-        </aside>
+
+          <aside class="panel" aria-label="Preview panel">
+            <div class="panelTop">
+              <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+              <div style="font-weight: 950; color: var(--muted)">Great Wave UI</div>
+            </div>
+            <div class="panelBody">
+              <div class="card" style="margin:0">
+                <h3 style="margin:0 0 6px">Theme</h3>
+                <p style="margin:0; color:var(--muted)">Seigaiha pattern + crest art overlay</p>
+              </div>
+
+              <div class="miniGrid">
+                <div class="mini">
+                  <div class="k">Mode</div>
+                  <div class="v" id="modeLabel">Dark</div>
+                </div>
+                <div class="mini">
+                  <div class="k">Deploy</div>
+                  <div class="v">Pages</div>
+                </div>
+              </div>
+
+              <p class="sub" style="margin:0; font-size:13px">
+                Tip: theme dropdown changes the palette; toggle mode for Moonlit Water.
+              </p>
+            </div>
+          </aside>
+        </div>
       </section>
 
       <section class="section container" id="features">
         <div class="head">
           <h2>Features</h2>
-          <p>Everything you listed is included below.</p>
+          <p>Everything you asked for:</p>
           <ul class="featureList">
             <li>Wave-pattern background, clean cards, theme select, dark/light mode, mobile menu, scroll highlight.</li>
             <li>Seigaiha background: Japanese wave pattern layered under gradients.</li>
-            <li>Theme selector: Wave / Deep Sea / Ink + Water / Dark Water (saved).</li>
+            <li>Theme selector: Great Wave / Dark Water / Deep Sea / Ink + Water (saved).</li>
             <li>Dark/Light mode: one click toggle, saved in your browser.</li>
             <li>YouTube inside site: paste a link/ID and it loads in the player.</li>
             <li>Mobile menu: hamburger menu on small screens.</li>
@@ -528,30 +598,12 @@
         </div>
 
         <div class="grid">
-          <article class="card">
-            <h3>Seigaiha background</h3>
-            <p>Japanese wave pattern layered under gradients.</p>
-          </article>
-          <article class="card">
-            <h3>Theme selector</h3>
-            <p>Wave / Deep Sea / Ink + Water / Dark Water (saved).</p>
-          </article>
-          <article class="card">
-            <h3>Dark/Light mode</h3>
-            <p>One click toggle, saved in your browser.</p>
-          </article>
-          <article class="card">
-            <h3>YouTube inside site</h3>
-            <p>Paste a link/ID and it loads in the player.</p>
-          </article>
-          <article class="card">
-            <h3>Mobile menu</h3>
-            <p>Hamburger menu on small screens.</p>
-          </article>
-          <article class="card">
-            <h3>Scroll highlight</h3>
-            <p>Nav shows the section you’re on.</p>
-          </article>
+          <article class="card"><h3>Seigaiha background</h3><p>Japanese wave pattern layered under gradients.</p></article>
+          <article class="card"><h3>Theme selector</h3><p>Great Wave / Dark Water / Deep Sea / Ink + Water (saved).</p></article>
+          <article class="card"><h3>Dark/Light mode</h3><p>One click toggle, saved in your browser.</p></article>
+          <article class="card"><h3>YouTube inside site</h3><p>Paste a link/ID and it loads in the player.</p></article>
+          <article class="card"><h3>Mobile menu</h3><p>Hamburger menu on small screens.</p></article>
+          <article class="card"><h3>Scroll highlight</h3><p>Nav shows the section you’re on.</p></article>
         </div>
       </section>
 
@@ -605,16 +657,9 @@
           </details>
 
           <details class="card">
-            <summary style="cursor:pointer; font-weight:950;">Why does YouTube sometimes not load?</summary>
-            <p style="margin:10px 0 0; color:var(--muted); line-height:1.55;">
-              If the network/device blocks YouTube, the embed is blocked too.
-            </p>
-          </details>
-
-          <details class="card">
             <summary style="cursor:pointer; font-weight:950;">Does it remember my theme?</summary>
             <p style="margin:10px 0 0; color:var(--muted); line-height:1.55;">
-              Yes — theme + dark/light are saved in localStorage.
+              Yes — theme + mode are saved in localStorage.
             </p>
           </details>
         </div>
@@ -628,9 +673,7 @@
           <div class="small">Built for GitHub Pages • <span id="year"></span></div>
         </div>
         <div class="small" style="display:flex; gap:10px">
-          <a href="#top">Top</a>
-          <span aria-hidden="true">•</span>
-          <a href="#watch">Watch</a>
+          <a href="#top">Top</a><span aria-hidden="true">•</span><a href="#watch">Watch</a>
         </div>
       </div>
     </footer>
@@ -668,15 +711,14 @@
 
         const isDark = mode === "dark";
         modeIcon.textContent = isDark ? "☾" : "☀";
-        if (modeLabel) modeLabel.textContent = isDark ? "Dark" : "Light";
+        if (modeLabel) modeLabel.textContent = isDark ? "Dark" : "Moonlit";
       }
 
       function initMode() {
         const saved = localStorage.getItem(STORAGE_MODE);
         if (saved === "dark" || saved === "light") return setMode(saved);
-
-        const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
-        setMode(prefersDark ? "dark" : "light");
+        // Always default to DARK WATER (no auto-light)
+        setMode("dark");
       }
 
       function toggleMode() {
@@ -693,7 +735,7 @@
       function initTheme() {
         const saved = localStorage.getItem(STORAGE_THEME);
         if (saved) setTheme(saved);
-        else setTheme(document.documentElement.getAttribute("data-theme") || "darkwater");
+        else setTheme(document.documentElement.getAttribute("data-theme") || "greatwave");
       }
 
       function initYear() {
