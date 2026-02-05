@@ -6,988 +6,698 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
     <title>Arcade Hub</title>
-    <meta name="description" content="A clean, modern base site for your GitHub Pages arcade." />
-    <meta property="og:title" content="Arcade Hub" />
-    <meta property="og:description" content="A clean, modern base site for your GitHub Pages arcade." />
-    <meta property="og:type" content="website" />
-    <link rel="stylesheet" href="./styles.css" />
+    <meta name="description" content="A clean base site for an arcade on GitHub Pages." />
+
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: rgba(255, 255, 255, 0.06);
+        --panel2: rgba(255, 255, 255, 0.1);
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.7);
+        --border: rgba(255, 255, 255, 0.14);
+        --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+        --a: #8b5cf6;
+        --b: #22d3ee;
+        --r: 18px;
+        --container: 1100px;
+      }
+
+      html[data-theme="light"] {
+        --bg: #f6f8ff;
+        --panel: rgba(255, 255, 255, 0.7);
+        --panel2: rgba(255, 255, 255, 0.9);
+        --text: rgba(10, 14, 25, 0.92);
+        --muted: rgba(10, 14, 25, 0.68);
+        --border: rgba(10, 14, 25, 0.14);
+        --shadow: 0 16px 40px rgba(10, 14, 25, 0.12);
+        --a: #6d28d9;
+        --b: #0891b2;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        background: radial-gradient(1200px 800px at 15% 10%, rgba(139, 92, 246, 0.18), transparent 55%),
+          radial-gradient(900px 700px at 85% 20%, rgba(34, 211, 238, 0.16), transparent 55%),
+          linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--bg), #000 10%));
+        color: var(--text);
+        overflow-x: hidden;
+      }
+
+      a { color: inherit; text-decoration: none; }
+      .container { width: min(var(--container), calc(100% - 40px)); margin: 0 auto; }
+
+      .skip {
+        position: absolute;
+        left: -999px;
+        top: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--panel2);
+        z-index: 999;
+      }
+      .skip:focus { left: 12px; }
+
+      .bg {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .blob {
+        position: absolute;
+        width: 560px;
+        height: 560px;
+        border-radius: 999px;
+        filter: blur(46px);
+        opacity: 0.35;
+        animation: float 12s ease-in-out infinite;
+      }
+      .blob.a { left: -220px; top: -220px; background: radial-gradient(circle at 30% 30%, var(--a), transparent 65%); }
+      .blob.b { right: -260px; top: -220px; background: radial-gradient(circle at 30% 30%, var(--b), transparent 65%); animation-delay: -4s; }
+      .blob.c { left: 10%; bottom: -360px; background: radial-gradient(circle at 30% 30%, rgba(34,211,238,0.95), transparent 65%); animation-delay: -7s; }
+
+      @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(18px, -22px) scale(1.03); }
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        backdrop-filter: blur(14px);
+        background: rgba(10, 14, 25, 0.45);
+        border-bottom: 1px solid var(--border);
+      }
+      html[data-theme="light"] header { background: rgba(246, 248, 255, 0.6); }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 14px 0;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+      }
+      .mark {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(34, 211, 238, 0.18));
+        box-shadow: var(--shadow);
+      }
+      .accent {
+        background: linear-gradient(90deg, var(--a), var(--b));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .links {
+        display: none;
+        gap: 14px;
+        align-items: center;
+      }
+      .link {
+        color: var(--muted);
+        font-weight: 750;
+        padding: 10px 10px;
+        border-radius: 12px;
+        transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+      }
+      .link:hover { color: var(--text); background: rgba(255,255,255,0.07); transform: translateY(-1px); }
+      .link[aria-current="true"] { color: var(--text); border: 1px solid var(--border); background: rgba(255,255,255,0.08); }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.06);
+        color: var(--text);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .icon:hover { transform: translateY(-1px); background: rgba(255,255,255,0.1); }
+
+      .burger { display: grid; }
+      .mobile {
+        display: grid;
+        gap: 10px;
+        padding: 10px 0 16px;
+      }
+      .mobile a {
+        padding: 12px 12px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.08);
+        font-weight: 800;
+      }
+
+      @media (min-width: 860px) {
+        .links { display: flex; }
+        .burger { display: none; }
+        .mobile { display: none !important; }
+      }
+
+      main { padding-bottom: 30px; }
+
+      .hero {
+        padding: 56px 0 26px;
+        display: grid;
+        gap: 18px;
+        align-items: center;
+      }
+      @media (min-width: 980px) {
+        .hero { grid-template-columns: 1.1fr 0.9fr; gap: 26px; padding: 70px 0 26px; }
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.08);
+        width: fit-content;
+        color: var(--muted);
+        font-weight: 800;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--a), var(--b));
+        box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.12);
+      }
+
+      h1 {
+        margin: 10px 0 6px;
+        font-size: clamp(34px, 4.2vw, 56px);
+        line-height: 1.02;
+        letter-spacing: -0.05em;
+      }
+      .sub {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 650;
+        line-height: 1.55;
+        max-width: 58ch;
+      }
+
+      .cta {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+      }
+      .btn {
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.06);
+        color: var(--text);
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-weight: 900;
+        letter-spacing: -0.01em;
+        cursor: pointer;
+        transition: transform 160ms ease, filter 160ms ease, background 160ms ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn:hover { transform: translateY(-1px); filter: brightness(1.03); background: rgba(255,255,255,0.1); }
+      .btn.primary {
+        background: linear-gradient(135deg, rgba(139,92,246,0.35), rgba(34,211,238,0.25));
+        box-shadow: var(--shadow);
+      }
+
+      .panel {
+        border-radius: calc(var(--r) + 8px);
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.06);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: none;
+      }
+      @media (min-width: 980px) { .panel { display: block; } }
+
+      .panelTop {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+        background: rgba(255,255,255,0.06);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .dots { display: flex; gap: 8px; }
+      .dots span { width: 10px; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.35); }
+      .panelBody { padding: 14px; display: grid; gap: 12px; }
+
+      .statGrid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .stat {
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.06);
+        padding: 12px;
+      }
+      .stat .k { font-size: 12px; color: var(--muted); font-weight: 900; }
+      .stat .v { font-size: 20px; font-weight: 950; letter-spacing: -0.03em; margin-top: 3px; }
+
+      section.section { padding: 34px 0; }
+      .head { margin-bottom: 14px; }
+      .head h2 {
+        margin: 0;
+        font-size: clamp(22px, 2.2vw, 30px);
+        letter-spacing: -0.03em;
+      }
+      .head p { margin: 8px 0 0; color: var(--muted); max-width: 70ch; }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      @media (min-width: 740px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (min-width: 980px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+      .card {
+        border-radius: var(--r);
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.07);
+        padding: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.16);
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .card:hover { transform: translateY(-2px); background: rgba(255,255,255,0.1); }
+      .card h3 { margin: 0 0 6px; letter-spacing: -0.02em; }
+      .card p { margin: 0; color: var(--muted); line-height: 1.5; }
+
+      .slots {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      @media (min-width: 900px) { .slots { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+      .slot {
+        border-radius: calc(var(--r) + 6px);
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.07);
+        padding: 16px;
+        box-shadow: var(--shadow);
+        display: grid;
+        gap: 10px;
+        min-height: 200px;
+      }
+      .slot .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .tag {
+        font-size: 12px;
+        font-weight: 950;
+        padding: 7px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.08);
+      }
+      .glint {
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--a), var(--b));
+        opacity: 0.6;
+        box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.12);
+      }
+      .slot .title { font-weight: 950; font-size: 18px; letter-spacing: -0.02em; }
+      .slot .desc { color: var(--muted); line-height: 1.5; margin-top: -4px; }
+
+      details {
+        border-radius: var(--r);
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.07);
+        padding: 12px 14px;
+      }
+      summary { cursor: pointer; font-weight: 950; letter-spacing: -0.02em; }
+      details p { margin: 10px 0 0; color: var(--muted); line-height: 1.55; }
+
+      footer {
+        padding: 26px 0 40px;
+        border-top: 1px solid var(--border);
+        background: rgba(255,255,255,0.04);
+      }
+      .foot {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .foot .small { color: var(--muted); font-weight: 700; }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .blob { animation: none; }
+        .btn, .card, .link, .icon { transition: none; }
+      }
+    </style>
   </head>
 
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip" href="#main">Skip to content</a>
 
-    <div class="bg">
-      <div class="blob blob--a"></div>
-      <div class="blob blob--b"></div>
-      <div class="blob blob--c"></div>
-      <div class="grain"></div>
+    <div class="bg" aria-hidden="true">
+      <div class="blob a"></div>
+      <div class="blob b"></div>
+      <div class="blob c"></div>
     </div>
 
-    <header class="header">
-      <nav class="nav container" aria-label="Primary">
+    <header>
+      <div class="container nav">
         <a class="brand" href="#top" aria-label="Arcade Hub home">
-          <span class="brand__mark" aria-hidden="true">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M7 9V7a5 5 0 0 1 10 0v2"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-              />
+          <span class="mark" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M7 9V7a5 5 0 0 1 10 0v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
               <path
                 d="M6.5 9h11a2 2 0 0 1 2 2v6.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 5.5 17.5V11a2 2 0 0 1 1-2Z"
                 stroke="currentColor"
                 stroke-width="1.8"
                 stroke-linejoin="round"
               />
-              <path
-                d="M9 14h.01M15 14h.01"
-                stroke="currentColor"
-                stroke-width="3"
-                stroke-linecap="round"
-              />
-              <path
-                d="M11 16h2"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-              />
+              <path d="M9 14h.01M15 14h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+              <path d="M11 16h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
             </svg>
           </span>
-          <span class="brand__text">
-            Arcade <span class="brand__text--accent">Hub</span>
-          </span>
+          <span>Arcade <span class="accent">Hub</span></span>
         </a>
 
-        <div class="nav__links" id="navLinks">
-          <a class="nav__link" href="#features">Features</a>
-          <a class="nav__link" href="#coming-soon">Coming soon</a>
-          <a class="nav__link" href="#roadmap">Roadmap</a>
-          <a class="nav__link" href="#faq">FAQ</a>
+        <div class="links" aria-label="Sections">
+          <a class="link" href="#features">Features</a>
+          <a class="link" href="#slots">Coming soon</a>
+          <a class="link" href="#faq">FAQ</a>
         </div>
 
-        <div class="nav__actions">
-          <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle theme">
-            <span class="icon-btn__icon" aria-hidden="true" id="themeIcon">☾</span>
+        <div class="actions">
+          <button class="icon" id="themeBtn" type="button" aria-label="Toggle theme">
+            <span id="themeIcon" aria-hidden="true">☾</span>
           </button>
-
-          <button class="icon-btn nav__burger" id="burgerBtn" type="button" aria-label="Open menu" aria-expanded="false">
+          <button class="icon burger" id="burgerBtn" type="button" aria-label="Open menu" aria-expanded="false">
             <span aria-hidden="true">≡</span>
           </button>
         </div>
-      </nav>
+      </div>
 
-      <div class="mobile-menu container" id="mobileMenu" hidden>
-        <a class="mobile-link" href="#features">Features</a>
-        <a class="mobile-link" href="#coming-soon">Coming soon</a>
-        <a class="mobile-link" href="#roadmap">Roadmap</a>
-        <a class="mobile-link" href="#faq">FAQ</a>
+      <div class="container mobile" id="mobileMenu" hidden>
+        <a href="#features">Features</a>
+        <a href="#slots">Coming soon</a>
+        <a href="#faq">FAQ</a>
       </div>
     </header>
 
     <main id="main">
-      <section class="hero container" id="top">
-        <div class="hero__content">
-          <div class="badge">
-            <span class="badge__dot" aria-hidden="true"></span>
-            <span>Base site ready • Games later</span>
-          </div>
+      <section class="container hero" id="top">
+        <div>
+          <div class="pill"><span class="dot"></span> Base site ready • games later</div>
 
-          <h1 class="hero__title">
-            A <span class="glow">clean</span> arcade website base,
-            built to feel <span class="glow">premium</span>.
+          <h1>
+            Clean arcade base.
+            <span class="accent">Premium</span> vibes.
           </h1>
 
-          <p class="hero__sub">
-            Lightweight, responsive, and GitHub Pages-friendly.
-            Add games later—this is the polished shell.
+          <p class="sub">
+            This is the shell: layout, style, theme, navigation. We’ll drop games in later.
           </p>
 
-          <div class="hero__cta">
-            <a class="btn btn--primary" href="#coming-soon">Explore layout</a>
-            <a class="btn btn--ghost" href="#roadmap">See roadmap</a>
-          </div>
-
-          <div class="hero__meta">
-            <div class="meta-card">
-              <div class="meta-card__label">Theme</div>
-              <div class="meta-card__value" id="themeLabel">Dark</div>
-            </div>
-            <div class="meta-card">
-              <div class="meta-card__label">Deploy</div>
-              <div class="meta-card__value">GitHub Pages</div>
-            </div>
-            <div class="meta-card">
-              <div class="meta-card__label">Stack</div>
-              <div class="meta-card__value">HTML • CSS • JS</div>
-            </div>
+          <div class="cta">
+            <a class="btn primary" href="#slots">See layout</a>
+            <a class="btn" href="#features">What’s included</a>
           </div>
         </div>
 
-        <div class="hero__panel" aria-hidden="true">
-          <div class="panel">
-            <div class="panel__top">
-              <div class="panel__dots">
-                <span></span><span></span><span></span>
-              </div>
-              <div class="panel__title">Arcade Hub</div>
-            </div>
-            <div class="panel__body">
-              <div class="panel__card">
-                <div class="panel__card-title">Now playing</div>
-                <div class="panel__card-sub">Coming soon</div>
-                <div class="panel__bar"></div>
-                <div class="panel__chips">
-                  <span class="chip">Fast</span>
-                  <span class="chip">Smooth</span>
-                  <span class="chip">Clean UI</span>
-                </div>
-              </div>
-
-              <div class="panel__grid">
-                <div class="mini">
-                  <div class="mini__kicker">Status</div>
-                  <div class="mini__big">Ready</div>
-                  <div class="mini__small">Base complete</div>
-                </div>
-                <div class="mini">
-                  <div class="mini__kicker">Games</div>
-                  <div class="mini__big">0</div>
-                  <div class="mini__small">Add later</div>
-                </div>
-                <div class="mini">
-                  <div class="mini__kicker">Design</div>
-                  <div class="mini__big">A+</div>
-                  <div class="mini__small">Glow + glass</div>
-                </div>
-                <div class="mini">
-                  <div class="mini__kicker">Load</div>
-                  <div class="mini__big">&lt;1s</div>
-                  <div class="mini__small">No CDN</div>
-                </div>
-              </div>
-
-              <div class="panel__hint">Tip: press the moon/sun to switch theme.</div>
-            </div>
+        <aside class="panel" aria-label="Preview panel">
+          <div class="panelTop">
+            <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+            <div style="font-weight: 950; color: var(--muted)">Preview</div>
           </div>
-        </div>
+
+          <div class="panelBody">
+            <div class="card" style="margin: 0">
+              <h3 style="margin: 0 0 6px">Now playing</h3>
+              <p style="margin: 0; color: var(--muted)">Coming soon</p>
+            </div>
+
+            <div class="statGrid">
+              <div class="stat">
+                <div class="k">Theme</div>
+                <div class="v" id="themeLabel">Dark</div>
+              </div>
+              <div class="stat">
+                <div class="k">Deploy</div>
+                <div class="v">Pages</div>
+              </div>
+              <div class="stat">
+                <div class="k">Games</div>
+                <div class="v">0</div>
+              </div>
+              <div class="stat">
+                <div class="k">Build</div>
+                <div class="v">Fast</div>
+              </div>
+            </div>
+
+            <p class="sub" style="margin: 0; font-size: 13px">
+              Tip: hit the moon/sun to switch themes.
+            </p>
+          </div>
+        </aside>
       </section>
 
       <section class="section container" id="features">
-        <div class="section__head">
-          <h2 class="section__title">Features that make it feel expensive</h2>
-          <p class="section__sub">All built with plain HTML/CSS/JS. No frameworks.</p>
+        <div class="head">
+          <h2>Features</h2>
+          <p>Actual structure + spacing + responsive layout (not a wall of text).</p>
         </div>
 
-        <div class="cards">
+        <div class="grid">
           <article class="card">
-            <h3>Glass nav + blur</h3>
-            <p>Sticky header with smooth backdrop blur and clean spacing.</p>
-            <div class="card__tag">UI</div>
+            <h3>Sticky glass nav</h3>
+            <p>Looks modern and stays clean while you scroll.</p>
           </article>
-
           <article class="card">
             <h3>Theme toggle</h3>
-            <p>Dark/light mode with localStorage so it remembers your vibe.</p>
-            <div class="card__tag">UX</div>
+            <p>Dark/light mode saved to your browser.</p>
           </article>
-
           <article class="card">
-            <h3>Responsive layout</h3>
-            <p>Looks good on Chromebook, phone, and desktop without effort.</p>
-            <div class="card__tag">Responsive</div>
+            <h3>Responsive grid</h3>
+            <p>Chromebook + phone + desktop all look right.</p>
           </article>
-
           <article class="card">
-            <h3>Scrollspy nav</h3>
-            <p>Active link highlights as you scroll. Small touch, big polish.</p>
-            <div class="card__tag">Details</div>
+            <h3>Scrollspy</h3>
+            <p>Nav highlights the section you’re on.</p>
           </article>
-
           <article class="card">
-            <h3>FAQ accordion</h3>
-            <p>Native <code>&lt;details&gt;</code> so it’s accessible and simple.</p>
-            <div class="card__tag">Accessible</div>
+            <h3>Clean sections</h3>
+            <p>Hero → features → slots → FAQ → footer.</p>
           </article>
-
           <article class="card">
-            <h3>Zero external assets</h3>
-            <p>All local files. Fast loads and fewer things to break.</p>
-            <div class="card__tag">Stable</div>
+            <h3>No external assets</h3>
+            <p>Nothing to break. Great for GitHub Pages.</p>
           </article>
         </div>
       </section>
 
-      <section class="section container" id="coming-soon">
-        <div class="section__head">
-          <h2 class="section__title">Coming soon</h2>
-          <p class="section__sub">This section is already styled for your future games.</p>
+      <section class="section container" id="slots">
+        <div class="head">
+          <h2>Coming soon</h2>
+          <p>These are placeholders where games will go later.</p>
         </div>
 
-        <div class="games">
-          <div class="game-tile">
-            <div class="game-tile__top">
-              <div class="pill">Game slot</div>
-              <div class="ghost-dot" aria-hidden="true"></div>
-            </div>
-            <div class="game-tile__title">Slot #1</div>
-            <div class="game-tile__desc">A polished card ready for your first game.</div>
-            <button class="btn btn--disabled" type="button" disabled>Coming soon</button>
+        <div class="slots">
+          <div class="slot">
+            <div class="top"><span class="tag">Slot</span><span class="glint" aria-hidden="true"></span></div>
+            <div class="title">Game #1</div>
+            <div class="desc">A clean card ready for your first game.</div>
+            <button class="btn" disabled style="opacity:.65; cursor:not-allowed;">Coming soon</button>
           </div>
 
-          <div class="game-tile">
-            <div class="game-tile__top">
-              <div class="pill">Game slot</div>
-              <div class="ghost-dot" aria-hidden="true"></div>
-            </div>
-            <div class="game-tile__title">Slot #2</div>
-            <div class="game-tile__desc">Drop a canvas game or iframe later.</div>
-            <button class="btn btn--disabled" type="button" disabled>Coming soon</button>
+          <div class="slot">
+            <div class="top"><span class="tag">Slot</span><span class="glint" aria-hidden="true"></span></div>
+            <div class="title">Game #2</div>
+            <div class="desc">Canvas game or embed later.</div>
+            <button class="btn" disabled style="opacity:.65; cursor:not-allowed;">Coming soon</button>
           </div>
 
-          <div class="game-tile">
-            <div class="game-tile__top">
-              <div class="pill">Game slot</div>
-              <div class="ghost-dot" aria-hidden="true"></div>
-            </div>
-            <div class="game-tile__title">Slot #3</div>
-            <div class="game-tile__desc">Same sizing, same style—instant consistency.</div>
-            <button class="btn btn--disabled" type="button" disabled>Coming soon</button>
+          <div class="slot">
+            <div class="top"><span class="tag">Slot</span><span class="glint" aria-hidden="true"></span></div>
+            <div class="title">Game #3</div>
+            <div class="desc">Same style = instant consistency.</div>
+            <button class="btn" disabled style="opacity:.65; cursor:not-allowed;">Coming soon</button>
           </div>
         </div>
-      </section>
-
-      <section class="section container" id="roadmap">
-        <div class="section__head">
-          <h2 class="section__title">Roadmap</h2>
-          <p class="section__sub">You can add these later without redesigning.</p>
-        </div>
-
-        <ol class="timeline">
-          <li class="timeline__item">
-            <div class="timeline__dot" aria-hidden="true"></div>
-            <div class="timeline__content">
-              <div class="timeline__title">Base website (done)</div>
-              <div class="timeline__desc">Landing page, nav, sections, and theme system.</div>
-            </div>
-          </li>
-          <li class="timeline__item">
-            <div class="timeline__dot" aria-hidden="true"></div>
-            <div class="timeline__content">
-              <div class="timeline__title">Games index</div>
-              <div class="timeline__desc">Grid of games with tags, search, and sort.</div>
-            </div>
-          </li>
-          <li class="timeline__item">
-            <div class="timeline__dot" aria-hidden="true"></div>
-            <div class="timeline__content">
-              <div class="timeline__title">Game pages</div>
-              <div class="timeline__desc">Each game gets its own route + description + controls.</div>
-            </div>
-          </li>
-          <li class="timeline__item">
-            <div class="timeline__dot" aria-hidden="true"></div>
-            <div class="timeline__content">
-              <div class="timeline__title">Settings + saved scores</div>
-              <div class="timeline__desc">Local saves per game, with a clean profile panel.</div>
-            </div>
-          </li>
-        </ol>
       </section>
 
       <section class="section container" id="faq">
-        <div class="section__head">
-          <h2 class="section__title">FAQ</h2>
-          <p class="section__sub">Quick answers so the site feels “real”.</p>
+        <div class="head">
+          <h2>FAQ</h2>
+          <p>Simple, clean, and not bloated.</p>
         </div>
 
-        <div class="faq">
-          <details class="faq__item">
-            <summary>Do I need a framework?</summary>
-            <p>No. This base is plain HTML/CSS/JS and already feels modern.</p>
+        <div style="display:grid; gap:10px">
+          <details>
+            <summary>Why did mine look like a wall of text?</summary>
+            <p>Your CSS/JS got pasted into the page without proper <code>&lt;style&gt;</code>/<code>&lt;script&gt;</code>, so it printed as text.</p>
           </details>
-
-          <details class="faq__item">
-            <summary>Can I add games later without rewriting this?</summary>
-            <p>Yep. The “Coming soon” cards are the exact layout your games will drop into.</p>
+          <details>
+            <summary>Can I add games later?</summary>
+            <p>Yep. We’ll just swap the “slots” into real game cards/pages.</p>
           </details>
-
-          <details class="faq__item">
-            <summary>Does theme toggle save?</summary>
-            <p>Yes—localStorage remembers your choice.</p>
+          <details>
+            <summary>Does theme save?</summary>
+            <p>Yes—localStorage remembers it.</p>
           </details>
         </div>
       </section>
     </main>
 
-    <footer class="footer">
-      <div class="container footer__inner">
-        <div class="footer__left">
-          <div class="footer__brand">Arcade Hub</div>
-          <div class="footer__sub">Built for GitHub Pages • <span id="year"></span></div>
+    <footer>
+      <div class="container foot">
+        <div>
+          <div style="font-weight: 950; letter-spacing: -0.02em">Arcade Hub</div>
+          <div class="small">Built for GitHub Pages • <span id="year"></span></div>
         </div>
-        <div class="footer__right">
-          <a class="footer__link" href="#top">Back to top</a>
-          <span class="footer__sep" aria-hidden="true">•</span>
-          <a class="footer__link" href="#features">Features</a>
+        <div class="small" style="display:flex; gap:10px">
+          <a href="#top">Top</a>
+          <span aria-hidden="true">•</span>
+          <a href="#features">Features</a>
         </div>
       </div>
     </footer>
 
-    <script src="./app.js"></script>
+    <script>
+      /**
+       * Why: small JS to make it feel premium (theme + mobile menu + scrollspy).
+       */
+      const STORAGE_THEME = "arcadehub-theme";
+      const themeBtn = document.getElementById("themeBtn");
+      const themeIcon = document.getElementById("themeIcon");
+      const themeLabel = document.getElementById("themeLabel");
+      const yearEl = document.getElementById("year");
+
+      const burgerBtn = document.getElementById("burgerBtn");
+      const mobileMenu = document.getElementById("mobileMenu");
+
+      const navLinks = Array.from(document.querySelectorAll(".link"));
+      const sections = navLinks
+        .map((a) => document.querySelector(a.getAttribute("href")))
+        .filter(Boolean);
+
+      function setTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem(STORAGE_THEME, theme);
+        const isDark = theme === "dark";
+        themeIcon.textContent = isDark ? "☾" : "☀";
+        if (themeLabel) themeLabel.textContent = isDark ? "Dark" : "Light";
+      }
+
+      function initTheme() {
+        const saved = localStorage.getItem(STORAGE_THEME);
+        if (saved === "dark" || saved === "light") return setTheme(saved);
+        const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
+        setTheme(prefersDark ? "dark" : "light");
+      }
+
+      themeBtn?.addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme") || "dark";
+        setTheme(current === "dark" ? "light" : "dark");
+      });
+
+      function initYear() {
+        yearEl.textContent = String(new Date().getFullYear());
+      }
+
+      function initMobileMenu() {
+        function close() {
+          mobileMenu.hidden = true;
+          burgerBtn.setAttribute("aria-expanded", "false");
+        }
+        function open() {
+          mobileMenu.hidden = false;
+          burgerBtn.setAttribute("aria-expanded", "true");
+        }
+
+        burgerBtn.addEventListener("click", () => {
+          const expanded = burgerBtn.getAttribute("aria-expanded") === "true";
+          expanded ? close() : open();
+        });
+
+        mobileMenu.addEventListener("click", (e) => {
+          const t = e.target;
+          if (t instanceof HTMLAnchorElement) close();
+        });
+
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") close();
+        });
+
+        window.addEventListener("resize", () => {
+          if (window.innerWidth >= 860) close();
+        });
+      }
+
+      function setActive(id) {
+        for (const a of navLinks) {
+          const href = a.getAttribute("href") || "";
+          a.setAttribute("aria-current", href === `#${id}` ? "true" : "false");
+        }
+      }
+
+      function initScrollSpy() {
+        if (!("IntersectionObserver" in window)) return;
+        const obs = new IntersectionObserver(
+          (entries) => {
+            const best = entries
+              .filter((e) => e.isIntersecting)
+              .sort((x, y) => y.intersectionRatio - x.intersectionRatio)[0];
+            if (best) setActive(best.target.id);
+          },
+          { threshold: [0.25, 0.5, 0.75], rootMargin: "-20% 0px -60% 0px" }
+        );
+        for (const s of sections) obs.observe(s);
+      }
+
+      initTheme();
+      initYear();
+      initMobileMenu();
+      initScrollSpy();
+    </script>
   </body>
 </html>
-
-<!-- /styles.css -->
-:root {
-  --bg0: #0b0f1a;
-  --bg1: #0d1324;
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.68);
-  --card: rgba(255, 255, 255, 0.06);
-  --card2: rgba(255, 255, 255, 0.09);
-  --border: rgba(255, 255, 255, 0.12);
-  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
-  --accent: #8b5cf6;
-  --accent2: #22d3ee;
-  --radius: 18px;
-  --container: 1100px;
-}
-
-html[data-theme="light"] {
-  --bg0: #f7f7ff;
-  --bg1: #f1f5ff;
-  --text: rgba(10, 14, 25, 0.92);
-  --muted: rgba(10, 14, 25, 0.66);
-  --card: rgba(255, 255, 255, 0.7);
-  --card2: rgba(255, 255, 255, 0.9);
-  --border: rgba(10, 14, 25, 0.12);
-  --shadow: 0 16px 40px rgba(10, 14, 25, 0.12);
-  --accent: #6d28d9;
-  --accent2: #0891b2;
-}
-
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  background: radial-gradient(1200px 800px at 20% 10%, rgba(139, 92, 246, 0.12), transparent 50%),
-              radial-gradient(900px 700px at 80% 20%, rgba(34, 211, 238, 0.12), transparent 55%),
-              linear-gradient(180deg, var(--bg0), var(--bg1));
-  color: var(--text);
-  overflow-x: hidden;
-}
-
-code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.95em;
-}
-
-.container {
-  width: min(var(--container), calc(100% - 40px));
-  margin: 0 auto;
-}
-
-.skip-link {
-  position: absolute;
-  left: -999px;
-  top: 12px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: var(--card2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  z-index: 9999;
-}
-.skip-link:focus { left: 12px; }
-
-.bg {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.blob {
-  position: absolute;
-  width: 620px;
-  height: 620px;
-  filter: blur(42px);
-  opacity: 0.35;
-  border-radius: 999px;
-  transform: translate3d(0,0,0);
-  animation: float 12s ease-in-out infinite;
-}
-.blob--a { left: -220px; top: -220px; background: radial-gradient(circle at 30% 30%, var(--accent), transparent 65%); }
-.blob--b { right: -260px; top: -180px; background: radial-gradient(circle at 30% 30%, var(--accent2), transparent 65%); animation-delay: -4s; }
-.blob--c { left: 15%; bottom: -340px; background: radial-gradient(circle at 30% 30%, rgba(34, 211, 238, 0.9), transparent 65%); animation-delay: -7s; }
-
-@keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(18px, -22px) scale(1.03); }
-}
-
-.grain {
-  position: absolute;
-  inset: -30%;
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
-  opacity: 0.12;
-  mix-blend-mode: overlay;
-  transform: rotate(2deg);
-}
-
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  backdrop-filter: blur(14px);
-  background: color-mix(in oklab, var(--bg0), transparent 55%);
-  border-bottom: 1px solid var(--border);
-}
-
-.nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 0;
-  gap: 14px;
-}
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: var(--text);
-}
-.brand__mark {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.28), rgba(34, 211, 238, 0.2));
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-}
-.brand__text { font-weight: 800; letter-spacing: -0.02em; }
-.brand__text--accent { color: color-mix(in oklab, var(--accent2), var(--text) 40%); }
-
-.nav__links {
-  display: none;
-  gap: 18px;
-  align-items: center;
-}
-
-.nav__link {
-  text-decoration: none;
-  color: var(--muted);
-  font-weight: 600;
-  padding: 10px 10px;
-  border-radius: 12px;
-  transition: transform 180ms ease, background 180ms ease, color 180ms ease;
-}
-.nav__link:hover {
-  color: var(--text);
-  background: color-mix(in oklab, var(--card), transparent 25%);
-  transform: translateY(-1px);
-}
-.nav__link[aria-current="true"] {
-  color: var(--text);
-  background: color-mix(in oklab, var(--card2), transparent 10%);
-  border: 1px solid var(--border);
-}
-
-.nav__actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--card), transparent 10%);
-  color: var(--text);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  transition: transform 180ms ease, background 180ms ease;
-}
-.icon-btn:hover { transform: translateY(-1px); background: color-mix(in oklab, var(--card2), transparent 0%); }
-.icon-btn__icon { font-size: 18px; }
-
-.nav__burger { display: grid; }
-
-.mobile-menu {
-  display: grid;
-  gap: 10px;
-  padding: 10px 0 16px;
-}
-.mobile-link {
-  text-decoration: none;
-  color: var(--text);
-  padding: 12px 12px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--card2), transparent 5%);
-}
-
-@media (min-width: 860px) {
-  .nav__links { display: flex; }
-  .nav__burger { display: none; }
-  .mobile-menu { display: none !important; }
-}
-
-.hero {
-  display: grid;
-  gap: 20px;
-  padding: 42px 0 24px;
-  align-items: center;
-}
-@media (min-width: 980px) {
-  .hero { grid-template-columns: 1.05fr 0.95fr; gap: 26px; padding: 62px 0 24px; }
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--card2), transparent 12%);
-  width: fit-content;
-  color: var(--muted);
-  font-weight: 650;
-}
-.badge__dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent2), transparent 82%);
-}
-
-.hero__title {
-  margin: 14px 0 10px;
-  font-size: clamp(34px, 4vw, 54px);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-}
-.hero__sub {
-  margin: 0 0 18px;
-  color: var(--muted);
-  font-size: 16px;
-  line-height: 1.55;
-  max-width: 58ch;
-}
-
-.glow {
-  background: linear-gradient(90deg, color-mix(in oklab, var(--accent), var(--text) 25%), color-mix(in oklab, var(--accent2), var(--text) 25%));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 0 28px color-mix(in oklab, var(--accent), transparent 70%);
-}
-
-.hero__cta {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  border-radius: 16px;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  font-weight: 750;
-  letter-spacing: -0.01em;
-  cursor: pointer;
-  transition: transform 180ms ease, filter 180ms ease, background 180ms ease;
-}
-.btn:hover { transform: translateY(-1px); filter: brightness(1.03); }
-.btn--primary {
-  color: var(--text);
-  background: linear-gradient(135deg, color-mix(in oklab, var(--accent), transparent 25%), color-mix(in oklab, var(--accent2), transparent 25%));
-  box-shadow: var(--shadow);
-}
-.btn--ghost {
-  color: var(--text);
-  background: color-mix(in oklab, var(--card2), transparent 8%);
-}
-.btn--disabled {
-  color: var(--muted);
-  background: color-mix(in oklab, var(--card), transparent 20%);
-}
-
-.hero__meta {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  max-width: 720px;
-}
-@media (max-width: 520px) {
-  .hero__meta { grid-template-columns: 1fr; }
-}
-.meta-card {
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--card2), transparent 10%);
-  padding: 12px 12px;
-}
-.meta-card__label { font-size: 12px; color: var(--muted); font-weight: 700; }
-.meta-card__value { font-size: 14px; font-weight: 850; margin-top: 4px; }
-
-.hero__panel { display: none; }
-@media (min-width: 980px) { .hero__panel { display: block; } }
-
-.panel {
-  border-radius: calc(var(--radius) + 8px);
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--card2), transparent 6%);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
-.panel__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border);
-  background: color-mix(in oklab, var(--card), transparent 10%);
-}
-.panel__dots { display: flex; gap: 8px; }
-.panel__dots span {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--muted), transparent 35%);
-}
-.panel__title { font-weight: 850; letter-spacing: -0.02em; color: var(--muted); }
-
-.panel__body { padding: 14px; display: grid; gap: 12px; }
-
-.panel__card {
-  border-radius: 18px;
-  border: 1px solid var(--border);
-  background: linear-gradient(135deg, color-mix(in oklab, var(--accent), transparent 82%), color-mix(in oklab, var(--accent2), transparent 86%));
-  padding: 14px;
-}
-.panel__card-title { font-weight: 900; letter-spacing: -0.02em; }
-.panel__card-sub { color: var(--muted); margin-top: 2px; font-weight: 650; }
-.panel__bar {
-  height: 10px;
-  border-radius: 999px;
-  margin: 12px 0 10px;
-  background: linear-gradient(90deg, color-mix(in oklab, var(--accent), transparent 8%), color-mix(in oklab, var(--accent2), transparent 8%));
-  opacity: 0.85;
-}
-.panel__chips { display: flex; gap: 8px; flex-wrap: wrap; }
-.chip {
-  font-size: 12px;
-  font-weight: 800;
-  padding: 7px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--card2), transparent 6%);
-  color: var(--text);
-}
-
-.panel__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-.mini {
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--card2), transparent 12%);
-  padding: 12px;
-}
-.mini__kicker { font-size: 12px; color: var(--muted); font-weight: 800; }
-.mini__big { font-size: 22px; font-weight: 950; letter-spacing: -0.03em; margin-top: 3px; }
-.mini__small { font-size: 12px; color: var(--muted); margin-top: 2px; font-weight: 650; }
-
-.panel__hint { color: var(--muted); font-weight: 650; font-size: 13px; }
-
-.section { padding: 34px 0; }
-.section__head { margin-bottom: 16px; }
-.section__title {
-  margin: 0;
-  font-size: clamp(22px, 2.2vw, 30px);
-  letter-spacing: -0.03em;
-}
-.section__sub { margin: 8px 0 0; color: var(--muted); max-width: 70ch; }
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 12px;
-}
-@media (min-width: 740px) {
-  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (min-width: 980px) {
-  .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-
-.card {
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--card2), transparent 10%);
-  padding: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.14);
-  transition: transform 180ms ease, background 180ms ease;
-}
-.card:hover { transform: translateY(-2px); background: color-mix(in oklab, var(--card2), transparent 0%); }
-.card h3 { margin: 0 0 6px; letter-spacing: -0.02em; }
-.card p { margin: 0; color: var(--muted); line-height: 1.5; }
-.card__tag {
-  width: fit-content;
-  margin-top: 12px;
-  font-size: 12px;
-  font-weight: 850;
-  padding: 7px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--card), transparent 20%);
-  color: var(--text);
-}
-
-.games {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-@media (min-width: 860px) { .games { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-
-.game-tile {
-  border-radius: calc(var(--radius) + 4px);
-  border: 1px solid var(--border);
-  background: linear-gradient(180deg, color-mix(in oklab, var(--card2), transparent 8%), color-mix(in oklab, var(--card), transparent 14%));
-  padding: 16px;
-  box-shadow: var(--shadow);
-  display: grid;
-  gap: 10px;
-  min-height: 210px;
-}
-.game-tile__top { display: flex; align-items: center; justify-content: space-between; }
-.pill {
-  font-size: 12px;
-  font-weight: 900;
-  padding: 7px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--card2), transparent 8%);
-}
-.ghost-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  opacity: 0.55;
-  box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent2), transparent 84%);
-}
-.game-tile__title { font-weight: 950; font-size: 18px; letter-spacing: -0.02em; }
-.game-tile__desc { color: var(--muted); line-height: 1.5; }
-
-.timeline {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 12px;
-}
-.timeline__item {
-  display: grid;
-  grid-template-columns: 14px 1fr;
-  gap: 12px;
-  align-items: start;
-}
-.timeline__dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  margin-top: 6px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent), transparent 84%);
-}
-.timeline__content {
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--card2), transparent 10%);
-  padding: 14px 14px;
-}
-.timeline__title { font-weight: 950; letter-spacing: -0.02em; }
-.timeline__desc { color: var(--muted); margin-top: 4px; line-height: 1.5; }
-
-.faq {
-  display: grid;
-  gap: 10px;
-}
-.faq__item {
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--card2), transparent 10%);
-  padding: 12px 14px;
-}
-.faq__item summary {
-  cursor: pointer;
-  font-weight: 900;
-  letter-spacing: -0.02em;
-}
-.faq__item p {
-  color: var(--muted);
-  line-height: 1.55;
-  margin: 10px 0 0;
-}
-
-.footer {
-  padding: 26px 0 40px;
-  border-top: 1px solid var(--border);
-  background: color-mix(in oklab, var(--bg0), transparent 20%);
-}
-.footer__inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-.footer__brand { font-weight: 950; letter-spacing: -0.02em; }
-.footer__sub { color: var(--muted); margin-top: 4px; font-weight: 650; }
-.footer__right { display: inline-flex; align-items: center; gap: 10px; }
-.footer__link { color: var(--muted); text-decoration: none; font-weight: 750; }
-.footer__link:hover { color: var(--text); }
-.footer__sep { color: var(--muted); }
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .blob { animation: none; }
-  .btn, .card, .nav__link, .icon-btn { transition: none; }
-}
-
-<!-- /app.js -->
-/**
- * /app.js
- * Why: keep it tiny but add premium touches (theme + scrollspy + mobile menu).
- */
-
-const themeBtn = document.getElementById("themeBtn");
-const themeIcon = document.getElementById("themeIcon");
-const themeLabel = document.getElementById("themeLabel");
-const yearEl = document.getElementById("year");
-
-const burgerBtn = document.getElementById("burgerBtn");
-const mobileMenu = document.getElementById("mobileMenu");
-
-const navLinks = Array.from(document.querySelectorAll(".nav__link"));
-const sections = navLinks
-  .map((a) => document.querySelector(a.getAttribute("href")))
-  .filter(Boolean);
-
-const STORAGE_THEME = "arcadehub-theme";
-
-function setTheme(theme) {
-  document.documentElement.setAttribute("data-theme", theme);
-  localStorage.setItem(STORAGE_THEME, theme);
-
-  const isDark = theme === "dark";
-  themeIcon.textContent = isDark ? "☾" : "☀";
-  themeLabel.textContent = isDark ? "Dark" : "Light";
-}
-
-function initTheme() {
-  const saved = localStorage.getItem(STORAGE_THEME);
-  if (saved === "dark" || saved === "light") {
-    setTheme(saved);
-    return;
-  }
-  const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
-  setTheme(prefersDark ? "dark" : "light");
-}
-
-function toggleTheme() {
-  const current = document.documentElement.getAttribute("data-theme") || "dark";
-  setTheme(current === "dark" ? "light" : "dark");
-}
-
-function setYear() {
-  yearEl.textContent = String(new Date().getFullYear());
-}
-
-function setActiveLink(id) {
-  for (const a of navLinks) {
-    const href = a.getAttribute("href") || "";
-    const active = href === `#${id}`;
-    a.setAttribute("aria-current", active ? "true" : "false");
-  }
-}
-
-function initScrollSpy() {
-  if (!("IntersectionObserver" in window)) return;
-
-  const obs = new IntersectionObserver(
-    (entries) => {
-      const visible = entries
-        .filter((e) => e.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-      if (!visible) return;
-      setActiveLink(visible.target.id);
-    },
-    { root: null, threshold: [0.2, 0.35, 0.5], rootMargin: "-20% 0px -60% 0px" }
-  );
-
-  for (const s of sections) obs.observe(s);
-}
-
-function initMobileMenu() {
-  if (!burgerBtn || !mobileMenu) return;
-
-  function close() {
-    mobileMenu.hidden = true;
-    burgerBtn.setAttribute("aria-expanded", "false");
-  }
-
-  function open() {
-    mobileMenu.hidden = false;
-    burgerBtn.setAttribute("aria-expanded", "true");
-  }
-
-  burgerBtn.addEventListener("click", () => {
-    const expanded = burgerBtn.getAttribute("aria-expanded") === "true";
-    expanded ? close() : open();
-  });
-
-  mobileMenu.addEventListener("click", (e) => {
-    const target = e.target;
-    if (target instanceof HTMLAnchorElement) close();
-  });
-
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") close();
-  });
-
-  window.addEventListener("resize", () => {
-    if (window.innerWidth >= 860) close();
-  });
-}
-
-themeBtn?.addEventListener("click", toggleTheme);
-
-initTheme();
-setYear();
-initScrollSpy();
-initMobileMenu();
