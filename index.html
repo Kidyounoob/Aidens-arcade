@@ -1,264 +1,19 @@
-<!-- FILE: /index.html -->
+<!-- /index.html -->
 <!doctype html>
-<html lang="en" data-mode="dark" data-theme="greatwave">
+<html lang="en" data-mode="dark" data-theme="darkwater">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
     <title>Aiden’s Arcade</title>
-    <meta name="description" content="Aiden’s Arcade — games hub, watch page, emulator page, and an API relay page." />
-
-    <style>
-      :root {
-        --container: 1100px;
-        --r: 18px;
-
-        --bg0: #020611;
-        --bg1: #03162b;
-
-        --text: rgba(255, 255, 255, 0.92);
-        --muted: rgba(255, 255, 255, 0.72);
-        --border: rgba(255, 255, 255, 0.14);
-
-        --panel: rgba(255, 255, 255, 0.06);
-        --panel2: rgba(255, 255, 255, 0.1);
-
-        --shadow: 0 26px 90px rgba(0, 0, 0, 0.55);
-
-        --a: #38bdf8;
-        --b: #1e40af;
-
-        --wavePatternDark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%23bfeaff' stroke-opacity='0.16' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.12'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.10'/%3E%3C/g%3E%3C/svg%3E");
-        --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
-      }
-
-      html[data-mode="light"] {
-        --bg0: #041426;
-        --bg1: #062a43;
-        --panel: rgba(255, 255, 255, 0.08);
-        --panel2: rgba(255, 255, 255, 0.12);
-        --border: rgba(255, 255, 255, 0.16);
-        --muted: rgba(255, 255, 255, 0.78);
-      }
-
-      html[data-theme="greatwave"] { --a: #38bdf8; --b: #1e40af; }
-      html[data-theme="darkwater"] { --a: #0ea5e9; --b: #14b8a6; }
-      html[data-theme="deepsea"] { --a: #22c55e; --b: #0ea5e9; }
-      html[data-theme="ink"] { --a: #94a3b8; --b: #38bdf8; }
-
-      * { box-sizing: border-box; }
-      html { scroll-behavior: smooth; }
-      body {
-        margin: 0;
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-        color: var(--text);
-        background:
-          radial-gradient(1000px 700px at 18% 10%, rgba(56, 189, 248, 0.18), transparent 60%),
-          radial-gradient(1100px 800px at 82% 16%, rgba(20, 184, 166, 0.14), transparent 60%),
-          linear-gradient(180deg, var(--bg0), var(--bg1));
-        overflow-x: hidden;
-      }
-      a { color: inherit; text-decoration: none; }
-      code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-
-      .container { width: min(var(--container), calc(100% - 40px)); margin: 0 auto; }
-
-      .bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
-      .pattern {
-        position: absolute;
-        inset: 0;
-        background-image: var(--wavePatternDark);
-        background-size: 140px 70px;
-        opacity: 0.60;
-        mask-image: radial-gradient(900px 520px at 50% 0%, black 42%, transparent 78%);
-      }
-      .grain {
-        position: absolute;
-        inset: -30%;
-        background-image: var(--grain);
-        opacity: 0.10;
-        mix-blend-mode: overlay;
-        transform: rotate(2deg);
-      }
-      .blob {
-        position: absolute;
-        width: 760px;
-        height: 760px;
-        border-radius: 999px;
-        filter: blur(62px);
-        opacity: 0.22;
-        animation: float 12s ease-in-out infinite;
-      }
-      .blob.a { left: -340px; top: -360px; background: radial-gradient(circle at 30% 30%, var(--b), transparent 65%); }
-      .blob.b { right: -380px; top: -320px; background: radial-gradient(circle at 30% 30%, var(--a), transparent 65%); animation-delay: -4s; }
-      .blob.c { left: 12%; bottom: -560px; background: radial-gradient(circle at 30% 30%, rgba(56,189,248,0.9), transparent 65%); animation-delay: -7s; }
-
-      @keyframes float {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        50% { transform: translate(18px, -22px) scale(1.03); }
-      }
-
-      header {
-        position: sticky;
-        top: 0;
-        z-index: 50;
-        backdrop-filter: blur(14px);
-        background: rgba(2, 6, 17, 0.55);
-        border-bottom: 1px solid var(--border);
-      }
-
-      .nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 14px;
-        padding: 14px 0;
-      }
-
-      .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 950;
-        letter-spacing: -0.02em;
-      }
-
-      .mark {
-        width: 44px;
-        height: 44px;
-        display: grid;
-        place-items: center;
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        background: linear-gradient(135deg, rgba(30,64,175,0.35), rgba(56,189,248,0.18));
-        box-shadow: var(--shadow);
-      }
-
-      .accent {
-        display: inline-block;
-        padding-right: 0.10em;
-        background: linear-gradient(90deg, var(--a), var(--b));
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        color: transparent;
-      }
-
-      .links { display: none; gap: 14px; align-items: center; }
-      .link {
-        color: var(--muted);
-        font-weight: 900;
-        padding: 10px 10px;
-        border-radius: 12px;
-        transition: transform 160ms ease, background 160ms ease, color 160ms ease;
-      }
-      .link:hover { color: var(--text); background: var(--panel); transform: translateY(-1px); }
-      .link[aria-current="true"] { color: var(--text); border: 1px solid var(--border); background: var(--panel2); }
-
-      .actions { display: flex; align-items: center; gap: 10px; }
-
-      .icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        background: var(--panel);
-        color: var(--text);
-        display: grid;
-        place-items: center;
-        cursor: pointer;
-        transition: transform 160ms ease, background 160ms ease;
-      }
-      .icon:hover { transform: translateY(-1px); background: var(--panel2); }
-
-      .select {
-        height: 44px;
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        background: var(--panel);
-        color: var(--text);
-        padding: 0 12px;
-        font-weight: 900;
-        cursor: pointer;
-        outline: none;
-      }
-
-      /* ✅ FIX: dropdown list options readable (black ink) */
-      select option, select optgroup {
-        color: #000;
-        background: #fff;
-      }
-
-      .burger { display: grid; }
-      .mobile { display: grid; gap: 10px; padding: 10px 0 16px; }
-      .mobile a {
-        padding: 12px 12px;
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        background: var(--panel2);
-        font-weight: 950;
-      }
-
-      @media (min-width: 860px) {
-        .links { display: flex; }
-        .burger { display: none; }
-        .mobile { display: none !important; }
-      }
-
-      main { padding-bottom: 30px; }
-      .hero { padding: 64px 0 18px; display: grid; gap: 14px; }
-      h1 { margin: 0; font-size: clamp(34px, 4.2vw, 62px); line-height: 1.06; letter-spacing: -0.04em; }
-      .sub { margin: 0; color: var(--muted); font-weight: 780; line-height: 1.55; max-width: 70ch; }
-      .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
-
-      .btn {
-        border: 1px solid var(--border);
-        background: var(--panel);
-        color: var(--text);
-        padding: 12px 14px;
-        border-radius: 16px;
-        font-weight: 950;
-        letter-spacing: -0.01em;
-        cursor: pointer;
-        transition: transform 160ms ease, filter 160ms ease, background 160ms ease;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .btn:hover { transform: translateY(-1px); filter: brightness(1.05); background: var(--panel2); }
-      .btn.primary {
-        background: linear-gradient(135deg, rgba(30,64,175,0.40), rgba(56,189,248,0.22));
-        box-shadow: var(--shadow);
-      }
-
-      .grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 14px; }
-      @media (min-width: 740px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-
-      .card {
-        border-radius: var(--r);
-        border: 1px solid var(--border);
-        background: rgba(255,255,255,0.07);
-        padding: 16px;
-        box-shadow: 0 12px 34px rgba(0,0,0,0.22);
-        transition: transform 160ms ease, background 160ms ease;
-      }
-      .card:hover { transform: translateY(-2px); background: rgba(255,255,255,0.10); }
-      .card h3 { margin: 0 0 6px; letter-spacing: -0.02em; }
-      .card p { margin: 0; color: var(--muted); line-height: 1.5; }
-
-      footer {
-        padding: 26px 0 40px;
-        border-top: 1px solid var(--border);
-        background: rgba(255,255,255,0.03);
-      }
-      .foot { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; align-items: center; }
-      .small { color: var(--muted); font-weight: 820; }
-      .footBrand { font-weight: 950; letter-spacing: -0.02em; }
-      .footLinks { display: flex; gap: 10px; align-items: center; }
-    </style>
+    <meta name="description" content="Aiden’s Arcade — wave-themed arcade hub. Games, watch, emulation, and a web portal." />
+    <link rel="stylesheet" href="./styles.css?v=2" />
+    <script defer src="./app.js?v=2"></script>
   </head>
 
   <body>
+    <a class="skip" href="#main">Skip to content</a>
+
     <div class="bg" aria-hidden="true">
       <div class="pattern"></div>
       <div class="grain"></div>
@@ -269,28 +24,23 @@
 
     <header>
       <div class="container nav">
-        <a class="brand" href="/index.html" aria-label="Aiden’s Arcade home">
-          <span class="mark" aria-hidden="true">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-              <path d="M3 15c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              <path d="M3 10c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
-              <path d="M4 19h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
-            </svg>
-          </span>
+        <a class="brand" href="./" aria-label="Aiden’s Arcade home">
+          <span class="mark" aria-hidden="true">🌊</span>
           <span>Aiden’s <span class="accent">Arcade</span></span>
         </a>
 
         <nav class="links" aria-label="Pages">
-          <a class="link" href="/index.html" aria-current="true">Home</a>
-          <a class="link" href="/watch.html">Watch</a>
-          <a class="link" href="/emulation.html">Emulation</a>
-          <a class="link" href="/proxy.html">Proxy</a>
+          <a class="link" href="./games/">Games</a>
+          <a class="link" href="./watch/">Watch</a>
+          <a class="link" href="./emulation/">Emulation</a>
+          <a class="link" href="./portal/">Portal</a>
+          <a class="link" href="#faq">FAQ</a>
         </nav>
 
         <div class="actions">
           <select class="select" id="themeSelect" aria-label="Theme">
+            <option value="darkwater" selected>Dark Water</option>
             <option value="greatwave">Great Wave</option>
-            <option value="darkwater">Dark Water</option>
             <option value="deepsea">Deep Sea</option>
             <option value="ink">Ink + Water</option>
           </select>
@@ -306,36 +56,100 @@
       </div>
 
       <div class="container mobile" id="mobileMenu" hidden>
-        <a href="/index.html">Home</a>
-        <a href="/watch.html">Watch</a>
-        <a href="/emulation.html">Emulation</a>
-        <a href="/proxy.html">Proxy</a>
+        <a href="./games/">Games</a>
+        <a href="./watch/">Watch</a>
+        <a href="./emulation/">Emulation</a>
+        <a href="./portal/">Portal</a>
+        <a href="#faq">FAQ</a>
       </div>
     </header>
 
-    <main class="container">
-      <section class="hero">
-        <h1>Welcome to <span class="accent">Aiden’s Arcade</span>.</h1>
-        <p class="sub">Pick a page. Everything’s separated so it feels clean and easy to show friends.</p>
-        <div class="cta">
-          <a class="btn primary" href="/emulation.html">Emulation</a>
-          <a class="btn" href="/watch.html">Watch</a>
-          <a class="btn" href="/proxy.html">Proxy</a>
+    <main id="main">
+      <section class="heroWrap" id="top">
+        <svg class="heroWaveArt" viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="gw" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="rgba(14,165,233,0.75)"/>
+              <stop offset="1" stop-color="rgba(20,184,166,0.65)"/>
+            </linearGradient>
+          </defs>
+          <path d="M60,300 C160,160 320,140 420,190 C520,240 540,290 600,305 C710,330 820,240 920,200 C1030,160 1120,190 1200,250"
+                fill="none" stroke="url(#gw)" stroke-width="10" stroke-linecap="round" opacity="0.9"/>
+          <path d="M70,345 C210,255 340,260 455,300 C585,350 720,330 850,275 C980,225 1100,245 1180,295"
+                fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+
+        <div class="container hero">
+          <div>
+            <div class="pill"><span class="dot"></span> Wave UI • Fast • Chromebook-friendly</div>
+
+            <h1>Aiden’s Arcade.</h1>
+
+            <p class="sub">
+              A clean wave-themed hub for games, videos, and classic emulation — built to look premium and run fast.
+            </p>
+
+            <div class="cta">
+              <a class="btn primary" href="./games/">Open Games</a>
+              <a class="btn" href="./watch/">Watch</a>
+              <a class="btn" href="./emulation/">Emulation</a>
+              <a class="btn" href="./portal/">Portal</a>
+            </div>
+          </div>
+
+          <aside class="card" aria-label="Quick stats">
+            <h3>What’s inside</h3>
+            <p>Everything is organized into pages so it stays clean and easy to share.</p>
+            <div class="cta" style="margin-top:14px;">
+              <a class="btn primary" href="./games/">Games Page</a>
+              <a class="btn" href="./portal/">Portal</a>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section container" id="features">
+        <div class="head">
+          <h2>Features</h2>
+          <p>Dark-water theme, clean cards, saved settings, and separate pages for each tool.</p>
         </div>
 
         <div class="grid">
-          <a class="card" href="/watch.html">
-            <h3>Watch</h3>
-            <p>Paste a YouTube link/video ID and watch it here.</p>
-          </a>
-          <a class="card" href="/emulation.html">
-            <h3>Emulation</h3>
-            <p>Upload your ROM and play (bring your own legal ROMs/homebrew).</p>
-          </a>
-          <a class="card" href="/proxy.html">
-            <h3>Proxy</h3>
-            <p>Safe API relay template (for your own API).</p>
-          </a>
+          <article class="card"><h3>Wave background</h3><p>Seigaiha-style pattern under layered gradients.</p></article>
+          <article class="card"><h3>Theme selector</h3><p>Dark Water / Great Wave / Deep Sea / Ink + Water.</p></article>
+          <article class="card"><h3>Dark + Moonlit</h3><p>One click mode toggle. Saves automatically.</p></article>
+          <article class="card"><h3>Games page</h3><p>A simple grid layout you can expand as you add games.</p></article>
+          <article class="card"><h3>Watch page</h3><p>Built-in YouTube player (when allowed on your network).</p></article>
+          <article class="card"><h3>Emulation page</h3><p>ROM upload shell (bring-your-own files).</p></article>
+        </div>
+      </section>
+
+      <section class="section container" id="faq">
+        <div class="head">
+          <h2>FAQ</h2>
+          <p>Stuff people actually ask.</p>
+        </div>
+
+        <div class="grid" style="grid-template-columns:1fr; max-width:900px;">
+          <details class="card">
+            <summary>How do I add games?</summary>
+            <p>Put your game folders in <code>/games/</code> and link them from the Games page. (I can set up a games.json system next.)</p>
+          </details>
+
+          <details class="card">
+            <summary>Why doesn’t a site show inside the Portal?</summary>
+            <p>Some sites block being embedded for security. If it can’t embed, the Portal opens it in a new tab instead.</p>
+          </details>
+
+          <details class="card">
+            <summary>Does the theme save?</summary>
+            <p>Yep. Theme + mode are saved in your browser so it stays how you like it.</p>
+          </details>
+
+          <details class="card">
+            <summary>What’s the deal with Emulation?</summary>
+            <p>It’s a bring-your-own-files setup. Nothing is included — you load your own legal ROMs/homebrew/public-domain files.</p>
+          </details>
         </div>
       </section>
     </main>
@@ -344,728 +158,12 @@
       <div class="container foot">
         <div>
           <div class="footBrand">Aiden’s Arcade</div>
-          <div class="small">Made to share • <span id="year"></span></div>
+          <div class="small">Wave UI • <span id="year"></span></div>
         </div>
         <div class="small footLinks">
-          <a href="/watch.html">Watch</a><span aria-hidden="true">•</span>
-          <a href="/emulation.html">Emulation</a><span aria-hidden="true">•</span>
-          <a href="/proxy.html">Proxy</a>
+          <a href="./games/">Games</a><span aria-hidden="true">•</span><a href="./watch/">Watch</a><span aria-hidden="true">•</span><a href="./portal/">Portal</a>
         </div>
       </div>
     </footer>
-
-    <script>
-      const STORAGE_MODE = "arcadehub-mode";
-      const STORAGE_THEME = "arcadehub-theme";
-
-      const modeBtn = document.getElementById("modeBtn");
-      const modeIcon = document.getElementById("modeIcon");
-      const themeSelect = document.getElementById("themeSelect");
-      const burgerBtn = document.getElementById("burgerBtn");
-      const mobileMenu = document.getElementById("mobileMenu");
-      const yearEl = document.getElementById("year");
-
-      function setMode(mode) {
-        document.documentElement.setAttribute("data-mode", mode);
-        localStorage.setItem(STORAGE_MODE, mode);
-        const isDark = mode === "dark";
-        if (modeIcon) modeIcon.textContent = isDark ? "☾" : "☀";
-      }
-
-      function initMode() {
-        const saved = localStorage.getItem(STORAGE_MODE);
-        if (saved === "dark" || saved === "light") return setMode(saved);
-        setMode("dark");
-      }
-
-      function toggleMode() {
-        const current = document.documentElement.getAttribute("data-mode") || "dark";
-        setMode(current === "dark" ? "light" : "dark");
-      }
-
-      function setTheme(theme) {
-        document.documentElement.setAttribute("data-theme", theme);
-        localStorage.setItem(STORAGE_THEME, theme);
-        if (themeSelect) themeSelect.value = theme;
-      }
-
-      function initTheme() {
-        const saved = localStorage.getItem(STORAGE_THEME);
-        if (saved) setTheme(saved);
-        else setTheme(document.documentElement.getAttribute("data-theme") || "greatwave");
-      }
-
-      function initYear() {
-        if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-      }
-
-      function initMobileMenu() {
-        if (!burgerBtn || !mobileMenu) return;
-
-        function close() {
-          mobileMenu.hidden = true;
-          burgerBtn.setAttribute("aria-expanded", "false");
-        }
-
-        function open() {
-          mobileMenu.hidden = false;
-          burgerBtn.setAttribute("aria-expanded", "true");
-        }
-
-        burgerBtn.addEventListener("click", () => {
-          const expanded = burgerBtn.getAttribute("aria-expanded") === "true";
-          expanded ? close() : open();
-        });
-
-        mobileMenu.addEventListener("click", (e) => {
-          const t = e.target;
-          if (t instanceof HTMLAnchorElement) close();
-        });
-
-        window.addEventListener("keydown", (e) => {
-          if (e.key === "Escape") close();
-        });
-
-        window.addEventListener("resize", () => {
-          if (window.innerWidth >= 860) close();
-        });
-      }
-
-      modeBtn?.addEventListener("click", toggleMode);
-      themeSelect?.addEventListener("change", (e) => setTheme(e.target.value));
-
-      initMode();
-      initTheme();
-      initYear();
-      initMobileMenu();
-    </script>
-  </body>
-</html>
-
-
-<!-- FILE: /watch.html -->
-<!doctype html>
-<html lang="en" data-mode="dark" data-theme="greatwave">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="dark light" />
-    <title>Aiden’s Arcade — Watch</title>
-    <meta name="description" content="Aiden’s Arcade watch page." />
-    <style>
-      :root {
-        --container: 1100px;
-        --r: 18px;
-        --bg0: #020611;
-        --bg1: #03162b;
-        --text: rgba(255, 255, 255, 0.92);
-        --muted: rgba(255, 255, 255, 0.72);
-        --border: rgba(255, 255, 255, 0.14);
-        --panel: rgba(255, 255, 255, 0.06);
-        --panel2: rgba(255, 255, 255, 0.1);
-        --shadow: 0 26px 90px rgba(0, 0, 0, 0.55);
-        --a: #38bdf8;
-        --b: #1e40af;
-        --wavePatternDark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%23bfeaff' stroke-opacity='0.16' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.12'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.10'/%3E%3C/g%3E%3C/svg%3E");
-        --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
-      }
-
-      html[data-mode="light"] {
-        --bg0: #041426;
-        --bg1: #062a43;
-        --panel: rgba(255, 255, 255, 0.08);
-        --panel2: rgba(255, 255, 255, 0.12);
-        --border: rgba(255, 255, 255, 0.16);
-        --muted: rgba(255, 255, 255, 0.78);
-      }
-
-      html[data-theme="greatwave"] { --a: #38bdf8; --b: #1e40af; }
-      html[data-theme="darkwater"] { --a: #0ea5e9; --b: #14b8a6; }
-      html[data-theme="deepsea"] { --a: #22c55e; --b: #0ea5e9; }
-      html[data-theme="ink"] { --a: #94a3b8; --b: #38bdf8; }
-
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-        color: var(--text);
-        background:
-          radial-gradient(1000px 700px at 18% 10%, rgba(56, 189, 248, 0.18), transparent 60%),
-          radial-gradient(1100px 800px at 82% 16%, rgba(20, 184, 166, 0.14), transparent 60%),
-          linear-gradient(180deg, var(--bg0), var(--bg1));
-        overflow-x: hidden;
-      }
-
-      .container { width: min(var(--container), calc(100% - 40px)); margin: 0 auto; }
-
-      .bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
-      .pattern { position: absolute; inset: 0; background-image: var(--wavePatternDark); background-size: 140px 70px; opacity: 0.60;
-        mask-image: radial-gradient(900px 520px at 50% 0%, black 42%, transparent 78%);
-      }
-      .grain { position: absolute; inset: -30%; background-image: var(--grain); opacity: 0.10; mix-blend-mode: overlay; transform: rotate(2deg); }
-
-      header {
-        position: sticky;
-        top: 0;
-        z-index: 50;
-        backdrop-filter: blur(14px);
-        background: rgba(2, 6, 17, 0.55);
-        border-bottom: 1px solid var(--border);
-      }
-
-      .nav { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 0; }
-      .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 950; letter-spacing: -0.02em; }
-      .mark { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px; border: 1px solid var(--border);
-        background: linear-gradient(135deg, rgba(30,64,175,0.35), rgba(56,189,248,0.18)); box-shadow: var(--shadow);
-      }
-      .accent {
-        display: inline-block; padding-right: 0.10em;
-        background: linear-gradient(90deg, var(--a), var(--b));
-        -webkit-background-clip: text; background-clip: text;
-        -webkit-text-fill-color: transparent; color: transparent;
-      }
-
-      .links { display: none; gap: 14px; align-items: center; }
-      .link { color: var(--muted); font-weight: 900; padding: 10px 10px; border-radius: 12px; transition: transform 160ms ease, background 160ms ease, color 160ms ease; }
-      .link:hover { color: var(--text); background: var(--panel); transform: translateY(-1px); }
-      .link[aria-current="true"] { color: var(--text); border: 1px solid var(--border); background: var(--panel2); }
-
-      .actions { display: flex; align-items: center; gap: 10px; }
-      .icon { width: 44px; height: 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel); color: var(--text);
-        display: grid; place-items: center; cursor: pointer; transition: transform 160ms ease, background 160ms ease;
-      }
-      .icon:hover { transform: translateY(-1px); background: var(--panel2); }
-
-      .select { height: 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel); color: var(--text);
-        padding: 0 12px; font-weight: 900; cursor: pointer; outline: none;
-      }
-      /* ✅ FIX: dropdown list options readable (black ink) */
-      select option, select optgroup { color: #000; background: #fff; }
-
-      .burger { display: grid; }
-      .mobile { display: grid; gap: 10px; padding: 10px 0 16px; }
-      .mobile a { padding: 12px 12px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel2); font-weight: 950; color: var(--text); text-decoration: none; }
-
-      @media (min-width: 860px) { .links { display: flex; } .burger { display: none; } .mobile { display: none !important; } }
-
-      main { padding: 26px 0 30px; }
-      h1 { margin: 0 0 8px; font-size: clamp(28px, 3.6vw, 44px); letter-spacing: -0.03em; }
-      .sub { margin: 0 0 14px; color: var(--muted); font-weight: 780; line-height: 1.55; max-width: 70ch; }
-
-      .watch {
-        border-radius: calc(var(--r) + 10px);
-        border: 1px solid var(--border);
-        background: rgba(255,255,255,0.07);
-        box-shadow: var(--shadow);
-        overflow: hidden;
-      }
-      .watchTop { padding: 14px; border-bottom: 1px solid var(--border); background: var(--panel); }
-      .inputRow { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-      .input {
-        flex: 1 1 280px; min-width: 200px; height: 44px;
-        border-radius: 14px; border: 1px solid var(--border);
-        background: var(--panel); color: var(--text);
-        padding: 0 12px; font-weight: 900; outline: none;
-      }
-
-      .btn {
-        border: 1px solid var(--border);
-        background: var(--panel);
-        color: var(--text);
-        padding: 12px 14px;
-        border-radius: 16px;
-        font-weight: 950;
-        letter-spacing: -0.01em;
-        cursor: pointer;
-        transition: transform 160ms ease, filter 160ms ease, background 160ms ease;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .btn:hover { transform: translateY(-1px); filter: brightness(1.05); background: var(--panel2); }
-      .btn.primary { background: linear-gradient(135deg, rgba(30,64,175,0.40), rgba(56,189,248,0.22)); box-shadow: var(--shadow); }
-
-      .ratio { aspect-ratio: 16 / 9; width: 100%; background: rgba(0,0,0,0.25); }
-      .ratio iframe { width: 100%; height: 100%; border: 0; display: block; }
-    </style>
-  </head>
-  <body>
-    <div class="bg" aria-hidden="true">
-      <div class="pattern"></div>
-      <div class="grain"></div>
-    </div>
-
-    <header>
-      <div class="container nav">
-        <a class="brand" href="/index.html" aria-label="Aiden’s Arcade home">
-          <span class="mark" aria-hidden="true">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-              <path d="M3 15c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              <path d="M3 10c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
-              <path d="M4 19h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
-            </svg>
-          </span>
-          <span>Aiden’s <span class="accent">Arcade</span></span>
-        </a>
-
-        <nav class="links" aria-label="Pages">
-          <a class="link" href="/index.html">Home</a>
-          <a class="link" href="/watch.html" aria-current="true">Watch</a>
-          <a class="link" href="/emulation.html">Emulation</a>
-          <a class="link" href="/proxy.html">Proxy</a>
-        </nav>
-
-        <div class="actions">
-          <select class="select" id="themeSelect" aria-label="Theme">
-            <option value="greatwave">Great Wave</option>
-            <option value="darkwater">Dark Water</option>
-            <option value="deepsea">Deep Sea</option>
-            <option value="ink">Ink + Water</option>
-          </select>
-
-          <button class="icon" id="modeBtn" type="button" aria-label="Toggle mode">
-            <span id="modeIcon" aria-hidden="true">☾</span>
-          </button>
-
-          <button class="icon burger" id="burgerBtn" type="button" aria-label="Open menu" aria-expanded="false">
-            <span aria-hidden="true">≡</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="container mobile" id="mobileMenu" hidden>
-        <a href="/index.html">Home</a>
-        <a href="/watch.html">Watch</a>
-        <a href="/emulation.html">Emulation</a>
-        <a href="/proxy.html">Proxy</a>
-      </div>
-    </header>
-
-    <main class="container">
-      <h1>Watch</h1>
-      <p class="sub">Paste a YouTube link or the 11-character video ID.</p>
-
-      <div class="watch">
-        <div class="watchTop">
-          <div class="inputRow">
-            <input class="input" id="ytInput" placeholder="Paste YouTube link or video ID..." inputmode="url" autocomplete="off" />
-            <button class="btn primary" id="loadBtn" type="button">Load</button>
-            <button class="btn" id="resetBtn" type="button">Reset</button>
-          </div>
-        </div>
-
-        <div class="ratio">
-          <iframe
-            id="ytFrame"
-            src="https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ"
-            title="YouTube player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-            loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin"
-          ></iframe>
-        </div>
-      </div>
-    </main>
-
-    <script>
-      const STORAGE_MODE = "arcadehub-mode";
-      const STORAGE_THEME = "arcadehub-theme";
-      const DEFAULT_VIDEO = "aqz-KE-bpKQ";
-
-      const modeBtn = document.getElementById("modeBtn");
-      const modeIcon = document.getElementById("modeIcon");
-      const themeSelect = document.getElementById("themeSelect");
-      const burgerBtn = document.getElementById("burgerBtn");
-      const mobileMenu = document.getElementById("mobileMenu");
-
-      const ytInput = document.getElementById("ytInput");
-      const loadBtn = document.getElementById("loadBtn");
-      const resetBtn = document.getElementById("resetBtn");
-      const ytFrame = document.getElementById("ytFrame");
-
-      function setMode(mode) {
-        document.documentElement.setAttribute("data-mode", mode);
-        localStorage.setItem(STORAGE_MODE, mode);
-        const isDark = mode === "dark";
-        if (modeIcon) modeIcon.textContent = isDark ? "☾" : "☀";
-      }
-
-      function initMode() {
-        const saved = localStorage.getItem(STORAGE_MODE);
-        if (saved === "dark" || saved === "light") return setMode(saved);
-        setMode("dark");
-      }
-
-      function toggleMode() {
-        const current = document.documentElement.getAttribute("data-mode") || "dark";
-        setMode(current === "dark" ? "light" : "dark");
-      }
-
-      function setTheme(theme) {
-        document.documentElement.setAttribute("data-theme", theme);
-        localStorage.setItem(STORAGE_THEME, theme);
-        if (themeSelect) themeSelect.value = theme;
-      }
-
-      function initTheme() {
-        const saved = localStorage.getItem(STORAGE_THEME);
-        if (saved) setTheme(saved);
-        else setTheme(document.documentElement.getAttribute("data-theme") || "greatwave");
-      }
-
-      function initMobileMenu() {
-        if (!burgerBtn || !mobileMenu) return;
-        function close() { mobileMenu.hidden = true; burgerBtn.setAttribute("aria-expanded", "false"); }
-        function open() { mobileMenu.hidden = false; burgerBtn.setAttribute("aria-expanded", "true"); }
-
-        burgerBtn.addEventListener("click", () => {
-          const expanded = burgerBtn.getAttribute("aria-expanded") === "true";
-          expanded ? close() : open();
-        });
-
-        mobileMenu.addEventListener("click", (e) => {
-          const t = e.target;
-          if (t instanceof HTMLAnchorElement) close();
-        });
-
-        window.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
-        window.addEventListener("resize", () => { if (window.innerWidth >= 860) close(); });
-      }
-
-      function parseYouTubeId(input) {
-        const raw = (input || "").trim();
-        if (/^[a-zA-Z0-9_-]{11}$/.test(raw)) return raw;
-
-        try {
-          const url = new URL(raw);
-
-          if (url.hostname.includes("youtu.be")) {
-            const id = url.pathname.replace("/", "").trim();
-            if (/^[a-zA-Z0-9_-]{11}$/.test(id)) return id;
-          }
-
-          const v = url.searchParams.get("v");
-          if (v && /^[a-zA-Z0-9_-]{11}$/.test(v)) return v;
-
-          const parts = url.pathname.split("/").filter(Boolean);
-
-          const idxShorts = parts.indexOf("shorts");
-          if (idxShorts !== -1 && /^[a-zA-Z0-9_-]{11}$/.test(parts[idxShorts + 1] || "")) return parts[idxShorts + 1];
-
-          const idxEmbed = parts.indexOf("embed");
-          if (idxEmbed !== -1 && /^[a-zA-Z0-9_-]{11}$/.test(parts[idxEmbed + 1] || "")) return parts[idxEmbed + 1];
-        } catch {}
-
-        return null;
-      }
-
-      function loadYouTube(id) {
-        const safe = id && /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : DEFAULT_VIDEO;
-        ytFrame.src = `https://www.youtube-nocookie.com/embed/${safe}`;
-      }
-
-      modeBtn?.addEventListener("click", toggleMode);
-      themeSelect?.addEventListener("change", (e) => setTheme(e.target.value));
-
-      loadBtn?.addEventListener("click", () => {
-        const id = parseYouTubeId(ytInput.value);
-        if (!id) {
-          ytInput.value = "";
-          ytInput.placeholder = "Invalid link/ID. Try again.";
-          return;
-        }
-        loadYouTube(id);
-      });
-
-      resetBtn?.addEventListener("click", () => {
-        ytInput.value = "";
-        ytInput.placeholder = "Paste YouTube link or video ID...";
-        loadYouTube(DEFAULT_VIDEO);
-      });
-
-      initMode();
-      initTheme();
-      initMobileMenu();
-    </script>
-  </body>
-</html>
-
-
-<!-- FILE: /emulation.html -->
-<!-- Use the EXACT emulation page you already have (the version with status + debug) -->
-<!-- If you want, paste your current emulation.html and I’ll merge it in with the same header/nav + black dropdown fix. -->
-
-
-<!-- FILE: /proxy.html -->
-<!doctype html>
-<html lang="en" data-mode="dark" data-theme="greatwave">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="dark light" />
-    <title>Aiden’s Arcade — Proxy</title>
-    <meta name="description" content="Aiden’s Arcade API relay page." />
-    <style>
-      :root {
-        --container: 1100px;
-        --r: 18px;
-        --bg0: #020611;
-        --bg1: #03162b;
-        --text: rgba(255, 255, 255, 0.92);
-        --muted: rgba(255, 255, 255, 0.72);
-        --border: rgba(255, 255, 255, 0.14);
-        --panel: rgba(255, 255, 255, 0.06);
-        --panel2: rgba(255, 255, 255, 0.1);
-        --shadow: 0 26px 90px rgba(0, 0, 0, 0.55);
-        --a: #38bdf8;
-        --b: #1e40af;
-        --wavePatternDark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%23bfeaff' stroke-opacity='0.16' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.12'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.10'/%3E%3C/g%3E%3C/svg%3E");
-      }
-
-      html[data-mode="light"] {
-        --bg0: #041426;
-        --bg1: #062a43;
-        --panel: rgba(255, 255, 255, 0.08);
-        --panel2: rgba(255, 255, 255, 0.12);
-        --border: rgba(255, 255, 255, 0.16);
-        --muted: rgba(255, 255, 255, 0.78);
-      }
-
-      html[data-theme="greatwave"] { --a: #38bdf8; --b: #1e40af; }
-      html[data-theme="darkwater"] { --a: #0ea5e9; --b: #14b8a6; }
-      html[data-theme="deepsea"] { --a: #22c55e; --b: #0ea5e9; }
-      html[data-theme="ink"] { --a: #94a3b8; --b: #38bdf8; }
-
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-        color: var(--text);
-        background:
-          radial-gradient(1000px 700px at 18% 10%, rgba(56, 189, 248, 0.18), transparent 60%),
-          radial-gradient(1100px 800px at 82% 16%, rgba(20, 184, 166, 0.14), transparent 60%),
-          linear-gradient(180deg, var(--bg0), var(--bg1));
-        overflow-x: hidden;
-      }
-      .container { width: min(var(--container), calc(100% - 40px)); margin: 0 auto; }
-
-      header {
-        position: sticky;
-        top: 0;
-        z-index: 50;
-        backdrop-filter: blur(14px);
-        background: rgba(2, 6, 17, 0.55);
-        border-bottom: 1px solid var(--border);
-      }
-      .nav { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 0; }
-
-      .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 950; letter-spacing: -0.02em; text-decoration: none; color: var(--text); }
-      .mark { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px; border: 1px solid var(--border);
-        background: linear-gradient(135deg, rgba(30,64,175,0.35), rgba(56,189,248,0.18)); box-shadow: var(--shadow);
-      }
-      .accent { display: inline-block; padding-right: 0.10em; background: linear-gradient(90deg, var(--a), var(--b));
-        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
-      }
-
-      .links { display: none; gap: 14px; align-items: center; }
-      .link { color: var(--muted); font-weight: 900; padding: 10px 10px; border-radius: 12px; text-decoration: none; }
-      .link:hover { color: var(--text); background: var(--panel); }
-      .link[aria-current="true"] { color: var(--text); border: 1px solid var(--border); background: var(--panel2); }
-
-      .actions { display: flex; align-items: center; gap: 10px; }
-      .icon { width: 44px; height: 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel); color: var(--text);
-        display: grid; place-items: center; cursor: pointer;
-      }
-      .select { height: 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel); color: var(--text);
-        padding: 0 12px; font-weight: 900; cursor: pointer; outline: none;
-      }
-      /* ✅ FIX: dropdown list options readable (black ink) */
-      select option, select optgroup { color: #000; background: #fff; }
-
-      .burger { display: grid; }
-      .mobile { display: grid; gap: 10px; padding: 10px 0 16px; }
-      .mobile a { padding: 12px 12px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel2); font-weight: 950; color: var(--text); text-decoration: none; }
-      @media (min-width: 860px) { .links { display: flex; } .burger { display: none; } .mobile { display: none !important; } }
-
-      main { padding: 26px 0 30px; }
-      h1 { margin: 0 0 8px; font-size: clamp(28px, 3.6vw, 44px); letter-spacing: -0.03em; }
-      .sub { margin: 0 0 14px; color: var(--muted); font-weight: 780; line-height: 1.55; max-width: 70ch; }
-
-      .card {
-        border-radius: var(--r);
-        border: 1px solid var(--border);
-        background: rgba(255,255,255,0.07);
-        padding: 16px;
-        box-shadow: 0 12px 34px rgba(0,0,0,0.22);
-      }
-
-      .input { width: 100%; height: 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel);
-        color: var(--text); padding: 0 12px; font-weight: 900; outline: none;
-      }
-      .btn {
-        border: 1px solid var(--border); background: var(--panel); color: var(--text);
-        padding: 12px 14px; border-radius: 16px; font-weight: 950; cursor: pointer;
-      }
-      .btn.primary { background: linear-gradient(135deg, rgba(30,64,175,0.40), rgba(56,189,248,0.22)); }
-      pre { white-space: pre-wrap; color: var(--muted); }
-      .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-    </style>
-  </head>
-  <body>
-    <header>
-      <div class="container nav">
-        <a class="brand" href="/index.html" aria-label="Aiden’s Arcade home">
-          <span class="mark" aria-hidden="true">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-              <path d="M3 15c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              <path d="M3 10c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
-              <path d="M4 19h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
-            </svg>
-          </span>
-          <span>Aiden’s <span class="accent">Arcade</span></span>
-        </a>
-
-        <nav class="links" aria-label="Pages">
-          <a class="link" href="/index.html">Home</a>
-          <a class="link" href="/watch.html">Watch</a>
-          <a class="link" href="/emulation.html">Emulation</a>
-          <a class="link" href="/proxy.html" aria-current="true">Proxy</a>
-        </nav>
-
-        <div class="actions">
-          <select class="select" id="themeSelect" aria-label="Theme">
-            <option value="greatwave">Great Wave</option>
-            <option value="darkwater">Dark Water</option>
-            <option value="deepsea">Deep Sea</option>
-            <option value="ink">Ink + Water</option>
-          </select>
-
-          <button class="icon" id="modeBtn" type="button" aria-label="Toggle mode">
-            <span id="modeIcon" aria-hidden="true">☾</span>
-          </button>
-
-          <button class="icon burger" id="burgerBtn" type="button" aria-label="Open menu" aria-expanded="false">
-            <span aria-hidden="true">≡</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="container mobile" id="mobileMenu" hidden>
-        <a href="/index.html">Home</a>
-        <a href="/watch.html">Watch</a>
-        <a href="/emulation.html">Emulation</a>
-        <a href="/proxy.html">Proxy</a>
-      </div>
-    </header>
-
-    <main class="container">
-      <h1>Proxy</h1>
-      <p class="sub">
-        I can’t help build a “bypass proxy” for blocked sites. But if you have your <strong>own API</strong> (like a Vercel API route),
-        this page can call it safely.
-      </p>
-
-      <div class="card">
-        <label style="display:block; font-weight:950; color: var(--muted); margin-bottom:8px;">Your API endpoint (same domain)</label>
-        <input class="input" id="apiPath" value="/api/health" />
-        <div class="row">
-          <button class="btn primary" id="callBtn" type="button">Call API</button>
-          <button class="btn" id="clearBtn" type="button">Clear</button>
-        </div>
-        <pre id="out" style="margin-top:12px;"></pre>
-      </div>
-    </main>
-
-    <script>
-      const STORAGE_MODE = "arcadehub-mode";
-      const STORAGE_THEME = "arcadehub-theme";
-
-      const modeBtn = document.getElementById("modeBtn");
-      const modeIcon = document.getElementById("modeIcon");
-      const themeSelect = document.getElementById("themeSelect");
-      const burgerBtn = document.getElementById("burgerBtn");
-      const mobileMenu = document.getElementById("mobileMenu");
-
-      const apiPath = document.getElementById("apiPath");
-      const callBtn = document.getElementById("callBtn");
-      const clearBtn = document.getElementById("clearBtn");
-      const out = document.getElementById("out");
-
-      function setMode(mode) {
-        document.documentElement.setAttribute("data-mode", mode);
-        localStorage.setItem(STORAGE_MODE, mode);
-        const isDark = mode === "dark";
-        if (modeIcon) modeIcon.textContent = isDark ? "☾" : "☀";
-      }
-
-      function initMode() {
-        const saved = localStorage.getItem(STORAGE_MODE);
-        if (saved === "dark" || saved === "light") return setMode(saved);
-        setMode("dark");
-      }
-
-      function toggleMode() {
-        const current = document.documentElement.getAttribute("data-mode") || "dark";
-        setMode(current === "dark" ? "light" : "dark");
-      }
-
-      function setTheme(theme) {
-        document.documentElement.setAttribute("data-theme", theme);
-        localStorage.setItem(STORAGE_THEME, theme);
-        if (themeSelect) themeSelect.value = theme;
-      }
-
-      function initTheme() {
-        const saved = localStorage.getItem(STORAGE_THEME);
-        if (saved) setTheme(saved);
-        else setTheme(document.documentElement.getAttribute("data-theme") || "greatwave");
-      }
-
-      function initMobileMenu() {
-        if (!burgerBtn || !mobileMenu) return;
-        function close() { mobileMenu.hidden = true; burgerBtn.setAttribute("aria-expanded", "false"); }
-        function open() { mobileMenu.hidden = false; burgerBtn.setAttribute("aria-expanded", "true"); }
-
-        burgerBtn.addEventListener("click", () => {
-          const expanded = burgerBtn.getAttribute("aria-expanded") === "true";
-          expanded ? close() : open();
-        });
-
-        mobileMenu.addEventListener("click", (e) => {
-          const t = e.target;
-          if (t instanceof HTMLAnchorElement) close();
-        });
-
-        window.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
-        window.addEventListener("resize", () => { if (window.innerWidth >= 860) close(); });
-      }
-
-      async function callApi() {
-        out.textContent = "Calling…";
-        const path = (apiPath.value || "").trim();
-        if (!path.startsWith("/")) {
-          out.textContent = "Use a same-site path like: /api/health";
-          return;
-        }
-        try {
-          const res = await fetch(path, { method: "GET" });
-          const text = await res.text();
-          out.textContent = `Status: ${res.status}\n\n${text}`;
-        } catch (err) {
-          out.textContent = `Error:\n${String(err)}`;
-        }
-      }
-
-      callBtn.addEventListener("click", callApi);
-      clearBtn.addEventListener("click", () => { out.textContent = ""; });
-
-      modeBtn?.addEventListener("click", toggleMode);
-      themeSelect?.addEventListener("change", (e) => setTheme(e.target.value));
-
-      initMode();
-      initTheme();
-      initMobileMenu();
-    </script>
   </body>
 </html>
