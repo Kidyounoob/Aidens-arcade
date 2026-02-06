@@ -1,1 +1,329 @@
+<!-- =========================
+File: /emulation/index.html
+========================= -->
+<!doctype html>
+<html lang="en" data-mode="dark" data-theme="darkwater">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Emulation • Aiden’s Arcade</title>
+    <meta name="description" content="Nintendo emulation page for Aiden’s Arcade." />
+
+    <link rel="stylesheet" href="../styles.css?v=2" />
+    <link rel="stylesheet" href="./emulation.css?v=2" />
+
+    <script defer src="../app.js?v=2"></script>
+    <script defer src="./emulation.js?v=2"></script>
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <div class="bg" aria-hidden="true">
+      <div class="pattern"></div>
+      <div class="grain"></div>
+      <div class="blob a"></div>
+      <div class="blob b"></div>
+      <div class="blob c"></div>
+    </div>
+
+    <header>
+      <div class="container nav">
+        <a class="brand" href="../" aria-label="Aiden’s Arcade home">
+          <span class="mark" aria-hidden="true">🌊</span>
+          <span>Aiden’s <span class="accent">Arcade</span></span>
+        </a>
+
+        <nav class="links" aria-label="Pages">
+          <a class="link" href="../games/">Games</a>
+          <a class="link" href="../watch/">Watch</a>
+          <a class="link" href="./" aria-current="true">Emulation</a>
+          <a class="link" href="../portal/">Portal</a>
+        </nav>
+
+        <div class="actions">
+          <select class="select" id="themeSelect" aria-label="Theme">
+            <option value="darkwater" selected>Dark Water</option>
+            <option value="greatwave">Great Wave</option>
+            <option value="deepsea">Deep Sea</option>
+            <option value="ink">Ink + Water</option>
+          </select>
+
+          <button class="icon" id="modeBtn" type="button" aria-label="Toggle mode">
+            <span id="modeIcon" aria-hidden="true">☾</span>
+          </button>
+
+          <button class="icon burger" id="burgerBtn" type="button" aria-label="Open menu" aria-expanded="false">
+            <span aria-hidden="true">≡</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="container mobile" id="mobileMenu" hidden>
+        <a href="../games/">Games</a>
+        <a href="../watch/">Watch</a>
+        <a href="./">Emulation</a>
+        <a href="../portal/">Portal</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="section container">
+        <div class="head">
+          <h2>Emulation</h2>
+          <p>
+            Play classic Nintendo systems in your browser. You upload your own files.
+            (Use only ROMs you legally own / homebrew / public-domain.)
+          </p>
+        </div>
+
+        <div class="emuShell">
+          <div class="card emuControlsCard">
+            <div class="emuControls">
+              <label class="emuLabel">
+                <span>System</span>
+                <select class="select" id="coreSelect" aria-label="System">
+                  <option value="nes">NES</option>
+                  <option value="snes">SNES</option>
+                  <option value="gb">Game Boy</option>
+                  <option value="gbc">Game Boy Color</option>
+                  <option value="gba" selected>Game Boy Advance</option>
+                  <option value="n64">Nintendo 64</option>
+                  <option value="nds">Nintendo DS</option>
+                </select>
+              </label>
+
+              <label class="emuLabel">
+                <span>ROM</span>
+                <input
+                  class="emuFile"
+                  id="romInput"
+                  type="file"
+                  accept=".nes,.sfc,.smc,.gb,.gbc,.gba,.n64,.z64,.v64,.nds,.zip"
+                />
+              </label>
+
+              <label class="emuLabel">
+                <span>BIOS (optional)</span>
+                <input class="emuFile" id="biosInput" type="file" />
+              </label>
+
+              <button class="btn primary" id="startBtn" type="button">Start</button>
+              <button class="btn" id="stopBtn" type="button">Stop</button>
+            </div>
+
+            <div class="emuStatusRow">
+              <div class="emuStatus" id="emuNote">Checking emulator files…</div>
+              <div class="emuHint">Tip: N64/DS can be heavy on Chromebooks.</div>
+            </div>
+          </div>
+
+          <div class="card emuStageCard">
+            <div class="emuRatio">
+              <div id="game" class="emuGame" aria-label="Emulator output"></div>
+            </div>
+          </div>
+
+          <div class="grid emuInfoGrid">
+            <article class="card">
+              <h3>Required setup</h3>
+              <p>
+                Put emulator assets here:
+                <code>/emulatorjs/data/loader.js</code> + the rest of the <code>data/</code> folder.
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>Why some things won’t load</h3>
+              <p>
+                If the loader path is missing, the emulator can’t start. If a file format isn’t supported by a core, it may fail to boot.
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>Saves</h3>
+              <p>
+                Many emulator setups save progress in the browser. If your device clears site data, saves can disappear.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container foot">
+        <div>
+          <div class="footBrand">Aiden’s Arcade</div>
+          <div class="small">Emulation • <span id="year"></span></div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<!-- =========================
+File: /emulation/emulation.css
+========================= -->
+<style>
+.emuShell { display: grid; gap: 12px; }
+
+.emuControlsCard { padding: 14px; }
+.emuControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.emuLabel {
+  display: grid;
+  gap: 6px;
+  font-weight: 900;
+  color: var(--muted);
+}
+
+.emuFile {
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  padding: 8px 10px;
+  font-weight: 850;
+  min-width: 220px;
+}
+
+.emuStatusRow {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.emuStatus {
+  font-weight: 900;
+  color: var(--text);
+  opacity: 0.92;
+}
+
+.emuHint {
+  color: var(--muted);
+  font-weight: 820;
+  font-size: 13px;
+}
+
+.emuStageCard { padding: 0; overflow: hidden; }
+.emuRatio { aspect-ratio: 16 / 9; width: 100%; background: rgba(0,0,0,0.25); }
+.emuGame { width: 100%; height: 100%; min-height: 320px; }
+
+.emuInfoGrid { gap: 12px; }
+</style>
+
+<!-- =========================
+File: /emulation/emulation.js
+========================= -->
+<script>
+/**
+ * Why: EmulatorJS reads EJS_* globals; we set them then inject loader.js.
+ * Expected assets in repo:
+ *   /emulatorjs/data/loader.js
+ *   /emulatorjs/data/...
+ *
+ * Legal: use only ROMs you own / homebrew / public-domain.
+ */
+const EMULATOR_LOADER = "../emulatorjs/data/loader.js";
+const EMULATOR_DATA = "../emulatorjs/data/";
+
+const note = document.getElementById("emuNote");
+const coreSelect = document.getElementById("coreSelect");
+const romInput = document.getElementById("romInput");
+const biosInput = document.getElementById("biosInput");
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+const gameDiv = document.getElementById("game");
+
+let romUrl = null;
+let biosUrl = null;
+
+function setNote(text) {
+  if (note) note.textContent = text;
+}
+
+async function fileExists(url) {
+  try {
+    const r = await fetch(url, { method: "GET", cache: "no-store" });
+    return r.ok;
+  } catch {
+    return false;
+  }
+}
+
+function cleanup() {
+  document.getElementById("ejs-loader")?.remove();
+  if (gameDiv) gameDiv.innerHTML = "";
+
+  if (romUrl) URL.revokeObjectURL(romUrl);
+  if (biosUrl) URL.revokeObjectURL(biosUrl);
+  romUrl = null;
+  biosUrl = null;
+
+  delete window.EJS_player;
+  delete window.EJS_core;
+  delete window.EJS_gameUrl;
+  delete window.EJS_pathtodata;
+  delete window.EJS_biosUrl;
+}
+
+function injectLoader() {
+  const s = document.createElement("script");
+  s.id = "ejs-loader";
+  s.src = EMULATOR_LOADER;
+  document.body.appendChild(s);
+}
+
+function start() {
+  const romFile = romInput?.files?.[0];
+  if (!romFile) {
+    setNote("Pick a ROM file first.");
+    return;
+  }
+
+  cleanup();
+
+  romUrl = URL.createObjectURL(romFile);
+
+  const biosFile = biosInput?.files?.[0] || null;
+  biosUrl = biosFile ? URL.createObjectURL(biosFile) : null;
+
+  window.EJS_player = "#game";
+  window.EJS_core = coreSelect?.value || "gba";
+  window.EJS_gameUrl = romUrl;
+  window.EJS_pathtodata = EMULATOR_DATA;
+  window.EJS_biosUrl = biosUrl || "";
+
+  setNote("Loading… (first boot can take a bit)");
+  injectLoader();
+}
+
+startBtn?.addEventListener("click", start);
+stopBtn?.addEventListener("click", () => {
+  cleanup();
+  setNote("Stopped.");
+});
+
+(async () => {
+  const ok = await fileExists(EMULATOR_LOADER);
+  setNote(
+    ok
+      ? "Ready ✅ Upload a ROM and press Start."
+      : "Missing emulator files ❌ Add /emulatorjs/data/loader.js + the rest of /emulatorjs/data/."
+  );
+})();
+</script>
 
