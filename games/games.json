@@ -1,5 +1,12 @@
 [
   {
+    "title": "CrazyGames",
+    "desc": "Huge web arcade. If embed is blocked, it opens in a new tab.",
+    "tags": ["Web Arcade", "Launcher"],
+    "status": "ready",
+    "href": "./crazygames/"
+  },
+  {
     "title": "Emulation",
     "desc": "Play classic Nintendo systems (bring-your-own legal files).",
     "tags": ["Nintendo", "ROM Upload"],
@@ -35,4 +42,3 @@
     "href": null
   }
 ]
-
