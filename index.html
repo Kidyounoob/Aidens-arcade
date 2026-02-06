@@ -1,3 +1,4 @@
+<!-- /index.html -->
 <!doctype html>
 <html lang="en" data-mode="dark" data-theme="greatwave">
   <head>
@@ -5,8 +6,498 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
     <title>Arcade Hub</title>
-    <meta name="description" content="Arcade Hub — dark water Japanese wave theme + YouTube section." />
-    <link rel="stylesheet" href="./styles.css" />
+    <meta name="description" content="Arcade Hub — dark water Japanese wave UI + games + YouTube + legal emulation shell." />
+
+    <style>
+      :root {
+        --container: 1100px;
+        --r: 18px;
+
+        --bg0: #020611;
+        --bg1: #03162b;
+
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.72);
+        --border: rgba(255, 255, 255, 0.14);
+
+        --panel: rgba(255, 255, 255, 0.06);
+        --panel2: rgba(255, 255, 255, 0.1);
+
+        --shadow: 0 26px 90px rgba(0, 0, 0, 0.55);
+
+        --a: #38bdf8;
+        --b: #1e40af;
+
+        --wavePatternDark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%23bfeaff' stroke-opacity='0.16' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.12'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.10'/%3E%3C/g%3E%3C/svg%3E");
+        --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+      }
+
+      html[data-mode="light"] {
+        --bg0: #041426;
+        --bg1: #062a43;
+        --panel: rgba(255, 255, 255, 0.08);
+        --panel2: rgba(255, 255, 255, 0.12);
+        --border: rgba(255, 255, 255, 0.16);
+        --muted: rgba(255, 255, 255, 0.78);
+      }
+
+      html[data-theme="greatwave"] { --a: #38bdf8; --b: #1e40af; }
+      html[data-theme="darkwater"] { --a: #0ea5e9; --b: #14b8a6; }
+      html[data-theme="deepsea"] { --a: #22c55e; --b: #0ea5e9; }
+      html[data-theme="ink"] { --a: #94a3b8; --b: #38bdf8; }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        color: var(--text);
+        background:
+          radial-gradient(1000px 700px at 18% 10%, rgba(56, 189, 248, 0.18), transparent 60%),
+          radial-gradient(1100px 800px at 82% 16%, rgba(20, 184, 166, 0.14), transparent 60%),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        overflow-x: hidden;
+      }
+
+      a { color: inherit; text-decoration: none; }
+      code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+      .container { width: min(var(--container), calc(100% - 40px)); margin: 0 auto; }
+
+      .skip {
+        position: absolute;
+        left: -999px;
+        top: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--panel2);
+        z-index: 999;
+      }
+      .skip:focus { left: 12px; }
+
+      .bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+      .pattern {
+        position: absolute;
+        inset: 0;
+        background-image: var(--wavePatternDark);
+        background-size: 140px 70px;
+        opacity: 0.60;
+        mask-image: radial-gradient(900px 520px at 50% 0%, black 42%, transparent 78%);
+      }
+      .grain {
+        position: absolute;
+        inset: -30%;
+        background-image: var(--grain);
+        opacity: 0.10;
+        mix-blend-mode: overlay;
+        transform: rotate(2deg);
+      }
+      .blob {
+        position: absolute;
+        width: 760px;
+        height: 760px;
+        border-radius: 999px;
+        filter: blur(62px);
+        opacity: 0.22;
+        animation: float 12s ease-in-out infinite;
+      }
+      .blob.a { left: -340px; top: -360px; background: radial-gradient(circle at 30% 30%, var(--b), transparent 65%); }
+      .blob.b { right: -380px; top: -320px; background: radial-gradient(circle at 30% 30%, var(--a), transparent 65%); animation-delay: -4s; }
+      .blob.c { left: 12%; bottom: -560px; background: radial-gradient(circle at 30% 30%, rgba(56,189,248,0.9), transparent 65%); animation-delay: -7s; }
+
+      @keyframes float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(18px, -22px) scale(1.03); }
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        backdrop-filter: blur(14px);
+        background: rgba(2, 6, 17, 0.55);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 14px 0;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 950;
+        letter-spacing: -0.02em;
+      }
+
+      .mark {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: linear-gradient(135deg, rgba(30,64,175,0.35), rgba(56,189,248,0.18));
+        box-shadow: var(--shadow);
+      }
+
+      .accent {
+        display: inline-block;
+        padding-right: 0.10em;
+        background: linear-gradient(90deg, var(--a), var(--b));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+      }
+
+      .links { display: none; gap: 14px; align-items: center; }
+      .link {
+        color: var(--muted);
+        font-weight: 900;
+        padding: 10px 10px;
+        border-radius: 12px;
+        transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+      }
+      .link:hover { color: var(--text); background: var(--panel); transform: translateY(-1px); }
+      .link[aria-current="true"] { color: var(--text); border: 1px solid var(--border); background: var(--panel2); }
+
+      .actions { display: flex; align-items: center; gap: 10px; }
+
+      .icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .icon:hover { transform: translateY(-1px); background: var(--panel2); }
+
+      .select {
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        padding: 0 12px;
+        font-weight: 900;
+        cursor: pointer;
+        outline: none;
+      }
+
+      .burger { display: grid; }
+      .mobile { display: grid; gap: 10px; padding: 10px 0 16px; }
+      .mobile a {
+        padding: 12px 12px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--panel2);
+        font-weight: 950;
+      }
+
+      @media (min-width: 860px) {
+        .links { display: flex; }
+        .burger { display: none; }
+        .mobile { display: none !important; }
+      }
+
+      main { padding-bottom: 30px; }
+
+      .heroWrap { position: relative; }
+      .hero {
+        padding: 78px 0 22px;
+        display: grid;
+        gap: 18px;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+      }
+      @media (min-width: 980px) {
+        .hero { grid-template-columns: 1.08fr 0.92fr; gap: 26px; }
+      }
+
+      .heroWaveArt {
+        position: absolute;
+        inset: -90px -40px auto -40px;
+        height: 420px;
+        pointer-events: none;
+        opacity: 0.38;
+        z-index: 0;
+        mask-image: radial-gradient(900px 420px at 40% 35%, black 55%, transparent 92%);
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--panel2);
+        width: fit-content;
+        color: var(--muted);
+        font-weight: 950;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--a), var(--b));
+        box-shadow: 0 0 0 4px rgba(56,189,248,0.12);
+      }
+
+      h1 {
+        margin: 10px 0 6px;
+        font-size: clamp(34px, 4.2vw, 62px);
+        line-height: 1.06;
+        letter-spacing: -0.04em;
+        overflow: visible;
+      }
+
+      .sub {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 780;
+        line-height: 1.55;
+        max-width: 66ch;
+      }
+      .sub.tiny { font-size: 13px; }
+
+      .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+
+      .btn {
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-weight: 950;
+        letter-spacing: -0.01em;
+        cursor: pointer;
+        transition: transform 160ms ease, filter 160ms ease, background 160ms ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn:hover { transform: translateY(-1px); filter: brightness(1.05); background: var(--panel2); }
+      .btn.primary {
+        background: linear-gradient(135deg, rgba(30,64,175,0.40), rgba(56,189,248,0.22));
+        box-shadow: var(--shadow);
+      }
+
+      .panel {
+        border-radius: calc(var(--r) + 10px);
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.07);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: none;
+      }
+      @media (min-width: 980px) { .panel { display: block; } }
+
+      .panelTop {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+        background: var(--panel);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .panelTitle { font-weight: 950; color: var(--muted); }
+
+      .dots { display: flex; gap: 8px; }
+      .dots span { width: 10px; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.25); }
+
+      .panelBody { padding: 14px; display: grid; gap: 12px; }
+      .miniGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+
+      .mini {
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        padding: 12px;
+      }
+      .mini .k { font-size: 12px; color: var(--muted); font-weight: 950; }
+      .mini .v { font-size: 18px; font-weight: 950; letter-spacing: -0.02em; margin-top: 3px; }
+
+      section.section { padding: 34px 0; }
+      .head { margin-bottom: 14px; }
+      .head h2 { margin: 0; font-size: clamp(22px, 2.2vw, 30px); letter-spacing: -0.03em; }
+      .head p { margin: 8px 0 0; color: var(--muted); max-width: 72ch; }
+
+      .featureList {
+        margin: 12px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.55;
+        font-weight: 780;
+      }
+
+      .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+      @media (min-width: 740px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (min-width: 980px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+      .card {
+        border-radius: var(--r);
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.07);
+        padding: 16px;
+        box-shadow: 0 12px 34px rgba(0,0,0,0.22);
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .card:hover { transform: translateY(-2px); background: rgba(255,255,255,0.10); }
+      .card h3 { margin: 0 0 6px; letter-spacing: -0.02em; }
+      .card p { margin: 0; color: var(--muted); line-height: 1.5; }
+
+      .tagRow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+      .tag {
+        font-size: 12px;
+        font-weight: 900;
+        padding: 7px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: color-mix(in oklab, var(--panel2), transparent 10%);
+        color: var(--text);
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: calc(var(--r) + 10px);
+        background: rgba(255,255,255,0.07);
+        box-shadow: var(--shadow);
+        margin-bottom: 12px;
+      }
+      .input {
+        flex: 1 1 280px;
+        min-width: 200px;
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        padding: 0 12px;
+        font-weight: 900;
+        outline: none;
+      }
+
+      .ratio { aspect-ratio: 16 / 9; width: 100%; background: rgba(0,0,0,0.25); }
+      .ratio iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+      .watch {
+        border-radius: calc(var(--r) + 10px);
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.07);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .watchTop {
+        padding: 14px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--panel);
+      }
+      .inputRow { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; width: 100%; }
+
+      .faqGrid { display: grid; gap: 12px; }
+      .faqGrid summary { cursor: pointer; font-weight: 950; }
+      .faqGrid p { margin: 10px 0 0; color: var(--muted); line-height: 1.55; }
+
+      .emuShell { display: grid; gap: 12px; }
+      .emuTop {
+        border-radius: calc(var(--r) + 10px);
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.07);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .emuControls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: flex-end;
+        padding: 14px;
+        border-bottom: 1px solid var(--border);
+        background: var(--panel);
+      }
+      .emuLabel {
+        display: grid;
+        gap: 6px;
+        font-weight: 900;
+        color: var(--muted);
+      }
+      .emuFile {
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        padding: 8px 10px;
+        font-weight: 850;
+        min-width: 220px;
+      }
+      .emuNote {
+        padding: 12px 14px;
+        color: var(--muted);
+        font-weight: 850;
+      }
+      .emuStage {
+        border-radius: calc(var(--r) + 10px);
+        border: 1px solid var(--border);
+        background: rgba(0, 0, 0, 0.28);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+      .emuGame {
+        width: 100%;
+        height: 100%;
+        min-height: 320px;
+      }
+      .emuLegal { color: var(--muted); line-height: 1.5; font-weight: 820; }
+
+      footer {
+        padding: 26px 0 40px;
+        border-top: 1px solid var(--border);
+        background: rgba(255,255,255,0.03);
+      }
+      .foot {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .small { color: var(--muted); font-weight: 820; }
+      .footBrand { font-weight: 950; letter-spacing: -0.02em; }
+      .footLinks { display: flex; gap: 10px; align-items: center; }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .blob { animation: none; }
+        .btn, .card, .link, .icon { transition: none; }
+      }
+    </style>
   </head>
 
   <body>
@@ -25,34 +516,18 @@
         <a class="brand" href="#top" aria-label="Arcade Hub home">
           <span class="mark" aria-hidden="true">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M3 15c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-              />
-              <path
-                d="M3 10c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                opacity="0.85"
-              />
-              <path
-                d="M4 19h16"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                opacity="0.6"
-              />
+              <path d="M3 15c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M3 10c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+              <path d="M4 19h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
             </svg>
           </span>
           <span>Arcade <span class="accent">Hub</span></span>
         </a>
 
         <nav class="links" aria-label="Sections">
-          <a class="link" href="#features">Features</a>
+          <a class="link" href="#games">Games</a>
           <a class="link" href="#watch">Watch</a>
+          <a class="link" href="#emulation">Emulation</a>
           <a class="link" href="#faq">FAQ</a>
         </nav>
 
@@ -75,15 +550,15 @@
       </div>
 
       <div class="container mobile" id="mobileMenu" hidden>
-        <a href="#features">Features</a>
+        <a href="#games">Games</a>
         <a href="#watch">Watch</a>
+        <a href="#emulation">Emulation</a>
         <a href="#faq">FAQ</a>
       </div>
     </header>
 
     <main id="main">
       <section class="heroWrap" id="top">
-        <!-- Great Wave vibe hero art (SVG-only) -->
         <svg class="heroWaveArt" viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
             <linearGradient id="gw" x1="0" y1="0" x2="1" y2="0">
@@ -119,13 +594,6 @@
             <path d="M520,245 C515,215 550,205 575,220" />
             <path d="M620,245 C615,215 650,205 675,220" />
           </g>
-
-          <g fill="rgba(255,255,255,0.35)">
-            <circle cx="235" cy="145" r="4"/><circle cx="280" cy="135" r="3"/>
-            <circle cx="330" cy="140" r="3"/><circle cx="410" cy="160" r="4"/>
-            <circle cx="520" cy="175" r="3"/><circle cx="610" cy="170" r="3"/>
-            <circle cx="700" cy="160" r="4"/>
-          </g>
         </svg>
 
         <div class="container hero">
@@ -138,26 +606,26 @@
             </h1>
 
             <p class="sub">
-              Base site first (structure + style). Games later.
-              Includes: seigaiha background, theme selector, mode toggle, mobile menu, scroll highlight, and YouTube inside the site.
+              Games hub + YouTube + a legal emulation shell (ROM upload only). Add your own games later.
             </p>
 
             <div class="cta">
-              <a class="btn primary" href="#watch">Open YouTube</a>
-              <a class="btn" href="#features">See features</a>
+              <a class="btn primary" href="#games">Browse Games</a>
+              <a class="btn" href="#watch">Open YouTube</a>
+              <a class="btn" href="#emulation">Emulation</a>
             </div>
           </div>
 
           <aside class="panel" aria-label="Preview panel">
             <div class="panelTop">
               <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
-              <div class="panelTitle">Great Wave UI</div>
+              <div class="panelTitle">Dark Water UI</div>
             </div>
 
             <div class="panelBody">
               <div class="card">
-                <h3>Theme</h3>
-                <p>Seigaiha pattern + crest art overlay</p>
+                <h3>Everything in one file</h3>
+                <p>CSS + JS inline for fewer “missing file” issues.</p>
               </div>
 
               <div class="miniGrid">
@@ -166,60 +634,44 @@
                   <div class="v" id="modeLabel">Dark</div>
                 </div>
                 <div class="mini">
-                  <div class="k">Deploy</div>
-                  <div class="v">Pages</div>
+                  <div class="k">Load</div>
+                  <div class="v">&lt; 1s</div>
                 </div>
               </div>
 
-              <p class="sub tiny">
-                Tip: theme dropdown changes palette; toggle mode for Moonlit Water.
-              </p>
+              <p class="sub tiny">Tip: theme + mode save automatically.</p>
             </div>
           </aside>
         </div>
       </section>
 
-      <section class="section container" id="features">
+      <section class="section container" id="games">
         <div class="head">
-          <h2>Features</h2>
-          <p>Everything you asked for:</p>
-          <ul class="featureList">
-            <li>Wave-pattern background, clean cards, theme select, dark/light mode, mobile menu, scroll highlight.</li>
-            <li>Seigaiha background: Japanese wave pattern layered under gradients.</li>
-            <li>Theme selector: Great Wave / Dark Water / Deep Sea / Ink + Water (saved).</li>
-            <li>Dark/Light mode: one click toggle, saved in your browser.</li>
-            <li>YouTube inside site: paste a link/ID and it loads in the player.</li>
-            <li>Mobile menu: hamburger menu on small screens.</li>
-            <li>Scroll highlight: nav shows the section you’re on.</li>
-          </ul>
+          <h2>Games</h2>
+          <p>Starter library (placeholders). Later you can swap these cards to your own hosted HTML5 games.</p>
         </div>
 
-        <div class="grid">
-          <article class="card"><h3>Seigaiha background</h3><p>Japanese wave pattern layered under gradients.</p></article>
-          <article class="card"><h3>Theme selector</h3><p>Great Wave / Dark Water / Deep Sea / Ink + Water (saved).</p></article>
-          <article class="card"><h3>Dark/Light mode</h3><p>One click toggle, saved in your browser.</p></article>
-          <article class="card"><h3>YouTube inside site</h3><p>Paste a link/ID and it loads in the player.</p></article>
-          <article class="card"><h3>Mobile menu</h3><p>Hamburger menu on small screens.</p></article>
-          <article class="card"><h3>Scroll highlight</h3><p>Nav shows the section you’re on.</p></article>
+        <div class="toolbar">
+          <input class="input" id="gameSearch" placeholder="Search games (e.g., Snake, 2048)..." />
+          <select class="select" id="gameSort" aria-label="Sort games">
+            <option value="az">Sort A → Z</option>
+            <option value="za">Sort Z → A</option>
+          </select>
         </div>
+
+        <div class="grid" id="gamesGrid"></div>
       </section>
 
       <section class="section container" id="watch">
         <div class="head">
           <h2>Watch (YouTube)</h2>
-          <p>Paste a YouTube link or 11-char video ID. (If YouTube is blocked on your network/device, embeds won’t load.)</p>
+          <p>Paste a YouTube link or 11-char video ID. If YouTube is blocked, embeds won’t load.</p>
         </div>
 
         <div class="watch">
           <div class="watchTop">
             <div class="inputRow">
-              <input
-                class="input"
-                id="ytInput"
-                placeholder="Paste YouTube link or video ID (e.g. https://youtu.be/VIDEOID)"
-                inputmode="url"
-                autocomplete="off"
-              />
+              <input class="input" id="ytInput" placeholder="Paste YouTube link or video ID..." inputmode="url" autocomplete="off" />
               <button class="btn primary" id="loadBtn" type="button">Load</button>
               <button class="btn" id="resetBtn" type="button">Reset</button>
             </div>
@@ -239,6 +691,66 @@
         </div>
       </section>
 
+      <section class="section container" id="emulation">
+        <div class="head">
+          <h2>Emulation (Nintendo)</h2>
+          <p>
+            This runs only if you add emulator files to your repo. ROM upload only (legal ROMs you own / homebrew / public-domain).
+            N64/DS are heavy on Chromebooks.
+          </p>
+        </div>
+
+        <div class="emuShell">
+          <div class="emuTop">
+            <div class="emuControls">
+              <label class="emuLabel">
+                <span>System</span>
+                <select class="select" id="coreSelect" aria-label="System">
+                  <option value="nes">NES</option>
+                  <option value="snes">SNES</option>
+                  <option value="gb">Game Boy / Color</option>
+                  <option value="gba" selected>Game Boy Advance</option>
+                  <option value="n64">Nintendo 64</option>
+                  <option value="nds">Nintendo DS</option>
+                </select>
+              </label>
+
+              <label class="emuLabel">
+                <span>ROM file</span>
+                <input class="emuFile" id="romInput" type="file" />
+              </label>
+
+              <label class="emuLabel">
+                <span>BIOS (optional)</span>
+                <input class="emuFile" id="biosInput" type="file" />
+              </label>
+
+              <button class="btn primary" id="startEmuBtn" type="button">Start</button>
+              <button class="btn" id="stopEmuBtn" type="button">Stop</button>
+            </div>
+
+            <div class="emuNote" id="emuNote">Checking emulator files…</div>
+          </div>
+
+          <div class="emuStage">
+            <div class="ratio">
+              <div id="emuGame" class="emuGame" aria-label="Emulator output"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>One-time setup</h3>
+            <p>
+              Put emulator files at: <code>/emulatorjs/data/loader.js</code> + the rest of the <code>data/</code> folder.
+              This site is static, so emulator assets must be static too.
+            </p>
+            <p class="emuLegal">
+              Use only ROMs you own or explicit homebrew/public-domain. No ROMs are included here.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section class="section container" id="faq">
         <div class="head">
           <h2>FAQ</h2>
@@ -247,13 +759,18 @@
 
         <div class="faqGrid">
           <details class="card">
-            <summary>Can I put Netflix inside my site?</summary>
-            <p>Usually no — Netflix blocks embedding in iframes. YouTube embeds are the normal approach.</p>
+            <summary>Can I embed Netflix / everything inside my site?</summary>
+            <p>Most sites block embedding for security. YouTube often works; many “mainstream” sites refuse iframes.</p>
+          </details>
+
+          <details class="card">
+            <summary>Why might emulation not load?</summary>
+            <p>If <code>/emulatorjs/data/loader.js</code> isn’t present, the emulator can’t start.</p>
           </details>
 
           <details class="card">
             <summary>Does it remember my theme?</summary>
-            <p>Yes — theme + mode are saved in localStorage.</p>
+            <p>Yes — theme + mode are saved in your browser.</p>
           </details>
         </div>
       </section>
@@ -266,11 +783,355 @@
           <div class="small">Built for GitHub Pages • <span id="year"></span></div>
         </div>
         <div class="small footLinks">
-          <a href="#top">Top</a><span aria-hidden="true">•</span><a href="#watch">Watch</a>
+          <a href="#top">Top</a><span aria-hidden="true">•</span><a href="#games">Games</a><span aria-hidden="true">•</span><a href="#emulation">Emulation</a>
         </div>
       </div>
     </footer>
 
-    <script src="./app.js"></script>
+    <script>
+      const STORAGE_MODE = "arcadehub-mode";
+      const STORAGE_THEME = "arcadehub-theme";
+
+      const modeBtn = document.getElementById("modeBtn");
+      const modeIcon = document.getElementById("modeIcon");
+      const modeLabel = document.getElementById("modeLabel");
+      const themeSelect = document.getElementById("themeSelect");
+
+      const burgerBtn = document.getElementById("burgerBtn");
+      const mobileMenu = document.getElementById("mobileMenu");
+
+      const yearEl = document.getElementById("year");
+
+      const navLinks = Array.from(document.querySelectorAll(".link"))
+        .filter((a) => (a.getAttribute("href") || "").startsWith("#"));
+      const sections = navLinks
+        .map((a) => document.querySelector(a.getAttribute("href")))
+        .filter(Boolean);
+
+      const ytInput = document.getElementById("ytInput");
+      const loadBtn = document.getElementById("loadBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const ytFrame = document.getElementById("ytFrame");
+
+      const gameSearch = document.getElementById("gameSearch");
+      const gameSort = document.getElementById("gameSort");
+      const gamesGrid = document.getElementById("gamesGrid");
+
+      const coreSelect = document.getElementById("coreSelect");
+      const romInput = document.getElementById("romInput");
+      const biosInput = document.getElementById("biosInput");
+      const startEmuBtn = document.getElementById("startEmuBtn");
+      const stopEmuBtn = document.getElementById("stopEmuBtn");
+      const emuNote = document.getElementById("emuNote");
+      const emuGame = document.getElementById("emuGame");
+
+      const DEFAULT_VIDEO = "aqz-KE-bpKQ";
+
+      const EMULATOR_LOADER = "./emulatorjs/data/loader.js";
+      const EMULATOR_DATA = "./emulatorjs/data/";
+
+      let emuRomUrl = null;
+      let emuBiosUrl = null;
+
+      const GAME_LIST = [
+        { title: "Snake (placeholder)", desc: "Add a self-hosted HTML5 Snake later.", tags: ["Classic", "Arcade"], action: { type: "note" } },
+        { title: "2048 (placeholder)", desc: "Drop a licensed open-source 2048 into your repo.", tags: ["Puzzle", "Classic"], action: { type: "note" } },
+        { title: "Minesweeper (placeholder)", desc: "Host your own HTML5 version (licensed).", tags: ["Puzzle", "Classic"], action: { type: "note" } },
+        { title: "Emulation (Nintendo)", desc: "Upload legal ROMs you own/homebrew/public-domain.", tags: ["Emulation", "ROM Upload"], action: { type: "scroll", target: "#emulation" } },
+      ];
+
+      function setMode(mode) {
+        document.documentElement.setAttribute("data-mode", mode);
+        localStorage.setItem(STORAGE_MODE, mode);
+
+        const isDark = mode === "dark";
+        if (modeIcon) modeIcon.textContent = isDark ? "☾" : "☀";
+        if (modeLabel) modeLabel.textContent = isDark ? "Dark" : "Moonlit";
+      }
+
+      function initMode() {
+        const saved = localStorage.getItem(STORAGE_MODE);
+        if (saved === "dark" || saved === "light") return setMode(saved);
+        setMode("dark");
+      }
+
+      function toggleMode() {
+        const current = document.documentElement.getAttribute("data-mode") || "dark";
+        setMode(current === "dark" ? "light" : "dark");
+      }
+
+      function setTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem(STORAGE_THEME, theme);
+        if (themeSelect) themeSelect.value = theme;
+      }
+
+      function initTheme() {
+        const saved = localStorage.getItem(STORAGE_THEME);
+        if (saved) setTheme(saved);
+        else setTheme(document.documentElement.getAttribute("data-theme") || "greatwave");
+      }
+
+      function initYear() {
+        if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+      }
+
+      function initMobileMenu() {
+        if (!burgerBtn || !mobileMenu) return;
+
+        function close() {
+          mobileMenu.hidden = true;
+          burgerBtn.setAttribute("aria-expanded", "false");
+        }
+
+        function open() {
+          mobileMenu.hidden = false;
+          burgerBtn.setAttribute("aria-expanded", "true");
+        }
+
+        burgerBtn.addEventListener("click", () => {
+          const expanded = burgerBtn.getAttribute("aria-expanded") === "true";
+          expanded ? close() : open();
+        });
+
+        mobileMenu.addEventListener("click", (e) => {
+          const t = e.target;
+          if (t instanceof HTMLAnchorElement) close();
+        });
+
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") close();
+        });
+
+        window.addEventListener("resize", () => {
+          if (window.innerWidth >= 860) close();
+        });
+      }
+
+      function setActive(id) {
+        for (const a of navLinks) {
+          const href = a.getAttribute("href") || "";
+          a.setAttribute("aria-current", href === `#${id}` ? "true" : "false");
+        }
+      }
+
+      function initScrollSpy() {
+        if (!("IntersectionObserver" in window) || sections.length === 0) return;
+
+        const obs = new IntersectionObserver(
+          (entries) => {
+            const best = entries
+              .filter((e) => e.isIntersecting)
+              .sort((x, y) => y.intersectionRatio - x.intersectionRatio)[0];
+            if (best) setActive(best.target.id);
+          },
+          { threshold: [0.25, 0.5, 0.75], rootMargin: "-20% 0px -60% 0px" }
+        );
+
+        for (const s of sections) obs.observe(s);
+      }
+
+      function parseYouTubeId(input) {
+        const raw = (input || "").trim();
+        if (/^[a-zA-Z0-9_-]{11}$/.test(raw)) return raw;
+
+        try {
+          const url = new URL(raw);
+
+          if (url.hostname.includes("youtu.be")) {
+            const id = url.pathname.replace("/", "").trim();
+            if (/^[a-zA-Z0-9_-]{11}$/.test(id)) return id;
+          }
+
+          const v = url.searchParams.get("v");
+          if (v && /^[a-zA-Z0-9_-]{11}$/.test(v)) return v;
+
+          const parts = url.pathname.split("/").filter(Boolean);
+
+          const idxShorts = parts.indexOf("shorts");
+          if (idxShorts !== -1 && /^[a-zA-Z0-9_-]{11}$/.test(parts[idxShorts + 1] || "")) {
+            return parts[idxShorts + 1];
+          }
+
+          const idxEmbed = parts.indexOf("embed");
+          if (idxEmbed !== -1 && /^[a-zA-Z0-9_-]{11}$/.test(parts[idxEmbed + 1] || "")) {
+            return parts[idxEmbed + 1];
+          }
+        } catch {
+          // not a URL
+        }
+
+        return null;
+      }
+
+      function loadYouTube(id) {
+        const safe = id && /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : DEFAULT_VIDEO;
+        ytFrame.src = `https://www.youtube-nocookie.com/embed/${safe}`;
+      }
+
+      function renderGames() {
+        const q = (gameSearch?.value || "").trim().toLowerCase();
+        const sort = gameSort?.value || "az";
+
+        const filtered = GAME_LIST.filter((g) => {
+          if (!q) return true;
+          return (
+            g.title.toLowerCase().includes(q) ||
+            g.desc.toLowerCase().includes(q) ||
+            g.tags.some((t) => t.toLowerCase().includes(q))
+          );
+        });
+
+        filtered.sort((a, b) => {
+          const x = a.title.localeCompare(b.title);
+          return sort === "az" ? x : -x;
+        });
+
+        gamesGrid.innerHTML = "";
+
+        for (const g of filtered) {
+          const el = document.createElement("article");
+          el.className = "card";
+
+          const tags = g.tags
+            .map((t) => `<span class="tag">${t}</span>`)
+            .join("");
+
+          el.innerHTML = `
+            <h3>${escapeHtml(g.title)}</h3>
+            <p>${escapeHtml(g.desc)}</p>
+            <div class="tagRow">${tags}</div>
+            <div class="cta" style="margin-top:14px;">
+              <button class="btn primary" type="button">Open</button>
+            </div>
+          `;
+
+          const btn = el.querySelector("button");
+          btn.addEventListener("click", () => {
+            if (g.action.type === "scroll") {
+              document.querySelector(g.action.target)?.scrollIntoView({ behavior: "smooth" });
+            } else {
+              alert("This is a placeholder. Add a real self-hosted HTML5 game later.");
+            }
+          });
+
+          gamesGrid.appendChild(el);
+        }
+      }
+
+      function escapeHtml(s) {
+        return String(s)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function setEmuNote(text) {
+        if (emuNote) emuNote.textContent = text;
+      }
+
+      async function fileExists(url) {
+        try {
+          const r = await fetch(url, { method: "GET", cache: "no-store" });
+          return r.ok;
+        } catch {
+          return false;
+        }
+      }
+
+      function emuCleanup() {
+        const old = document.getElementById("ejs-loader");
+        if (old) old.remove();
+
+        if (emuGame) emuGame.innerHTML = "";
+
+        if (emuRomUrl) URL.revokeObjectURL(emuRomUrl);
+        if (emuBiosUrl) URL.revokeObjectURL(emuBiosUrl);
+        emuRomUrl = null;
+        emuBiosUrl = null;
+
+        delete window.EJS_player;
+        delete window.EJS_core;
+        delete window.EJS_gameUrl;
+        delete window.EJS_pathtodata;
+        delete window.EJS_biosUrl;
+      }
+
+      function emuInjectLoader() {
+        const s = document.createElement("script");
+        s.id = "ejs-loader";
+        s.src = EMULATOR_LOADER;
+        document.body.appendChild(s);
+      }
+
+      function emuStart() {
+        const romFile = romInput?.files?.[0];
+        if (!romFile) {
+          setEmuNote("Pick a ROM file first (legal ROM you own / homebrew / public-domain).");
+          return;
+        }
+
+        emuCleanup();
+
+        emuRomUrl = URL.createObjectURL(romFile);
+        const biosFile = biosInput?.files?.[0] || null;
+        emuBiosUrl = biosFile ? URL.createObjectURL(biosFile) : null;
+
+        window.EJS_player = "#emuGame";
+        window.EJS_core = coreSelect?.value || "gba";
+        window.EJS_gameUrl = emuRomUrl;
+        window.EJS_pathtodata = EMULATOR_DATA;
+        window.EJS_biosUrl = emuBiosUrl || "";
+
+        setEmuNote("Loading emulator… (first load can take a bit)");
+        emuInjectLoader();
+      }
+
+      modeBtn?.addEventListener("click", toggleMode);
+      themeSelect?.addEventListener("change", (e) => setTheme(e.target.value));
+
+      loadBtn?.addEventListener("click", () => {
+        const id = parseYouTubeId(ytInput.value);
+        if (!id) {
+          ytInput.value = "";
+          ytInput.placeholder = "Invalid link/ID. Try again (YouTube link or 11-char ID).";
+          return;
+        }
+        loadYouTube(id);
+      });
+
+      resetBtn?.addEventListener("click", () => {
+        ytInput.value = "";
+        ytInput.placeholder = "Paste YouTube link or video ID...";
+        loadYouTube(DEFAULT_VIDEO);
+      });
+
+      gameSearch?.addEventListener("input", renderGames);
+      gameSort?.addEventListener("change", renderGames);
+
+      startEmuBtn?.addEventListener("click", emuStart);
+      stopEmuBtn?.addEventListener("click", () => {
+        emuCleanup();
+        setEmuNote("Stopped.");
+      });
+
+      (async () => {
+        initMode();
+        initTheme();
+        initYear();
+        initMobileMenu();
+        initScrollSpy();
+        renderGames();
+
+        const ok = await fileExists(EMULATOR_LOADER);
+        setEmuNote(
+          ok
+            ? "Emulator files detected ✅ Upload a ROM to start."
+            : "Missing emulator files. Add /emulatorjs/data/loader.js + data/ folder."
+        );
+      })();
+    </script>
   </body>
 </html>
