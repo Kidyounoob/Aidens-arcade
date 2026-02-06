@@ -1,1 +1,38 @@
+[
+  {
+    "title": "Emulation",
+    "desc": "Play classic Nintendo systems (bring-your-own legal files).",
+    "tags": ["Nintendo", "ROM Upload"],
+    "status": "ready",
+    "href": "../emulation/"
+  },
+  {
+    "title": "Watch",
+    "desc": "Built-in YouTube player (if allowed on your network).",
+    "tags": ["Video", "YouTube"],
+    "status": "ready",
+    "href": "../watch/"
+  },
+  {
+    "title": "Portal",
+    "desc": "Launch/embed-friendly sites. If a site blocks embeds, it opens in a new tab.",
+    "tags": ["Launcher", "Web"],
+    "status": "ready",
+    "href": "../portal/"
+  },
+  {
+    "title": "Snake",
+    "desc": "Classic Snake. Add your own HTML5 version later.",
+    "tags": ["Classic", "Arcade"],
+    "status": "soon",
+    "href": null
+  },
+  {
+    "title": "2048",
+    "desc": "Puzzle grid game. Drop a licensed version into /games/2048/.",
+    "tags": ["Puzzle", "Classic"],
+    "status": "soon",
+    "href": null
+  }
+]
 
