@@ -6,10 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
     <title>Aiden’s Arcade</title>
-    <meta
-      name="description"
-      content="Aiden’s Arcade — games hub, YouTube watch room, and a clean emulator setup (bring your own legal ROMs)."
-    />
+    <meta name="description" content="Aiden’s Arcade — games hub, watch page, emulator page, and an API relay page." />
 
     <style>
       :root {
@@ -61,23 +58,10 @@
           linear-gradient(180deg, var(--bg0), var(--bg1));
         overflow-x: hidden;
       }
-
       a { color: inherit; text-decoration: none; }
       code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
       .container { width: min(var(--container), calc(100% - 40px)); margin: 0 auto; }
-
-      .skip {
-        position: absolute;
-        left: -999px;
-        top: 12px;
-        padding: 10px 12px;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        background: var(--panel2);
-        z-index: 999;
-      }
-      .skip:focus { left: 12px; }
 
       .bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
       .pattern {
@@ -199,6 +183,12 @@
         outline: none;
       }
 
+      /* ✅ FIX: dropdown list options readable (black ink) */
+      select option, select optgroup {
+        color: #000;
+        background: #fff;
+      }
+
       .burger { display: grid; }
       .mobile { display: grid; gap: 10px; padding: 10px 0 16px; }
       .mobile a {
@@ -216,48 +206,10 @@
       }
 
       main { padding-bottom: 30px; }
-
-      .heroWrap { position: relative; }
-      .hero {
-        padding: 78px 0 22px;
-        display: grid;
-        gap: 18px;
-        align-items: center;
-        position: relative;
-        z-index: 1;
-      }
-      @media (min-width: 980px) {
-        .hero { grid-template-columns: 1.08fr 0.92fr; gap: 26px; }
-      }
-
-      .heroWaveArt {
-        position: absolute;
-        inset: -90px -40px auto -40px;
-        height: 420px;
-        pointer-events: none;
-        opacity: 0.38;
-        z-index: 0;
-        mask-image: radial-gradient(900px 420px at 40% 35%, black 55%, transparent 92%);
-      }
-
-      h1 {
-        margin: 10px 0 6px;
-        font-size: clamp(34px, 4.2vw, 62px);
-        line-height: 1.06;
-        letter-spacing: -0.04em;
-        overflow: visible;
-      }
-
-      .sub {
-        margin: 0;
-        color: var(--muted);
-        font-weight: 780;
-        line-height: 1.55;
-        max-width: 66ch;
-      }
-      .sub.tiny { font-size: 13px; }
-
-      .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+      .hero { padding: 64px 0 18px; display: grid; gap: 14px; }
+      h1 { margin: 0; font-size: clamp(34px, 4.2vw, 62px); line-height: 1.06; letter-spacing: -0.04em; }
+      .sub { margin: 0; color: var(--muted); font-weight: 780; line-height: 1.55; max-width: 70ch; }
+      .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
 
       .btn {
         border: 1px solid var(--border);
@@ -279,49 +231,8 @@
         box-shadow: var(--shadow);
       }
 
-      .panel {
-        border-radius: calc(var(--r) + 10px);
-        border: 1px solid var(--border);
-        background: rgba(255,255,255,0.07);
-        box-shadow: var(--shadow);
-        overflow: hidden;
-        display: none;
-      }
-      @media (min-width: 980px) { .panel { display: block; } }
-
-      .panelTop {
-        padding: 12px 14px;
-        border-bottom: 1px solid var(--border);
-        background: var(--panel);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .panelTitle { font-weight: 950; color: var(--muted); }
-
-      .dots { display: flex; gap: 8px; }
-      .dots span { width: 10px; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.25); }
-
-      .panelBody { padding: 14px; display: grid; gap: 12px; }
-      .miniGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-
-      .mini {
-        border-radius: 16px;
-        border: 1px solid var(--border);
-        background: var(--panel);
-        padding: 12px;
-      }
-      .mini .k { font-size: 12px; color: var(--muted); font-weight: 950; }
-      .mini .v { font-size: 18px; font-weight: 950; letter-spacing: -0.02em; margin-top: 3px; }
-
-      section.section { padding: 34px 0; }
-      .head { margin-bottom: 14px; }
-      .head h2 { margin: 0; font-size: clamp(22px, 2.2vw, 30px); letter-spacing: -0.03em; }
-      .head p { margin: 8px 0 0; color: var(--muted); max-width: 72ch; }
-
-      .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-      @media (min-width: 740px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-      @media (min-width: 980px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      .grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 14px; }
+      @media (min-width: 740px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
       .card {
         border-radius: var(--r);
@@ -335,211 +246,19 @@
       .card h3 { margin: 0 0 6px; letter-spacing: -0.02em; }
       .card p { margin: 0; color: var(--muted); line-height: 1.5; }
 
-      .tagRow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-      .tag {
-        font-size: 12px;
-        font-weight: 900;
-        padding: 7px 10px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: color-mix(in oklab, var(--panel2), transparent 10%);
-        color: var(--text);
-      }
-
-      .toolbar {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px;
-        border: 1px solid var(--border);
-        border-radius: calc(var(--r) + 10px);
-        background: rgba(255,255,255,0.07);
-        box-shadow: var(--shadow);
-        margin-bottom: 12px;
-      }
-      .input {
-        flex: 1 1 280px;
-        min-width: 200px;
-        height: 44px;
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        background: var(--panel);
-        color: var(--text);
-        padding: 0 12px;
-        font-weight: 900;
-        outline: none;
-      }
-
-      .ratio { aspect-ratio: 16 / 9; width: 100%; background: rgba(0,0,0,0.25); }
-      .ratio iframe { width: 100%; height: 100%; border: 0; display: block; }
-
-      .watch {
-        border-radius: calc(var(--r) + 10px);
-        border: 1px solid var(--border);
-        background: rgba(255,255,255,0.07);
-        box-shadow: var(--shadow);
-        overflow: hidden;
-      }
-      .watchTop {
-        padding: 14px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        background: var(--panel);
-      }
-      .inputRow { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; width: 100%; }
-
-      .emuShell { display: grid; gap: 12px; }
-      .emuTop {
-        border-radius: calc(var(--r) + 10px);
-        border: 1px solid var(--border);
-        background: rgba(255, 255, 255, 0.07);
-        box-shadow: var(--shadow);
-        overflow: hidden;
-      }
-      .emuControls {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        align-items: flex-end;
-        padding: 14px;
-        border-bottom: 1px solid var(--border);
-        background: var(--panel);
-      }
-      .emuLabel {
-        display: grid;
-        gap: 6px;
-        font-weight: 900;
-        color: var(--muted);
-      }
-      .emuFile {
-        height: 44px;
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        background: var(--panel);
-        color: var(--text);
-        padding: 8px 10px;
-        font-weight: 850;
-        min-width: 220px;
-      }
-      .emuNote {
-        padding: 12px 14px;
-        color: var(--muted);
-        font-weight: 850;
-      }
-      .emuStage {
-        border-radius: calc(var(--r) + 10px);
-        border: 1px solid var(--border);
-        background: rgba(0, 0, 0, 0.28);
-        overflow: hidden;
-        box-shadow: var(--shadow);
-      }
-      .emuGame {
-        width: 100%;
-        height: 100%;
-        min-height: 320px;
-      }
-      .emuLegal { color: var(--muted); line-height: 1.5; font-weight: 820; }
-
-      /* Emulator status UI */
-      .emuStatusWrap {
-        border-top: 1px solid var(--border);
-        padding: 12px 14px 14px;
-        background: rgba(0,0,0,0.10);
-        display: grid;
-        gap: 10px;
-      }
-
-      .emuStatusRow {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .emuBadge {
-        display: inline-flex;
-        align-items: center;
-        padding: 6px 10px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: var(--panel);
-        font-weight: 950;
-        letter-spacing: -0.01em;
-        min-width: 108px;
-        justify-content: center;
-      }
-
-      .emuStatusText {
-        color: var(--muted);
-        font-weight: 850;
-      }
-
-      .emuSpinner {
-        width: 14px;
-        height: 14px;
-        border-radius: 999px;
-        border: 2px solid rgba(255,255,255,0.18);
-        border-top-color: rgba(255,255,255,0.70);
-        animation: spin 0.9s linear infinite;
-        margin-left: auto;
-      }
-
-      @keyframes spin { to { transform: rotate(360deg); } }
-
-      .emuMeta {
-        display: grid;
-        gap: 6px;
-        color: var(--muted);
-        font-weight: 850;
-        font-size: 13px;
-      }
-
-      .emuError {
-        margin: 0;
-        padding: 10px 12px;
-        border-radius: 14px;
-        border: 1px solid rgba(255, 80, 80, 0.35);
-        background: rgba(255, 80, 80, 0.10);
-        color: rgba(255, 220, 220, 0.95);
-        font-weight: 850;
-        white-space: pre-wrap;
-        line-height: 1.4;
-      }
-
       footer {
         padding: 26px 0 40px;
         border-top: 1px solid var(--border);
         background: rgba(255,255,255,0.03);
       }
-      .foot {
-        display: flex;
-        justify-content: space-between;
-        gap: 14px;
-        flex-wrap: wrap;
-        align-items: center;
-      }
+      .foot { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; align-items: center; }
       .small { color: var(--muted); font-weight: 820; }
       .footBrand { font-weight: 950; letter-spacing: -0.02em; }
       .footLinks { display: flex; gap: 10px; align-items: center; }
-
-      @media (prefers-reduced-motion: reduce) {
-        html { scroll-behavior: auto; }
-        .blob { animation: none; }
-        .btn, .card, .link, .icon { transition: none; }
-        .emuSpinner { animation: none; }
-      }
     </style>
   </head>
 
   <body>
-    <a class="skip" href="#main">Skip to content</a>
-
     <div class="bg" aria-hidden="true">
       <div class="pattern"></div>
       <div class="grain"></div>
@@ -550,7 +269,7 @@
 
     <header>
       <div class="container nav">
-        <a class="brand" href="#top" aria-label="Aiden’s Arcade home">
+        <a class="brand" href="/index.html" aria-label="Aiden’s Arcade home">
           <span class="mark" aria-hidden="true">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
               <path d="M3 15c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
@@ -561,11 +280,11 @@
           <span>Aiden’s <span class="accent">Arcade</span></span>
         </a>
 
-        <nav class="links" aria-label="Sections">
-          <a class="link" href="#games">Games</a>
-          <a class="link" href="#watch">Watch</a>
-          <a class="link" href="#emulation">Emulation</a>
-          <a class="link" href="#faq">FAQ</a>
+        <nav class="links" aria-label="Pages">
+          <a class="link" href="/index.html" aria-current="true">Home</a>
+          <a class="link" href="/watch.html">Watch</a>
+          <a class="link" href="/emulation.html">Emulation</a>
+          <a class="link" href="/proxy.html">Proxy</a>
         </nav>
 
         <div class="actions">
@@ -587,266 +306,36 @@
       </div>
 
       <div class="container mobile" id="mobileMenu" hidden>
-        <a href="#games">Games</a>
-        <a href="#watch">Watch</a>
-        <a href="#emulation">Emulation</a>
-        <a href="#faq">FAQ</a>
+        <a href="/index.html">Home</a>
+        <a href="/watch.html">Watch</a>
+        <a href="/emulation.html">Emulation</a>
+        <a href="/proxy.html">Proxy</a>
       </div>
     </header>
 
-    <main id="main">
-      <section class="heroWrap" id="top">
-        <svg class="heroWaveArt" viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <linearGradient id="gw" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="rgba(56,189,248,0.75)"/>
-              <stop offset="1" stop-color="rgba(30,64,175,0.65)"/>
-            </linearGradient>
-          </defs>
-
-          <path
-            d="M60,300
-               C140,170 260,130 360,180
-               C440,220 470,280 520,300
-               C600,330 690,260 780,210
-               C900,150 1030,160 1140,230
-               C1180,255 1210,280 1230,300"
-            fill="none"
-            stroke="url(#gw)"
-            stroke-width="10"
-            stroke-linecap="round"
-            opacity="0.9"
-          />
-          <path d="M70,340 C190,240 320,240 420,280 C520,320 620,310 740,250 C860,190 1010,190 1140,260"
-                fill="none" stroke="rgba(255,255,255,0.20)" stroke-width="6" stroke-linecap="round"/>
-          <path d="M90,375 C220,300 340,310 450,340 C560,370 700,350 820,300 C940,250 1050,255 1130,305"
-                fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="5" stroke-linecap="round"/>
-          <g fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="5" stroke-linecap="round" opacity="0.85">
-            <path d="M210,210 C200,180 220,160 245,165" />
-            <path d="M270,190 C260,160 285,145 310,150" />
-            <path d="M335,190 C330,160 360,150 385,160" />
-            <path d="M420,220 C415,190 450,180 475,195" />
-            <path d="M520,245 C515,215 550,205 575,220" />
-            <path d="M620,245 C615,215 650,205 675,220" />
-          </g>
-        </svg>
-
-        <div class="container hero">
-          <div>
-            <h1>
-              Welcome to <span class="accent">Aiden’s Arcade</span>.
-            </h1>
-
-            <p class="sub">
-              A clean game hub to mess around with friends: quick picks, a YouTube watch spot, and a built-in emulator setup.
-            </p>
-
-            <div class="cta">
-              <a class="btn primary" href="#games">Play</a>
-              <a class="btn" href="#watch">Watch</a>
-              <a class="btn" href="#emulation">Emulator</a>
-            </div>
-
-            <p class="sub tiny" style="margin-top:10px;">
-              Tip: you can switch themes in the top-right.
-            </p>
-          </div>
-
-          <aside class="panel" aria-label="Preview panel">
-            <div class="panelTop">
-              <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
-              <div class="panelTitle">Aiden’s Arcade</div>
-            </div>
-
-            <div class="panelBody">
-              <div class="card">
-                <h3>All-in-one hub</h3>
-                <p>Games, YouTube, and emulation in one place.</p>
-              </div>
-
-              <div class="miniGrid">
-                <div class="mini">
-                  <div class="k">Mode</div>
-                  <div class="v" id="modeLabel">Dark</div>
-                </div>
-                <div class="mini">
-                  <div class="k">Theme</div>
-                  <div class="v" id="themeLabel">Great Wave</div>
-                </div>
-              </div>
-
-              <p class="sub tiny">Your theme + mode are saved automatically.</p>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section class="section container" id="games">
-        <div class="head">
-          <h2>Games</h2>
-          <p>Pick something and go. I’ll be adding more over time.</p>
+    <main class="container">
+      <section class="hero">
+        <h1>Welcome to <span class="accent">Aiden’s Arcade</span>.</h1>
+        <p class="sub">Pick a page. Everything’s separated so it feels clean and easy to show friends.</p>
+        <div class="cta">
+          <a class="btn primary" href="/emulation.html">Emulation</a>
+          <a class="btn" href="/watch.html">Watch</a>
+          <a class="btn" href="/proxy.html">Proxy</a>
         </div>
 
-        <div class="toolbar">
-          <input class="input" id="gameSearch" placeholder="Search games..." />
-          <select class="select" id="gameSort" aria-label="Sort games">
-            <option value="az">Sort A → Z</option>
-            <option value="za">Sort Z → A</option>
-          </select>
-        </div>
-
-        <div class="grid" id="gamesGrid"></div>
-      </section>
-
-      <section class="section container" id="watch">
-        <div class="head">
-          <h2>Watch</h2>
-          <p>Paste a YouTube link or video ID and it’ll load below.</p>
-        </div>
-
-        <div class="watch">
-          <div class="watchTop">
-            <div class="inputRow">
-              <input class="input" id="ytInput" placeholder="Paste YouTube link or video ID..." inputmode="url" autocomplete="off" />
-              <button class="btn primary" id="loadBtn" type="button">Load</button>
-              <button class="btn" id="resetBtn" type="button">Reset</button>
-            </div>
-          </div>
-
-          <div class="ratio">
-            <iframe
-              id="ytFrame"
-              src="https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ"
-              title="YouTube player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-              loading="lazy"
-              referrerpolicy="strict-origin-when-cross-origin"
-            ></iframe>
-          </div>
-        </div>
-      </section>
-
-      <section class="section container" id="emulation">
-        <div class="head">
-          <h2>Emulator</h2>
-          <p>
-            Choose a system, upload your ROM, press Start. (No games are included — bring your own legal ROMs / homebrew.)
-          </p>
-        </div>
-
-        <div class="emuShell">
-          <div class="emuTop">
-            <div class="emuControls">
-              <label class="emuLabel">
-                <span>System</span>
-                <select class="select" id="coreSelect" aria-label="System">
-                  <option value="nes">NES</option>
-                  <option value="snes">SNES</option>
-                  <option value="gb">Game Boy / Color</option>
-                  <option value="gba" selected>Game Boy Advance</option>
-                  <option value="n64">Nintendo 64 (auto core)</option>
-                  <option value="mupen64plus_next">N64: Mupen64Plus-Next</option>
-                  <option value="parallel-n64">N64: ParaLLEl</option>
-                  <option value="nds">Nintendo DS</option>
-                </select>
-              </label>
-
-              <label class="emuLabel">
-                <span>ROM file</span>
-                <input class="emuFile" id="romInput" type="file" />
-              </label>
-
-              <label class="emuLabel">
-                <span>BIOS (optional)</span>
-                <input class="emuFile" id="biosInput" type="file" />
-              </label>
-
-              <button class="btn primary" id="startEmuBtn" type="button">Start</button>
-              <button class="btn" id="stopEmuBtn" type="button">Stop</button>
-            </div>
-
-            <div class="emuNote" id="emuNote">Checking emulator files…</div>
-
-            <div class="emuStatusWrap" id="emuStatusWrap" aria-live="polite">
-              <div class="emuStatusRow">
-                <span class="emuBadge" id="emuBadge">Checking</span>
-                <span class="emuStatusText" id="emuStatusText">Verifying emulator files…</span>
-                <span class="emuSpinner" id="emuSpinner" aria-hidden="true"></span>
-              </div>
-
-              <div class="emuMeta" id="emuMeta">
-                <div><strong>Core:</strong> <span id="emuMetaCore">gba</span></div>
-                <div><strong>ROM:</strong> <span id="emuMetaRom">—</span></div>
-                <div><strong>BIOS:</strong> <span id="emuMetaBios">—</span></div>
-                <div><strong>Source:</strong> <span id="emuMetaSource">—</span></div>
-              </div>
-
-              <pre class="emuError" id="emuError" hidden></pre>
-            </div>
-          </div>
-
-          <div class="emuStage">
-            <div class="ratio">
-              <div id="emuGame" class="emuGame" aria-label="Emulator output"></div>
-            </div>
-          </div>
-
-          <details class="card" id="emuDebugWrap">
-            <summary>Emulator Debug Log</summary>
-            <div class="cta" style="margin-top:10px;">
-              <button class="btn" id="emuDebugClear" type="button">Clear</button>
-              <button class="btn primary" id="emuDebugCheck" type="button">Check files</button>
-            </div>
-            <pre id="emuDebugLog" style="white-space:pre-wrap; margin:10px 0 0; color:var(--muted);"></pre>
-          </details>
-
-          <div class="card">
-            <h3>Quick note</h3>
-            <p class="emuLegal">
-              This is a “bring-your-own-ROM” setup. Use only ROMs you own or homebrew/public-domain.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section class="section container" id="faq">
-        <div class="head">
-          <h2>FAQ</h2>
-          <p>Stuff people actually ask.</p>
-        </div>
-
-        <div class="faqGrid">
-          <details class="card">
-            <summary>How do I play a game here?</summary>
-            <p>Go to <strong>Games</strong>, hit <strong>Open</strong>. I’ll keep adding more games over time.</p>
-          </details>
-
-          <details class="card">
-            <summary>How does the emulator work?</summary>
-            <p>
-              Pick a system, upload your ROM, and press <strong>Start</strong>. The ROM stays on your device (it’s uploaded into the page, not stored on the site).
-            </p>
-          </details>
-
-          <details class="card">
-            <summary>My ROM won’t load — what should I try?</summary>
-            <p>
-              For N64, use <code>.z64</code> format if possible. If it still fails, switch N64 cores (Mupen vs ParaLLEl) and open <strong>Emulator Debug Log</strong> to see what file or core is missing.
-            </p>
-          </details>
-
-          <details class="card">
-            <summary>Why might YouTube not load?</summary>
-            <p>
-              Some schools/networks block YouTube embeds. If it’s blocked, the player won’t show — try a different network.
-            </p>
-          </details>
-
-          <details class="card">
-            <summary>Does it remember my theme and mode?</summary>
-            <p>Yes. Theme + mode are saved in your browser.</p>
-          </details>
+        <div class="grid">
+          <a class="card" href="/watch.html">
+            <h3>Watch</h3>
+            <p>Paste a YouTube link/video ID and watch it here.</p>
+          </a>
+          <a class="card" href="/emulation.html">
+            <h3>Emulation</h3>
+            <p>Upload your ROM and play (bring your own legal ROMs/homebrew).</p>
+          </a>
+          <a class="card" href="/proxy.html">
+            <h3>Proxy</h3>
+            <p>Safe API relay template (for your own API).</p>
+          </a>
         </div>
       </section>
     </main>
@@ -858,7 +347,9 @@
           <div class="small">Made to share • <span id="year"></span></div>
         </div>
         <div class="small footLinks">
-          <a href="#top">Top</a><span aria-hidden="true">•</span><a href="#games">Games</a><span aria-hidden="true">•</span><a href="#emulation">Emulator</a>
+          <a href="/watch.html">Watch</a><span aria-hidden="true">•</span>
+          <a href="/emulation.html">Emulation</a><span aria-hidden="true">•</span>
+          <a href="/proxy.html">Proxy</a>
         </div>
       </div>
     </footer>
@@ -869,149 +360,16 @@
 
       const modeBtn = document.getElementById("modeBtn");
       const modeIcon = document.getElementById("modeIcon");
-      const modeLabel = document.getElementById("modeLabel");
-      const themeLabel = document.getElementById("themeLabel");
       const themeSelect = document.getElementById("themeSelect");
-
       const burgerBtn = document.getElementById("burgerBtn");
       const mobileMenu = document.getElementById("mobileMenu");
-
       const yearEl = document.getElementById("year");
-
-      const navLinks = Array.from(document.querySelectorAll(".link"))
-        .filter((a) => (a.getAttribute("href") || "").startsWith("#"));
-      const sections = navLinks
-        .map((a) => document.querySelector(a.getAttribute("href")))
-        .filter(Boolean);
-
-      const ytInput = document.getElementById("ytInput");
-      const loadBtn = document.getElementById("loadBtn");
-      const resetBtn = document.getElementById("resetBtn");
-      const ytFrame = document.getElementById("ytFrame");
-
-      const gameSearch = document.getElementById("gameSearch");
-      const gameSort = document.getElementById("gameSort");
-      const gamesGrid = document.getElementById("gamesGrid");
-
-      const coreSelect = document.getElementById("coreSelect");
-      const romInput = document.getElementById("romInput");
-      const biosInput = document.getElementById("biosInput");
-      const startEmuBtn = document.getElementById("startEmuBtn");
-      const stopEmuBtn = document.getElementById("stopEmuBtn");
-      const emuNote = document.getElementById("emuNote");
-      const emuGame = document.getElementById("emuGame");
-
-      const emuBadge = document.getElementById("emuBadge");
-      const emuStatusText = document.getElementById("emuStatusText");
-      const emuSpinner = document.getElementById("emuSpinner");
-      const emuError = document.getElementById("emuError");
-      const emuMetaCore = document.getElementById("emuMetaCore");
-      const emuMetaRom = document.getElementById("emuMetaRom");
-      const emuMetaBios = document.getElementById("emuMetaBios");
-      const emuMetaSource = document.getElementById("emuMetaSource");
-
-      const emuDebugLog = document.getElementById("emuDebugLog");
-      const emuDebugClear = document.getElementById("emuDebugClear");
-      const emuDebugCheck = document.getElementById("emuDebugCheck");
-
-      const DEFAULT_VIDEO = "aqz-KE-bpKQ";
-
-      // Local first, then CDN fallback
-      const EMULATOR_LOCAL_LOADER = "./emulatorjs/data/loader.js";
-      const EMULATOR_LOCAL_DATA = "./emulatorjs/data/";
-      const EMULATOR_CDN_LOADER = "https://cdn.emulatorjs.org/stable/data/loader.js";
-      const EMULATOR_CDN_DATA = "https://cdn.emulatorjs.org/stable/data/";
-
-      let EMULATOR_LOADER = EMULATOR_LOCAL_LOADER;
-      let EMULATOR_DATA = EMULATOR_LOCAL_DATA;
-
-      let emuRomUrl = null;
-      let emuBiosUrl = null;
-
-      let emulatorFilesOk = false;
-      let usingCdn = false;
-      let emuBootTimer = null;
-
-      const GAME_LIST = [
-        { title: "Snake", desc: "Classic quick reflex game.", tags: ["Classic", "Arcade"], action: { type: "note" } },
-        { title: "2048", desc: "Slide tiles and try to hit 2048.", tags: ["Puzzle", "Classic"], action: { type: "note" } },
-        { title: "Minesweeper", desc: "Clear the board without hitting a mine.", tags: ["Puzzle", "Classic"], action: { type: "note" } },
-        { title: "Emulator", desc: "Play your own ROMs (legal/homebrew).", tags: ["Emulation", "ROM Upload"], action: { type: "scroll", target: "#emulation" } },
-      ];
-
-      function emuLog(...args) {
-        const line = args
-          .map((a) => (typeof a === "string" ? a : (() => { try { return JSON.stringify(a); } catch { return String(a); } })()))
-          .join(" ");
-        if (emuDebugLog) emuDebugLog.textContent += `${new Date().toLocaleTimeString()}  ${line}\n`;
-        console.log("[EMU]", ...args);
-      }
-
-      emuDebugClear?.addEventListener("click", () => {
-        if (emuDebugLog) emuDebugLog.textContent = "";
-      });
-
-      window.addEventListener("error", (e) => {
-        emuLog("window.error:", e.message || e.type, "at", e.filename || "(no file)", "line", e.lineno || "");
-      });
-
-      window.addEventListener("unhandledrejection", (e) => {
-        emuLog("unhandledrejection:", e.reason?.message || String(e.reason));
-      });
-
-      document.addEventListener(
-        "error",
-        (e) => {
-          const t = e.target;
-          if (!t) return;
-          if (t.tagName === "SCRIPT") emuLog("SCRIPT LOAD FAILED:", t.src);
-          if (t.tagName === "LINK") emuLog("LINK LOAD FAILED:", t.href);
-          if (t.tagName === "IMG") emuLog("IMG LOAD FAILED:", t.src);
-        },
-        true
-      );
-
-      async function fileExists(url) {
-        try {
-          const r = await fetch(url, { method: "GET", cache: "no-store" });
-          return r.ok;
-        } catch {
-          return false;
-        }
-      }
-
-      async function emuCheckUrl(url) {
-        try {
-          const r = await fetch(url, { method: "GET", cache: "no-store" });
-          emuLog("CHECK", url, "=>", r.status, r.ok ? "OK" : "NOT OK");
-          return r.ok;
-        } catch (err) {
-          emuLog("CHECK FAILED", url, "=>", String(err));
-          return false;
-        }
-      }
-
-      async function emuCheckFiles() {
-        emuLog("---- EMU FILE CHECK START ----");
-        emuLog("Loader:", EMULATOR_LOADER);
-        emuLog("Data:", EMULATOR_DATA);
-        await emuCheckUrl(EMULATOR_LOADER);
-        await emuCheckUrl(EMULATOR_DATA);
-        emuLog("CrossOriginIsolated:", String(window.crossOriginIsolated));
-        emuLog("---- EMU FILE CHECK END ----");
-      }
-
-      emuDebugCheck?.addEventListener("click", async () => {
-        await emuCheckFiles();
-      });
 
       function setMode(mode) {
         document.documentElement.setAttribute("data-mode", mode);
         localStorage.setItem(STORAGE_MODE, mode);
-
         const isDark = mode === "dark";
         if (modeIcon) modeIcon.textContent = isDark ? "☾" : "☀";
-        if (modeLabel) modeLabel.textContent = isDark ? "Dark" : "Moonlit";
       }
 
       function initMode() {
@@ -1025,21 +383,10 @@
         setMode(current === "dark" ? "light" : "dark");
       }
 
-      function themeName(theme) {
-        const map = {
-          greatwave: "Great Wave",
-          darkwater: "Dark Water",
-          deepsea: "Deep Sea",
-          ink: "Ink + Water",
-        };
-        return map[theme] || theme;
-      }
-
       function setTheme(theme) {
         document.documentElement.setAttribute("data-theme", theme);
         localStorage.setItem(STORAGE_THEME, theme);
         if (themeSelect) themeSelect.value = theme;
-        if (themeLabel) themeLabel.textContent = themeName(theme);
       }
 
       function initTheme() {
@@ -1084,27 +431,306 @@
         });
       }
 
-      function setActive(id) {
-        for (const a of navLinks) {
-          const href = a.getAttribute("href") || "";
-          a.setAttribute("aria-current", href === `#${id}` ? "true" : "false");
-        }
+      modeBtn?.addEventListener("click", toggleMode);
+      themeSelect?.addEventListener("change", (e) => setTheme(e.target.value));
+
+      initMode();
+      initTheme();
+      initYear();
+      initMobileMenu();
+    </script>
+  </body>
+</html>
+
+
+<!-- FILE: /watch.html -->
+<!doctype html>
+<html lang="en" data-mode="dark" data-theme="greatwave">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Aiden’s Arcade — Watch</title>
+    <meta name="description" content="Aiden’s Arcade watch page." />
+    <style>
+      :root {
+        --container: 1100px;
+        --r: 18px;
+        --bg0: #020611;
+        --bg1: #03162b;
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.72);
+        --border: rgba(255, 255, 255, 0.14);
+        --panel: rgba(255, 255, 255, 0.06);
+        --panel2: rgba(255, 255, 255, 0.1);
+        --shadow: 0 26px 90px rgba(0, 0, 0, 0.55);
+        --a: #38bdf8;
+        --b: #1e40af;
+        --wavePatternDark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%23bfeaff' stroke-opacity='0.16' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.12'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.10'/%3E%3C/g%3E%3C/svg%3E");
+        --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
       }
 
-      function initScrollSpy() {
-        if (!("IntersectionObserver" in window) || sections.length === 0) return;
+      html[data-mode="light"] {
+        --bg0: #041426;
+        --bg1: #062a43;
+        --panel: rgba(255, 255, 255, 0.08);
+        --panel2: rgba(255, 255, 255, 0.12);
+        --border: rgba(255, 255, 255, 0.16);
+        --muted: rgba(255, 255, 255, 0.78);
+      }
 
-        const obs = new IntersectionObserver(
-          (entries) => {
-            const best = entries
-              .filter((e) => e.isIntersecting)
-              .sort((x, y) => y.intersectionRatio - x.intersectionRatio)[0];
-            if (best) setActive(best.target.id);
-          },
-          { threshold: [0.25, 0.5, 0.75], rootMargin: "-20% 0px -60% 0px" }
-        );
+      html[data-theme="greatwave"] { --a: #38bdf8; --b: #1e40af; }
+      html[data-theme="darkwater"] { --a: #0ea5e9; --b: #14b8a6; }
+      html[data-theme="deepsea"] { --a: #22c55e; --b: #0ea5e9; }
+      html[data-theme="ink"] { --a: #94a3b8; --b: #38bdf8; }
 
-        for (const s of sections) obs.observe(s);
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        color: var(--text);
+        background:
+          radial-gradient(1000px 700px at 18% 10%, rgba(56, 189, 248, 0.18), transparent 60%),
+          radial-gradient(1100px 800px at 82% 16%, rgba(20, 184, 166, 0.14), transparent 60%),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        overflow-x: hidden;
+      }
+
+      .container { width: min(var(--container), calc(100% - 40px)); margin: 0 auto; }
+
+      .bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+      .pattern { position: absolute; inset: 0; background-image: var(--wavePatternDark); background-size: 140px 70px; opacity: 0.60;
+        mask-image: radial-gradient(900px 520px at 50% 0%, black 42%, transparent 78%);
+      }
+      .grain { position: absolute; inset: -30%; background-image: var(--grain); opacity: 0.10; mix-blend-mode: overlay; transform: rotate(2deg); }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        backdrop-filter: blur(14px);
+        background: rgba(2, 6, 17, 0.55);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 0; }
+      .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 950; letter-spacing: -0.02em; }
+      .mark { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px; border: 1px solid var(--border);
+        background: linear-gradient(135deg, rgba(30,64,175,0.35), rgba(56,189,248,0.18)); box-shadow: var(--shadow);
+      }
+      .accent {
+        display: inline-block; padding-right: 0.10em;
+        background: linear-gradient(90deg, var(--a), var(--b));
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent; color: transparent;
+      }
+
+      .links { display: none; gap: 14px; align-items: center; }
+      .link { color: var(--muted); font-weight: 900; padding: 10px 10px; border-radius: 12px; transition: transform 160ms ease, background 160ms ease, color 160ms ease; }
+      .link:hover { color: var(--text); background: var(--panel); transform: translateY(-1px); }
+      .link[aria-current="true"] { color: var(--text); border: 1px solid var(--border); background: var(--panel2); }
+
+      .actions { display: flex; align-items: center; gap: 10px; }
+      .icon { width: 44px; height: 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel); color: var(--text);
+        display: grid; place-items: center; cursor: pointer; transition: transform 160ms ease, background 160ms ease;
+      }
+      .icon:hover { transform: translateY(-1px); background: var(--panel2); }
+
+      .select { height: 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel); color: var(--text);
+        padding: 0 12px; font-weight: 900; cursor: pointer; outline: none;
+      }
+      /* ✅ FIX: dropdown list options readable (black ink) */
+      select option, select optgroup { color: #000; background: #fff; }
+
+      .burger { display: grid; }
+      .mobile { display: grid; gap: 10px; padding: 10px 0 16px; }
+      .mobile a { padding: 12px 12px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel2); font-weight: 950; color: var(--text); text-decoration: none; }
+
+      @media (min-width: 860px) { .links { display: flex; } .burger { display: none; } .mobile { display: none !important; } }
+
+      main { padding: 26px 0 30px; }
+      h1 { margin: 0 0 8px; font-size: clamp(28px, 3.6vw, 44px); letter-spacing: -0.03em; }
+      .sub { margin: 0 0 14px; color: var(--muted); font-weight: 780; line-height: 1.55; max-width: 70ch; }
+
+      .watch {
+        border-radius: calc(var(--r) + 10px);
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.07);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .watchTop { padding: 14px; border-bottom: 1px solid var(--border); background: var(--panel); }
+      .inputRow { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+      .input {
+        flex: 1 1 280px; min-width: 200px; height: 44px;
+        border-radius: 14px; border: 1px solid var(--border);
+        background: var(--panel); color: var(--text);
+        padding: 0 12px; font-weight: 900; outline: none;
+      }
+
+      .btn {
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-weight: 950;
+        letter-spacing: -0.01em;
+        cursor: pointer;
+        transition: transform 160ms ease, filter 160ms ease, background 160ms ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn:hover { transform: translateY(-1px); filter: brightness(1.05); background: var(--panel2); }
+      .btn.primary { background: linear-gradient(135deg, rgba(30,64,175,0.40), rgba(56,189,248,0.22)); box-shadow: var(--shadow); }
+
+      .ratio { aspect-ratio: 16 / 9; width: 100%; background: rgba(0,0,0,0.25); }
+      .ratio iframe { width: 100%; height: 100%; border: 0; display: block; }
+    </style>
+  </head>
+  <body>
+    <div class="bg" aria-hidden="true">
+      <div class="pattern"></div>
+      <div class="grain"></div>
+    </div>
+
+    <header>
+      <div class="container nav">
+        <a class="brand" href="/index.html" aria-label="Aiden’s Arcade home">
+          <span class="mark" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+              <path d="M3 15c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M3 10c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+              <path d="M4 19h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
+            </svg>
+          </span>
+          <span>Aiden’s <span class="accent">Arcade</span></span>
+        </a>
+
+        <nav class="links" aria-label="Pages">
+          <a class="link" href="/index.html">Home</a>
+          <a class="link" href="/watch.html" aria-current="true">Watch</a>
+          <a class="link" href="/emulation.html">Emulation</a>
+          <a class="link" href="/proxy.html">Proxy</a>
+        </nav>
+
+        <div class="actions">
+          <select class="select" id="themeSelect" aria-label="Theme">
+            <option value="greatwave">Great Wave</option>
+            <option value="darkwater">Dark Water</option>
+            <option value="deepsea">Deep Sea</option>
+            <option value="ink">Ink + Water</option>
+          </select>
+
+          <button class="icon" id="modeBtn" type="button" aria-label="Toggle mode">
+            <span id="modeIcon" aria-hidden="true">☾</span>
+          </button>
+
+          <button class="icon burger" id="burgerBtn" type="button" aria-label="Open menu" aria-expanded="false">
+            <span aria-hidden="true">≡</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="container mobile" id="mobileMenu" hidden>
+        <a href="/index.html">Home</a>
+        <a href="/watch.html">Watch</a>
+        <a href="/emulation.html">Emulation</a>
+        <a href="/proxy.html">Proxy</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <h1>Watch</h1>
+      <p class="sub">Paste a YouTube link or the 11-character video ID.</p>
+
+      <div class="watch">
+        <div class="watchTop">
+          <div class="inputRow">
+            <input class="input" id="ytInput" placeholder="Paste YouTube link or video ID..." inputmode="url" autocomplete="off" />
+            <button class="btn primary" id="loadBtn" type="button">Load</button>
+            <button class="btn" id="resetBtn" type="button">Reset</button>
+          </div>
+        </div>
+
+        <div class="ratio">
+          <iframe
+            id="ytFrame"
+            src="https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ"
+            title="YouTube player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+          ></iframe>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const STORAGE_MODE = "arcadehub-mode";
+      const STORAGE_THEME = "arcadehub-theme";
+      const DEFAULT_VIDEO = "aqz-KE-bpKQ";
+
+      const modeBtn = document.getElementById("modeBtn");
+      const modeIcon = document.getElementById("modeIcon");
+      const themeSelect = document.getElementById("themeSelect");
+      const burgerBtn = document.getElementById("burgerBtn");
+      const mobileMenu = document.getElementById("mobileMenu");
+
+      const ytInput = document.getElementById("ytInput");
+      const loadBtn = document.getElementById("loadBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const ytFrame = document.getElementById("ytFrame");
+
+      function setMode(mode) {
+        document.documentElement.setAttribute("data-mode", mode);
+        localStorage.setItem(STORAGE_MODE, mode);
+        const isDark = mode === "dark";
+        if (modeIcon) modeIcon.textContent = isDark ? "☾" : "☀";
+      }
+
+      function initMode() {
+        const saved = localStorage.getItem(STORAGE_MODE);
+        if (saved === "dark" || saved === "light") return setMode(saved);
+        setMode("dark");
+      }
+
+      function toggleMode() {
+        const current = document.documentElement.getAttribute("data-mode") || "dark";
+        setMode(current === "dark" ? "light" : "dark");
+      }
+
+      function setTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem(STORAGE_THEME, theme);
+        if (themeSelect) themeSelect.value = theme;
+      }
+
+      function initTheme() {
+        const saved = localStorage.getItem(STORAGE_THEME);
+        if (saved) setTheme(saved);
+        else setTheme(document.documentElement.getAttribute("data-theme") || "greatwave");
+      }
+
+      function initMobileMenu() {
+        if (!burgerBtn || !mobileMenu) return;
+        function close() { mobileMenu.hidden = true; burgerBtn.setAttribute("aria-expanded", "false"); }
+        function open() { mobileMenu.hidden = false; burgerBtn.setAttribute("aria-expanded", "true"); }
+
+        burgerBtn.addEventListener("click", () => {
+          const expanded = burgerBtn.getAttribute("aria-expanded") === "true";
+          expanded ? close() : open();
+        });
+
+        mobileMenu.addEventListener("click", (e) => {
+          const t = e.target;
+          if (t instanceof HTMLAnchorElement) close();
+        });
+
+        window.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+        window.addEventListener("resize", () => { if (window.innerWidth >= 860) close(); });
       }
 
       function parseYouTubeId(input) {
@@ -1125,14 +751,10 @@
           const parts = url.pathname.split("/").filter(Boolean);
 
           const idxShorts = parts.indexOf("shorts");
-          if (idxShorts !== -1 && /^[a-zA-Z0-9_-]{11}$/.test(parts[idxShorts + 1] || "")) {
-            return parts[idxShorts + 1];
-          }
+          if (idxShorts !== -1 && /^[a-zA-Z0-9_-]{11}$/.test(parts[idxShorts + 1] || "")) return parts[idxShorts + 1];
 
           const idxEmbed = parts.indexOf("embed");
-          if (idxEmbed !== -1 && /^[a-zA-Z0-9_-]{11}$/.test(parts[idxEmbed + 1] || "")) {
-            return parts[idxEmbed + 1];
-          }
+          if (idxEmbed !== -1 && /^[a-zA-Z0-9_-]{11}$/.test(parts[idxEmbed + 1] || "")) return parts[idxEmbed + 1];
         } catch {}
 
         return null;
@@ -1141,283 +763,6 @@
       function loadYouTube(id) {
         const safe = id && /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : DEFAULT_VIDEO;
         ytFrame.src = `https://www.youtube-nocookie.com/embed/${safe}`;
-      }
-
-      function renderGames() {
-        const q = (gameSearch?.value || "").trim().toLowerCase();
-        const sort = gameSort?.value || "az";
-
-        const filtered = GAME_LIST.filter((g) => {
-          if (!q) return true;
-          return (
-            g.title.toLowerCase().includes(q) ||
-            g.desc.toLowerCase().includes(q) ||
-            g.tags.some((t) => t.toLowerCase().includes(q))
-          );
-        });
-
-        filtered.sort((a, b) => {
-          const x = a.title.localeCompare(b.title);
-          return sort === "az" ? x : -x;
-        });
-
-        gamesGrid.innerHTML = "";
-
-        for (const g of filtered) {
-          const el = document.createElement("article");
-          el.className = "card";
-
-          const tags = g.tags
-            .map((t) => `<span class="tag">${escapeHtml(t)}</span>`)
-            .join("");
-
-          el.innerHTML = `
-            <h3>${escapeHtml(g.title)}</h3>
-            <p>${escapeHtml(g.desc)}</p>
-            <div class="tagRow">${tags}</div>
-            <div class="cta" style="margin-top:14px;">
-              <button class="btn primary" type="button">Open</button>
-            </div>
-          `;
-
-          const btn = el.querySelector("button");
-          btn.addEventListener("click", () => {
-            if (g.action.type === "scroll") {
-              document.querySelector(g.action.target)?.scrollIntoView({ behavior: "smooth" });
-            } else {
-              alert("This spot is ready — I’m still adding the actual game files.");
-            }
-          });
-
-          gamesGrid.appendChild(el);
-        }
-      }
-
-      function escapeHtml(s) {
-        return String(s)
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-      }
-
-      function setEmuNote(text) {
-        if (emuNote) emuNote.textContent = text;
-      }
-
-      function fmtBytes(bytes) {
-        const n = Number(bytes || 0);
-        if (!Number.isFinite(n) || n <= 0) return "0 B";
-        const units = ["B", "KB", "MB", "GB"];
-        const i = Math.min(units.length - 1, Math.floor(Math.log(n) / Math.log(1024)));
-        const val = n / Math.pow(1024, i);
-        return `${val.toFixed(val >= 10 || i === 0 ? 0 : 1)} ${units[i]}`;
-      }
-
-      function setEmuStatus(state, text, options = {}) {
-        const { spinning = false, error = null } = options;
-
-        if (emuBadge) emuBadge.textContent = state;
-        if (emuStatusText) emuStatusText.textContent = text;
-
-        if (emuSpinner) emuSpinner.style.display = spinning ? "inline-block" : "none";
-
-        if (emuError) {
-          if (error) {
-            emuError.hidden = false;
-            emuError.textContent = error;
-          } else {
-            emuError.hidden = true;
-            emuError.textContent = "";
-          }
-        }
-      }
-
-      function updateEmuMeta() {
-        if (emuMetaCore) emuMetaCore.textContent = coreSelect?.value || "—";
-
-        const romFile = romInput?.files?.[0] || null;
-        const biosFile = biosInput?.files?.[0] || null;
-
-        if (emuMetaRom) emuMetaRom.textContent = romFile ? `${romFile.name} (${fmtBytes(romFile.size)})` : "—";
-        if (emuMetaBios) emuMetaBios.textContent = biosFile ? `${biosFile.name} (${fmtBytes(biosFile.size)})` : "—";
-        if (emuMetaSource) emuMetaSource.textContent = usingCdn ? "CDN" : "Local";
-      }
-
-      coreSelect?.addEventListener("change", updateEmuMeta);
-      romInput?.addEventListener("change", updateEmuMeta);
-      biosInput?.addEventListener("change", updateEmuMeta);
-
-      function emuCleanup() {
-        if (emuBootTimer) {
-          clearTimeout(emuBootTimer);
-          emuBootTimer = null;
-        }
-
-        const old = document.getElementById("ejs-loader");
-        if (old) old.remove();
-
-        if (emuGame) emuGame.innerHTML = "";
-
-        if (emuRomUrl) URL.revokeObjectURL(emuRomUrl);
-        if (emuBiosUrl) URL.revokeObjectURL(emuBiosUrl);
-        emuRomUrl = null;
-        emuBiosUrl = null;
-
-        delete window.EJS_player;
-        delete window.EJS_core;
-        delete window.EJS_gameUrl;
-        delete window.EJS_pathtodata;
-        delete window.EJS_biosUrl;
-
-        setEmuStatus("Idle", "Stopped.", { spinning: false });
-        setEmuNote("Stopped.");
-      }
-
-      function injectLoader(url) {
-        return new Promise((resolve, reject) => {
-          const existing = document.getElementById("ejs-loader");
-          if (existing) existing.remove();
-
-          const s = document.createElement("script");
-          s.id = "ejs-loader";
-          s.src = url;
-
-          s.onload = () => resolve();
-          s.onerror = () => reject(new Error(`Failed to load: ${url}`));
-
-          document.body.appendChild(s);
-        });
-      }
-
-      async function chooseEmulatorSource() {
-        setEmuStatus("Checking", "Checking emulator files…", { spinning: true });
-        setEmuNote("Checking emulator files…");
-
-        const localOk = await fileExists(EMULATOR_LOCAL_LOADER);
-        if (localOk) {
-          usingCdn = false;
-          EMULATOR_LOADER = EMULATOR_LOCAL_LOADER;
-          EMULATOR_DATA = EMULATOR_LOCAL_DATA;
-          emulatorFilesOk = true;
-          startEmuBtn.disabled = false;
-          updateEmuMeta();
-          setEmuStatus("Ready", "Emulator ready ✅", { spinning: false });
-          setEmuNote("Ready ✅ Upload a ROM to start.");
-          emuLog("Using LOCAL EmulatorJS:", EMULATOR_LOADER);
-          return;
-        }
-
-        const cdnOk = await fileExists(EMULATOR_CDN_LOADER);
-        if (cdnOk) {
-          usingCdn = true;
-          EMULATOR_LOADER = EMULATOR_CDN_LOADER;
-          EMULATOR_DATA = EMULATOR_CDN_DATA;
-          emulatorFilesOk = true;
-          startEmuBtn.disabled = false;
-          updateEmuMeta();
-          setEmuStatus("Ready", "Emulator ready ✅ (CDN)", { spinning: false });
-          setEmuNote("Ready ✅ Upload a ROM to start.");
-          emuLog("Using CDN EmulatorJS:", EMULATOR_LOADER);
-          return;
-        }
-
-        usingCdn = false;
-        emulatorFilesOk = false;
-        startEmuBtn.disabled = true;
-        updateEmuMeta();
-        setEmuStatus("Missing", "Emulator files not found.", {
-          spinning: false,
-          error:
-            `No emulator loader found.\n\n` +
-            `Tried local:\n- ${EMULATOR_LOCAL_LOADER}\n\n` +
-            `Tried CDN:\n- ${EMULATOR_CDN_LOADER}\n\n` +
-            `Fix: add EmulatorJS /emulatorjs/data/* OR allow CDN access.`
-        });
-        setEmuNote("Emulator missing. Add emulator files or allow CDN.");
-        emuLog("EmulatorJS missing both local and CDN.");
-      }
-
-      function emuStart() {
-        updateEmuMeta();
-
-        if (!emulatorFilesOk) {
-          setEmuStatus("Error", "Emulator not ready.", {
-            spinning: false,
-            error: "Open Emulator Debug Log → Check files."
-          });
-          return;
-        }
-
-        const romFile = romInput?.files?.[0];
-        if (!romFile) {
-          setEmuStatus("Error", "No ROM selected.", {
-            spinning: false,
-            error: "Pick a ROM file first (legal/homebrew/public-domain)."
-          });
-          setEmuNote("Pick a ROM file first.");
-          return;
-        }
-
-        emuCleanup();
-
-        emuRomUrl = URL.createObjectURL(romFile);
-        const biosFile = biosInput?.files?.[0] || null;
-        emuBiosUrl = biosFile ? URL.createObjectURL(biosFile) : null;
-
-        window.EJS_player = "#emuGame";
-        window.EJS_core = coreSelect?.value || "gba";
-        window.EJS_gameUrl = emuRomUrl;
-        window.EJS_pathtodata = EMULATOR_DATA;
-        window.EJS_biosUrl = emuBiosUrl || "";
-
-        setEmuStatus("Loading", "Loading emulator…", { spinning: true });
-        setEmuNote("Loading…");
-
-        emuLog("START core:", window.EJS_core);
-        emuLog("pathtodata:", window.EJS_pathtodata);
-        emuLog("loader:", EMULATOR_LOADER);
-
-        emuBootTimer = setTimeout(() => {
-          setEmuStatus("Error", "Didn’t start (timeout).", {
-            spinning: false,
-            error:
-              `If this is N64:\n- Use .z64 ROM format\n- Try the other N64 core\n- Open Debug Log for errors`
-          });
-          setEmuNote("Timeout. Open Debug Log.");
-        }, 20000);
-
-        injectLoader(EMULATOR_LOADER)
-          .then(() => {
-            emuLog("loader.js loaded OK");
-            setEmuStatus("Booting", "Starting…", { spinning: true });
-            setEmuNote("Starting…");
-
-            setTimeout(() => {
-              const hasCanvas = !!emuGame?.querySelector("canvas");
-              const hasIframe = !!emuGame?.querySelector("iframe");
-              if (hasCanvas || hasIframe) {
-                if (emuBootTimer) clearTimeout(emuBootTimer);
-                emuBootTimer = null;
-                setEmuStatus("Running", "Running ✅", { spinning: false });
-                setEmuNote("Running ✅");
-              }
-            }, 1400);
-          })
-          .catch((err) => {
-            if (emuBootTimer) clearTimeout(emuBootTimer);
-            emuBootTimer = null;
-
-            emuLog("loader.js FAILED:", String(err));
-            setEmuStatus("Error", "Loader failed.", {
-              spinning: false,
-              error:
-                `${String(err)}\n\n` +
-                `If CDN is blocked, you’ll need local emulator files.`
-            });
-            setEmuNote("Loader failed.");
-          });
       }
 
       modeBtn?.addEventListener("click", toggleMode);
@@ -1439,23 +784,288 @@
         loadYouTube(DEFAULT_VIDEO);
       });
 
-      gameSearch?.addEventListener("input", renderGames);
-      gameSort?.addEventListener("change", renderGames);
+      initMode();
+      initTheme();
+      initMobileMenu();
+    </script>
+  </body>
+</html>
 
-      startEmuBtn?.addEventListener("click", emuStart);
-      stopEmuBtn?.addEventListener("click", emuCleanup);
 
-      (async () => {
-        initMode();
-        initTheme();
-        initYear();
-        initMobileMenu();
-        initScrollSpy();
-        renderGames();
+<!-- FILE: /emulation.html -->
+<!-- Use the EXACT emulation page you already have (the version with status + debug) -->
+<!-- If you want, paste your current emulation.html and I’ll merge it in with the same header/nav + black dropdown fix. -->
 
-        await chooseEmulatorSource();
-        updateEmuMeta();
-      })();
+
+<!-- FILE: /proxy.html -->
+<!doctype html>
+<html lang="en" data-mode="dark" data-theme="greatwave">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Aiden’s Arcade — Proxy</title>
+    <meta name="description" content="Aiden’s Arcade API relay page." />
+    <style>
+      :root {
+        --container: 1100px;
+        --r: 18px;
+        --bg0: #020611;
+        --bg1: #03162b;
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.72);
+        --border: rgba(255, 255, 255, 0.14);
+        --panel: rgba(255, 255, 255, 0.06);
+        --panel2: rgba(255, 255, 255, 0.1);
+        --shadow: 0 26px 90px rgba(0, 0, 0, 0.55);
+        --a: #38bdf8;
+        --b: #1e40af;
+        --wavePatternDark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%23bfeaff' stroke-opacity='0.16' stroke-width='2'%3E%3Cpath d='M0 70 A35 35 0 0 1 70 70 A35 35 0 0 1 140 70'/%3E%3Cpath d='M-70 70 A35 35 0 0 1 0 70 A35 35 0 0 1 70 70'/%3E%3Cpath d='M70 70 A35 35 0 0 1 140 70 A35 35 0 0 1 210 70'/%3E%3Cpath d='M0 70 A24 24 0 0 1 48 70 A24 24 0 0 1 96 70 A24 24 0 0 1 144 70' stroke-opacity='0.12'/%3E%3Cpath d='M0 70 A14 14 0 0 1 28 70 A14 14 0 0 1 56 70 A14 14 0 0 1 84 70 A14 14 0 0 1 112 70 A14 14 0 0 1 140 70' stroke-opacity='0.10'/%3E%3C/g%3E%3C/svg%3E");
+      }
+
+      html[data-mode="light"] {
+        --bg0: #041426;
+        --bg1: #062a43;
+        --panel: rgba(255, 255, 255, 0.08);
+        --panel2: rgba(255, 255, 255, 0.12);
+        --border: rgba(255, 255, 255, 0.16);
+        --muted: rgba(255, 255, 255, 0.78);
+      }
+
+      html[data-theme="greatwave"] { --a: #38bdf8; --b: #1e40af; }
+      html[data-theme="darkwater"] { --a: #0ea5e9; --b: #14b8a6; }
+      html[data-theme="deepsea"] { --a: #22c55e; --b: #0ea5e9; }
+      html[data-theme="ink"] { --a: #94a3b8; --b: #38bdf8; }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        color: var(--text);
+        background:
+          radial-gradient(1000px 700px at 18% 10%, rgba(56, 189, 248, 0.18), transparent 60%),
+          radial-gradient(1100px 800px at 82% 16%, rgba(20, 184, 166, 0.14), transparent 60%),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        overflow-x: hidden;
+      }
+      .container { width: min(var(--container), calc(100% - 40px)); margin: 0 auto; }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        backdrop-filter: blur(14px);
+        background: rgba(2, 6, 17, 0.55);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 0; }
+
+      .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 950; letter-spacing: -0.02em; text-decoration: none; color: var(--text); }
+      .mark { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 14px; border: 1px solid var(--border);
+        background: linear-gradient(135deg, rgba(30,64,175,0.35), rgba(56,189,248,0.18)); box-shadow: var(--shadow);
+      }
+      .accent { display: inline-block; padding-right: 0.10em; background: linear-gradient(90deg, var(--a), var(--b));
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+      }
+
+      .links { display: none; gap: 14px; align-items: center; }
+      .link { color: var(--muted); font-weight: 900; padding: 10px 10px; border-radius: 12px; text-decoration: none; }
+      .link:hover { color: var(--text); background: var(--panel); }
+      .link[aria-current="true"] { color: var(--text); border: 1px solid var(--border); background: var(--panel2); }
+
+      .actions { display: flex; align-items: center; gap: 10px; }
+      .icon { width: 44px; height: 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel); color: var(--text);
+        display: grid; place-items: center; cursor: pointer;
+      }
+      .select { height: 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel); color: var(--text);
+        padding: 0 12px; font-weight: 900; cursor: pointer; outline: none;
+      }
+      /* ✅ FIX: dropdown list options readable (black ink) */
+      select option, select optgroup { color: #000; background: #fff; }
+
+      .burger { display: grid; }
+      .mobile { display: grid; gap: 10px; padding: 10px 0 16px; }
+      .mobile a { padding: 12px 12px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel2); font-weight: 950; color: var(--text); text-decoration: none; }
+      @media (min-width: 860px) { .links { display: flex; } .burger { display: none; } .mobile { display: none !important; } }
+
+      main { padding: 26px 0 30px; }
+      h1 { margin: 0 0 8px; font-size: clamp(28px, 3.6vw, 44px); letter-spacing: -0.03em; }
+      .sub { margin: 0 0 14px; color: var(--muted); font-weight: 780; line-height: 1.55; max-width: 70ch; }
+
+      .card {
+        border-radius: var(--r);
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.07);
+        padding: 16px;
+        box-shadow: 0 12px 34px rgba(0,0,0,0.22);
+      }
+
+      .input { width: 100%; height: 44px; border-radius: 14px; border: 1px solid var(--border); background: var(--panel);
+        color: var(--text); padding: 0 12px; font-weight: 900; outline: none;
+      }
+      .btn {
+        border: 1px solid var(--border); background: var(--panel); color: var(--text);
+        padding: 12px 14px; border-radius: 16px; font-weight: 950; cursor: pointer;
+      }
+      .btn.primary { background: linear-gradient(135deg, rgba(30,64,175,0.40), rgba(56,189,248,0.22)); }
+      pre { white-space: pre-wrap; color: var(--muted); }
+      .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container nav">
+        <a class="brand" href="/index.html" aria-label="Aiden’s Arcade home">
+          <span class="mark" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+              <path d="M3 15c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M3 10c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+              <path d="M4 19h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
+            </svg>
+          </span>
+          <span>Aiden’s <span class="accent">Arcade</span></span>
+        </a>
+
+        <nav class="links" aria-label="Pages">
+          <a class="link" href="/index.html">Home</a>
+          <a class="link" href="/watch.html">Watch</a>
+          <a class="link" href="/emulation.html">Emulation</a>
+          <a class="link" href="/proxy.html" aria-current="true">Proxy</a>
+        </nav>
+
+        <div class="actions">
+          <select class="select" id="themeSelect" aria-label="Theme">
+            <option value="greatwave">Great Wave</option>
+            <option value="darkwater">Dark Water</option>
+            <option value="deepsea">Deep Sea</option>
+            <option value="ink">Ink + Water</option>
+          </select>
+
+          <button class="icon" id="modeBtn" type="button" aria-label="Toggle mode">
+            <span id="modeIcon" aria-hidden="true">☾</span>
+          </button>
+
+          <button class="icon burger" id="burgerBtn" type="button" aria-label="Open menu" aria-expanded="false">
+            <span aria-hidden="true">≡</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="container mobile" id="mobileMenu" hidden>
+        <a href="/index.html">Home</a>
+        <a href="/watch.html">Watch</a>
+        <a href="/emulation.html">Emulation</a>
+        <a href="/proxy.html">Proxy</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <h1>Proxy</h1>
+      <p class="sub">
+        I can’t help build a “bypass proxy” for blocked sites. But if you have your <strong>own API</strong> (like a Vercel API route),
+        this page can call it safely.
+      </p>
+
+      <div class="card">
+        <label style="display:block; font-weight:950; color: var(--muted); margin-bottom:8px;">Your API endpoint (same domain)</label>
+        <input class="input" id="apiPath" value="/api/health" />
+        <div class="row">
+          <button class="btn primary" id="callBtn" type="button">Call API</button>
+          <button class="btn" id="clearBtn" type="button">Clear</button>
+        </div>
+        <pre id="out" style="margin-top:12px;"></pre>
+      </div>
+    </main>
+
+    <script>
+      const STORAGE_MODE = "arcadehub-mode";
+      const STORAGE_THEME = "arcadehub-theme";
+
+      const modeBtn = document.getElementById("modeBtn");
+      const modeIcon = document.getElementById("modeIcon");
+      const themeSelect = document.getElementById("themeSelect");
+      const burgerBtn = document.getElementById("burgerBtn");
+      const mobileMenu = document.getElementById("mobileMenu");
+
+      const apiPath = document.getElementById("apiPath");
+      const callBtn = document.getElementById("callBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const out = document.getElementById("out");
+
+      function setMode(mode) {
+        document.documentElement.setAttribute("data-mode", mode);
+        localStorage.setItem(STORAGE_MODE, mode);
+        const isDark = mode === "dark";
+        if (modeIcon) modeIcon.textContent = isDark ? "☾" : "☀";
+      }
+
+      function initMode() {
+        const saved = localStorage.getItem(STORAGE_MODE);
+        if (saved === "dark" || saved === "light") return setMode(saved);
+        setMode("dark");
+      }
+
+      function toggleMode() {
+        const current = document.documentElement.getAttribute("data-mode") || "dark";
+        setMode(current === "dark" ? "light" : "dark");
+      }
+
+      function setTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem(STORAGE_THEME, theme);
+        if (themeSelect) themeSelect.value = theme;
+      }
+
+      function initTheme() {
+        const saved = localStorage.getItem(STORAGE_THEME);
+        if (saved) setTheme(saved);
+        else setTheme(document.documentElement.getAttribute("data-theme") || "greatwave");
+      }
+
+      function initMobileMenu() {
+        if (!burgerBtn || !mobileMenu) return;
+        function close() { mobileMenu.hidden = true; burgerBtn.setAttribute("aria-expanded", "false"); }
+        function open() { mobileMenu.hidden = false; burgerBtn.setAttribute("aria-expanded", "true"); }
+
+        burgerBtn.addEventListener("click", () => {
+          const expanded = burgerBtn.getAttribute("aria-expanded") === "true";
+          expanded ? close() : open();
+        });
+
+        mobileMenu.addEventListener("click", (e) => {
+          const t = e.target;
+          if (t instanceof HTMLAnchorElement) close();
+        });
+
+        window.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+        window.addEventListener("resize", () => { if (window.innerWidth >= 860) close(); });
+      }
+
+      async function callApi() {
+        out.textContent = "Calling…";
+        const path = (apiPath.value || "").trim();
+        if (!path.startsWith("/")) {
+          out.textContent = "Use a same-site path like: /api/health";
+          return;
+        }
+        try {
+          const res = await fetch(path, { method: "GET" });
+          const text = await res.text();
+          out.textContent = `Status: ${res.status}\n\n${text}`;
+        } catch (err) {
+          out.textContent = `Error:\n${String(err)}`;
+        }
+      }
+
+      callBtn.addEventListener("click", callApi);
+      clearBtn.addEventListener("click", () => { out.textContent = ""; });
+
+      modeBtn?.addEventListener("click", toggleMode);
+      themeSelect?.addEventListener("change", (e) => setTheme(e.target.value));
+
+      initMode();
+      initTheme();
+      initMobileMenu();
     </script>
   </body>
 </html>
