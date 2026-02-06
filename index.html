@@ -1,4 +1,9 @@
-<!-- /index.html -->
+<!-- =========================================================
+FILE: /index.html
+- Full single-file site
+- Emulator status + error panel + debug log
+- EmulatorJS CDN fallback (tries local first, then CDN)
+========================================================= -->
 <!doctype html>
 <html lang="en" data-mode="dark" data-theme="greatwave">
   <head>
@@ -468,6 +473,72 @@
       }
       .emuLegal { color: var(--muted); line-height: 1.5; font-weight: 820; }
 
+      /* Emulator status UI */
+      .emuStatusWrap {
+        border-top: 1px solid var(--border);
+        padding: 12px 14px 14px;
+        background: rgba(0,0,0,0.10);
+        display: grid;
+        gap: 10px;
+      }
+
+      .emuStatusRow {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .emuBadge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        font-weight: 950;
+        letter-spacing: -0.01em;
+        min-width: 108px;
+        justify-content: center;
+      }
+
+      .emuStatusText {
+        color: var(--muted);
+        font-weight: 850;
+      }
+
+      .emuSpinner {
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        border: 2px solid rgba(255,255,255,0.18);
+        border-top-color: rgba(255,255,255,0.70);
+        animation: spin 0.9s linear infinite;
+        margin-left: auto;
+      }
+
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      .emuMeta {
+        display: grid;
+        gap: 6px;
+        color: var(--muted);
+        font-weight: 850;
+        font-size: 13px;
+      }
+
+      .emuError {
+        margin: 0;
+        padding: 10px 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 80, 80, 0.35);
+        background: rgba(255, 80, 80, 0.10);
+        color: rgba(255, 220, 220, 0.95);
+        font-weight: 850;
+        white-space: pre-wrap;
+        line-height: 1.4;
+      }
+
       footer {
         padding: 26px 0 40px;
         border-top: 1px solid var(--border);
@@ -488,6 +559,7 @@
         html { scroll-behavior: auto; }
         .blob { animation: none; }
         .btn, .card, .link, .icon { transition: none; }
+        .emuSpinner { animation: none; }
       }
     </style>
   </head>
@@ -572,12 +644,10 @@
             stroke-linecap="round"
             opacity="0.9"
           />
-
           <path d="M70,340 C190,240 320,240 420,280 C520,320 620,310 740,250 C860,190 1010,190 1140,260"
                 fill="none" stroke="rgba(255,255,255,0.20)" stroke-width="6" stroke-linecap="round"/>
           <path d="M90,375 C220,300 340,310 450,340 C560,370 700,350 820,300 C940,250 1050,255 1130,305"
                 fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="5" stroke-linecap="round"/>
-
           <g fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="5" stroke-linecap="round" opacity="0.85">
             <path d="M210,210 C200,180 220,160 245,165" />
             <path d="M270,190 C260,160 285,145 310,150" />
@@ -687,7 +757,7 @@
         <div class="head">
           <h2>Emulation (Nintendo)</h2>
           <p>
-            This runs only if you add emulator files to your repo. ROM upload only (legal ROMs you own / homebrew / public-domain).
+            This runs only if you add emulator files to your repo (or use CDN fallback). ROM upload only (legal ROMs you own / homebrew / public-domain).
             N64/DS are heavy on Chromebooks.
           </p>
         </div>
@@ -702,7 +772,9 @@
                   <option value="snes">SNES</option>
                   <option value="gb">Game Boy / Color</option>
                   <option value="gba" selected>Game Boy Advance</option>
-                  <option value="n64">Nintendo 64</option>
+                  <option value="n64">Nintendo 64 (auto core)</option>
+                  <option value="mupen64plus_next">N64: Mupen64Plus-Next</option>
+                  <option value="parallel-n64">N64: ParaLLEl</option>
                   <option value="nds">Nintendo DS</option>
                 </select>
               </label>
@@ -722,6 +794,23 @@
             </div>
 
             <div class="emuNote" id="emuNote">Checking emulator files…</div>
+
+            <div class="emuStatusWrap" id="emuStatusWrap" aria-live="polite">
+              <div class="emuStatusRow">
+                <span class="emuBadge" id="emuBadge">Checking</span>
+                <span class="emuStatusText" id="emuStatusText">Verifying emulator files…</span>
+                <span class="emuSpinner" id="emuSpinner" aria-hidden="true"></span>
+              </div>
+
+              <div class="emuMeta" id="emuMeta">
+                <div><strong>Core:</strong> <span id="emuMetaCore">gba</span></div>
+                <div><strong>ROM:</strong> <span id="emuMetaRom">—</span></div>
+                <div><strong>BIOS:</strong> <span id="emuMetaBios">—</span></div>
+                <div><strong>Mode:</strong> <span id="emuMetaSource">—</span></div>
+              </div>
+
+              <pre class="emuError" id="emuError" hidden></pre>
+            </div>
           </div>
 
           <div class="emuStage">
@@ -730,10 +819,19 @@
             </div>
           </div>
 
+          <details class="card" id="emuDebugWrap">
+            <summary>Emulator Debug Log</summary>
+            <div class="cta" style="margin-top:10px;">
+              <button class="btn" id="emuDebugClear" type="button">Clear</button>
+              <button class="btn primary" id="emuDebugCheck" type="button">Check files</button>
+            </div>
+            <pre id="emuDebugLog" style="white-space:pre-wrap; margin:10px 0 0; color:var(--muted);"></pre>
+          </details>
+
           <div class="card">
             <h3>One-time setup</h3>
             <p>
-              Put emulator files at: <code>/emulatorjs/data/loader.js</code> + the rest of the <code>data/</code> folder.
+              Optional local install: put emulator files at: <code>/emulatorjs/data/loader.js</code> + the rest of the <code>data/</code> folder.
               This site is static, so emulator assets must be static too.
             </p>
             <p class="emuLegal">
@@ -757,7 +855,7 @@
 
           <details class="card">
             <summary>Why might emulation not load?</summary>
-            <p>If <code>/emulatorjs/data/loader.js</code> isn’t present, the emulator can’t start.</p>
+            <p>If the emulator loader/data isn’t present (or blocked), the emulator can’t start. Open “Emulator Debug Log”.</p>
           </details>
 
           <details class="card">
@@ -766,31 +864,13 @@
           </details>
         </div>
       </section>
-
-      <!-- Optional: quick proxy tester UI (keep or delete) -->
-      <section class="section container" id="proxytest">
-        <div class="head">
-          <h2>Proxy test</h2>
-          <p>Paste a URL from an allowed domain and click Fetch (this uses /api/proxy).</p>
-        </div>
-
-        <div class="toolbar">
-          <input class="input" id="proxyInput" placeholder="https://api.yourdomain.com/v1/status" inputmode="url" />
-          <button class="btn primary" id="proxyFetchBtn" type="button">Fetch</button>
-        </div>
-
-        <details class="card">
-          <summary>Proxy response</summary>
-          <pre id="proxyOut" style="white-space:pre-wrap; margin:10px 0 0; color:var(--muted)"></pre>
-        </details>
-      </section>
     </main>
 
     <footer>
       <div class="container foot">
         <div>
           <div class="footBrand">Arcade Hub</div>
-          <div class="small">Hosted on Vercel • <span id="year"></span></div>
+          <div class="small">Built for Vercel/Static hosting • <span id="year"></span></div>
         </div>
         <div class="small footLinks">
           <a href="#top">Top</a><span aria-hidden="true">•</span><a href="#games">Games</a><span aria-hidden="true">•</span><a href="#emulation">Emulation</a>
@@ -801,11 +881,6 @@
     <script>
       const STORAGE_MODE = "arcadehub-mode";
       const STORAGE_THEME = "arcadehub-theme";
-
-      // ✅ Proxy helper (Vercel serverless function)
-      function proxyUrl(targetUrl) {
-        return `/api/proxy?url=${encodeURIComponent(targetUrl)}`;
-      }
 
       const modeBtn = document.getElementById("modeBtn");
       const modeIcon = document.getElementById("modeIcon");
@@ -840,17 +915,36 @@
       const emuNote = document.getElementById("emuNote");
       const emuGame = document.getElementById("emuGame");
 
-      const proxyInput = document.getElementById("proxyInput");
-      const proxyFetchBtn = document.getElementById("proxyFetchBtn");
-      const proxyOut = document.getElementById("proxyOut");
+      const emuBadge = document.getElementById("emuBadge");
+      const emuStatusText = document.getElementById("emuStatusText");
+      const emuSpinner = document.getElementById("emuSpinner");
+      const emuError = document.getElementById("emuError");
+      const emuMetaCore = document.getElementById("emuMetaCore");
+      const emuMetaRom = document.getElementById("emuMetaRom");
+      const emuMetaBios = document.getElementById("emuMetaBios");
+      const emuMetaSource = document.getElementById("emuMetaSource");
+
+      const emuDebugLog = document.getElementById("emuDebugLog");
+      const emuDebugClear = document.getElementById("emuDebugClear");
+      const emuDebugCheck = document.getElementById("emuDebugCheck");
 
       const DEFAULT_VIDEO = "aqz-KE-bpKQ";
 
-      const EMULATOR_LOADER = "./emulatorjs/data/loader.js";
-      const EMULATOR_DATA = "./emulatorjs/data/";
+      // Local first, then CDN fallback
+      const EMULATOR_LOCAL_LOADER = "./emulatorjs/data/loader.js";
+      const EMULATOR_LOCAL_DATA = "./emulatorjs/data/";
+      const EMULATOR_CDN_LOADER = "https://cdn.emulatorjs.org/stable/data/loader.js";
+      const EMULATOR_CDN_DATA = "https://cdn.emulatorjs.org/stable/data/";
+
+      let EMULATOR_LOADER = EMULATOR_LOCAL_LOADER;
+      let EMULATOR_DATA = EMULATOR_LOCAL_DATA;
 
       let emuRomUrl = null;
       let emuBiosUrl = null;
+
+      let emulatorFilesOk = false;
+      let usingCdn = false;
+      let emuBootTimer = null;
 
       const GAME_LIST = [
         { title: "Snake (placeholder)", desc: "Add a self-hosted HTML5 Snake later.", tags: ["Classic", "Arcade"], action: { type: "note" } },
@@ -858,6 +952,72 @@
         { title: "Minesweeper (placeholder)", desc: "Host your own HTML5 version (licensed).", tags: ["Puzzle", "Classic"], action: { type: "note" } },
         { title: "Emulation (Nintendo)", desc: "Upload legal ROMs you own/homebrew/public-domain.", tags: ["Emulation", "ROM Upload"], action: { type: "scroll", target: "#emulation" } },
       ];
+
+      function emuLog(...args) {
+        const line = args
+          .map((a) => (typeof a === "string" ? a : (() => { try { return JSON.stringify(a); } catch { return String(a); } })()))
+          .join(" ");
+        if (emuDebugLog) emuDebugLog.textContent += `${new Date().toLocaleTimeString()}  ${line}\n`;
+        console.log("[EMU]", ...args);
+      }
+
+      emuDebugClear?.addEventListener("click", () => {
+        if (emuDebugLog) emuDebugLog.textContent = "";
+      });
+
+      emuDebugCheck?.addEventListener("click", async () => {
+        await emuCheckFiles();
+      });
+
+      window.addEventListener("error", (e) => {
+        emuLog("window.error:", e.message || e.type, "at", e.filename || "(no file)", "line", e.lineno || "");
+      });
+
+      window.addEventListener("unhandledrejection", (e) => {
+        emuLog("unhandledrejection:", e.reason?.message || String(e.reason));
+      });
+
+      document.addEventListener(
+        "error",
+        (e) => {
+          const t = e.target;
+          if (!t) return;
+          if (t.tagName === "SCRIPT") emuLog("SCRIPT LOAD FAILED:", t.src);
+          if (t.tagName === "LINK") emuLog("LINK LOAD FAILED:", t.href);
+          if (t.tagName === "IMG") emuLog("IMG LOAD FAILED:", t.src);
+        },
+        true
+      );
+
+      async function fileExists(url) {
+        try {
+          const r = await fetch(url, { method: "GET", cache: "no-store" });
+          return r.ok;
+        } catch {
+          return false;
+        }
+      }
+
+      async function emuCheckUrl(url) {
+        try {
+          const r = await fetch(url, { method: "GET", cache: "no-store" });
+          emuLog("CHECK", url, "=>", r.status, r.ok ? "OK" : "NOT OK");
+          return r.ok;
+        } catch (err) {
+          emuLog("CHECK FAILED", url, "=>", String(err));
+          return false;
+        }
+      }
+
+      async function emuCheckFiles() {
+        emuLog("---- EMU FILE CHECK START ----");
+        emuLog("Loader:", EMULATOR_LOADER);
+        emuLog("Data:", EMULATOR_DATA);
+        await emuCheckUrl(EMULATOR_LOADER);
+        await emuCheckUrl(EMULATOR_DATA);
+        emuLog("CrossOriginIsolated:", String(window.crossOriginIsolated));
+        emuLog("---- EMU FILE CHECK END ----");
+      }
 
       function setMode(mode) {
         document.documentElement.setAttribute("data-mode", mode);
@@ -1010,7 +1170,9 @@
           const el = document.createElement("article");
           el.className = "card";
 
-          const tags = g.tags.map((t) => `<span class="tag">${t}</span>`).join("");
+          const tags = g.tags
+            .map((t) => `<span class="tag">${t}</span>`)
+            .join("");
 
           el.innerHTML = `
             <h3>${escapeHtml(g.title)}</h3>
@@ -1047,16 +1209,55 @@
         if (emuNote) emuNote.textContent = text;
       }
 
-      async function fileExists(url) {
-        try {
-          const r = await fetch(url, { method: "GET", cache: "no-store" });
-          return r.ok;
-        } catch {
-          return false;
+      function fmtBytes(bytes) {
+        const n = Number(bytes || 0);
+        if (!Number.isFinite(n) || n <= 0) return "0 B";
+        const units = ["B", "KB", "MB", "GB"];
+        const i = Math.min(units.length - 1, Math.floor(Math.log(n) / Math.log(1024)));
+        const val = n / Math.pow(1024, i);
+        return `${val.toFixed(val >= 10 || i === 0 ? 0 : 1)} ${units[i]}`;
+      }
+
+      function setEmuStatus(state, text, options = {}) {
+        const { spinning = false, error = null } = options;
+
+        if (emuBadge) emuBadge.textContent = state;
+        if (emuStatusText) emuStatusText.textContent = text;
+
+        if (emuSpinner) emuSpinner.style.display = spinning ? "inline-block" : "none";
+
+        if (emuError) {
+          if (error) {
+            emuError.hidden = false;
+            emuError.textContent = error;
+          } else {
+            emuError.hidden = true;
+            emuError.textContent = "";
+          }
         }
       }
 
+      function updateEmuMeta() {
+        if (emuMetaCore) emuMetaCore.textContent = coreSelect?.value || "—";
+
+        const romFile = romInput?.files?.[0] || null;
+        const biosFile = biosInput?.files?.[0] || null;
+
+        if (emuMetaRom) emuMetaRom.textContent = romFile ? `${romFile.name} (${fmtBytes(romFile.size)})` : "—";
+        if (emuMetaBios) emuMetaBios.textContent = biosFile ? `${biosFile.name} (${fmtBytes(biosFile.size)})` : "—";
+        if (emuMetaSource) emuMetaSource.textContent = usingCdn ? "CDN" : "Local";
+      }
+
+      coreSelect?.addEventListener("change", updateEmuMeta);
+      romInput?.addEventListener("change", updateEmuMeta);
+      biosInput?.addEventListener("change", updateEmuMeta);
+
       function emuCleanup() {
+        if (emuBootTimer) {
+          clearTimeout(emuBootTimer);
+          emuBootTimer = null;
+        }
+
         const old = document.getElementById("ejs-loader");
         if (old) old.remove();
 
@@ -1072,18 +1273,95 @@
         delete window.EJS_gameUrl;
         delete window.EJS_pathtodata;
         delete window.EJS_biosUrl;
+
+        setEmuStatus("Idle", "Stopped.", { spinning: false });
+        setEmuNote("Stopped.");
       }
 
-      function emuInjectLoader() {
-        const s = document.createElement("script");
-        s.id = "ejs-loader";
-        s.src = EMULATOR_LOADER;
-        document.body.appendChild(s);
+      function injectLoader(url) {
+        return new Promise((resolve, reject) => {
+          const existing = document.getElementById("ejs-loader");
+          if (existing) existing.remove();
+
+          const s = document.createElement("script");
+          s.id = "ejs-loader";
+          s.src = url;
+
+          s.onload = () => resolve();
+          s.onerror = () => reject(new Error(`Failed to load: ${url}`));
+
+          document.body.appendChild(s);
+        });
+      }
+
+      async function chooseEmulatorSource() {
+        setEmuStatus("Checking", "Checking emulator files…", { spinning: true });
+        setEmuNote("Checking emulator files…");
+
+        const localOk = await fileExists(EMULATOR_LOCAL_LOADER);
+        if (localOk) {
+          usingCdn = false;
+          EMULATOR_LOADER = EMULATOR_LOCAL_LOADER;
+          EMULATOR_DATA = EMULATOR_LOCAL_DATA;
+          emulatorFilesOk = true;
+          startEmuBtn.disabled = false;
+          updateEmuMeta();
+          setEmuStatus("Ready", "Local emulator files detected ✅", { spinning: false });
+          setEmuNote("Emulator files detected ✅ Upload a ROM to start.");
+          emuLog("Using LOCAL EmulatorJS:", EMULATOR_LOADER);
+          return;
+        }
+
+        const cdnOk = await fileExists(EMULATOR_CDN_LOADER);
+        if (cdnOk) {
+          usingCdn = true;
+          EMULATOR_LOADER = EMULATOR_CDN_LOADER;
+          EMULATOR_DATA = EMULATOR_CDN_DATA;
+          emulatorFilesOk = true;
+          startEmuBtn.disabled = false;
+          updateEmuMeta();
+          setEmuStatus("Ready", "Using CDN emulator files ✅", { spinning: false });
+          setEmuNote("CDN emulator files detected ✅ Upload a ROM to start.");
+          emuLog("Using CDN EmulatorJS:", EMULATOR_LOADER);
+          return;
+        }
+
+        usingCdn = false;
+        emulatorFilesOk = false;
+        startEmuBtn.disabled = true;
+        updateEmuMeta();
+        setEmuStatus("Missing", "Emulator files not found.", {
+          spinning: false,
+          error:
+            `No emulator loader found.\n\n` +
+            `Tried local:\n- ${EMULATOR_LOCAL_LOADER}\n\n` +
+            `Tried CDN:\n- ${EMULATOR_CDN_LOADER}\n\n` +
+            `Fix: add EmulatorJS /emulatorjs/data/* OR allow CDN access.`
+        });
+        setEmuNote("Missing emulator files. Add /emulatorjs/data/loader.js + data/ folder, or use CDN.");
+        emuLog("EmulatorJS missing both local and CDN.");
       }
 
       function emuStart() {
+        updateEmuMeta();
+
+        if (!emulatorFilesOk) {
+          setEmuStatus("Error", "Emulator files not detected.", {
+            spinning: false,
+            error:
+              `Emulator files not detected.\n\n` +
+              `Open "Emulator Debug Log" → "Check files" to see 404s.\n` +
+              `Or enable CDN access.`
+          });
+          return;
+        }
+
         const romFile = romInput?.files?.[0];
         if (!romFile) {
+          setEmuStatus("Error", "No ROM selected.", {
+            spinning: false,
+            error: "Pick a ROM file first (legal ROM you own / homebrew / public-domain)."
+          });
           setEmuNote("Pick a ROM file first (legal ROM you own / homebrew / public-domain).");
           return;
         }
@@ -1100,25 +1378,55 @@
         window.EJS_pathtodata = EMULATOR_DATA;
         window.EJS_biosUrl = emuBiosUrl || "";
 
+        setEmuStatus("Loading", "Loading emulator engine…", { spinning: true });
         setEmuNote("Loading emulator… (first load can take a bit)");
-        emuInjectLoader();
-      }
+        emuLog("START core:", window.EJS_core);
+        emuLog("pathtodata:", window.EJS_pathtodata);
+        emuLog("loader:", EMULATOR_LOADER);
 
-      async function proxyFetch() {
-        const u = (proxyInput?.value || "").trim();
-        if (!u) return;
-        proxyOut.textContent = "Loading…";
-        try {
-          const r = await fetch(proxyUrl(u));
-          const text = await r.text();
-          proxyOut.textContent = `HTTP ${r.status}\n\n${text.slice(0, 8000)}`;
-        } catch (e) {
-          proxyOut.textContent = String(e);
-        }
-      }
+        emuBootTimer = setTimeout(() => {
+          setEmuStatus("Error", "Emulator did not start (timeout).", {
+            spinning: false,
+            error:
+              `Timeout: loader loaded, but emulator UI did not appear.\n\n` +
+              `Try:\n- Switch N64 core (Mupen vs ParaLLEl)\n- Use .z64 ROM format for N64\n- Check Debug Log for WASM/core errors\n- Try a desktop browser`
+          });
+          setEmuNote("Timeout. Open Debug Log.");
+        }, 20000);
 
-      modeBtn?.addEventListener("click", toggleMode);
-      themeSelect?.addEventListener("change", (e) => setTheme(e.target.value));
+        injectLoader(EMULATOR_LOADER)
+          .then(() => {
+            emuLog("loader.js loaded OK");
+            setEmuStatus("Booting", "Engine loaded. Starting game…", { spinning: true });
+            setEmuNote("Engine loaded. Starting…");
+
+            setTimeout(() => {
+              const hasCanvas = !!emuGame?.querySelector("canvas");
+              const hasIframe = !!emuGame?.querySelector("iframe");
+              if (hasCanvas || hasIframe) {
+                if (emuBootTimer) clearTimeout(emuBootTimer);
+                emuBootTimer = null;
+                setEmuStatus("Running", "Emulator is running ✅", { spinning: false });
+                setEmuNote("Running ✅");
+              } else {
+                emuLog("No canvas/iframe detected yet...");
+              }
+            }, 1400);
+          })
+          .catch((err) => {
+            if (emuBootTimer) clearTimeout(emuBootTimer);
+            emuBootTimer = null;
+
+            emuLog("loader.js FAILED:", String(err));
+            setEmuStatus("Error", "Failed to load emulator loader.", {
+              spinning: false,
+              error:
+                `${String(err)}\n\n` +
+                `Fix:\n- If local: confirm ${EMULATOR_LOCAL_LOADER} exists in deployment\n- If CDN: your network might block cdn.emulatorjs.org\n- Open Debug Log → Check files`
+            });
+            setEmuNote("Failed to load emulator loader.");
+          });
+      }
 
       loadBtn?.addEventListener("click", () => {
         const id = parseYouTubeId(ytInput.value);
@@ -1136,16 +1444,13 @@
         loadYouTube(DEFAULT_VIDEO);
       });
 
-      proxyFetchBtn?.addEventListener("click", proxyFetch);
-
       gameSearch?.addEventListener("input", renderGames);
       gameSort?.addEventListener("change", renderGames);
 
       startEmuBtn?.addEventListener("click", emuStart);
-      stopEmuBtn?.addEventListener("click", () => {
-        emuCleanup();
-        setEmuNote("Stopped.");
-      });
+      stopEmuBtn?.addEventListener("click", emuCleanup);
+
+      function initGames() { renderGames(); }
 
       (async () => {
         initMode();
@@ -1153,15 +1458,117 @@
         initYear();
         initMobileMenu();
         initScrollSpy();
-        renderGames();
+        initGames();
 
-        const ok = await fileExists(EMULATOR_LOADER);
-        setEmuNote(
-          ok
-            ? "Emulator files detected ✅ Upload a ROM to start."
-            : "Missing emulator files. Add /emulatorjs/data/loader.js + data/ folder."
-        );
+        await chooseEmulatorSource();
+        updateEmuMeta();
       })();
     </script>
   </body>
 </html>
+
+
+<!-- =========================================================
+FILE: /api/proxy.js  (Vercel)
+- Only works if you deploy on Vercel (or any Node serverless that supports /api)
+- SAFE allowlist proxy (NOT an open proxy)
+========================================================= -->
+<script type="text/plain" data-filename="/api/proxy.js">
+/**
+ * Safe allowlist proxy for Vercel.
+ * Call:
+ *   /api/proxy?url=https%3A%2F%2Fapi.yourdomain.com%2Fv1%2Fstatus
+ *
+ * IMPORTANT:
+ * - Replace ALLOWED_HOSTS with domains you own/control.
+ * - This is NOT an open proxy.
+ */
+
+const ALLOWED_HOSTS = new Set([
+  "api.yourdomain.com", // <-- CHANGE THIS
+]);
+
+function isPrivateOrLocalHost(hostname) {
+  const h = (hostname || "").toLowerCase();
+  if (h === "localhost" || h.endsWith(".local")) return true;
+
+  const m = h.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (!m) return false;
+
+  const a = Number(m[1]);
+  const b = Number(m[2]);
+  if (a === 10) return true;
+  if (a === 127) return true;
+  if (a === 192 && b === 168) return true;
+  if (a === 172 && b >= 16 && b <= 31) return true;
+  if (a === 169 && b === 254) return true;
+  return false;
+}
+
+function setCors(res, origin) {
+  res.setHeader("Access-Control-Allow-Origin", origin || "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Range, If-None-Match");
+  res.setHeader("Access-Control-Max-Age", "86400");
+  res.setHeader("Vary", "Origin");
+}
+
+export default async function handler(req, res) {
+  const origin = req.headers.origin || "";
+
+  if (req.method === "OPTIONS") {
+    setCors(res, origin);
+    return res.status(204).end();
+  }
+
+  if (!["GET", "HEAD"].includes(req.method)) {
+    setCors(res, origin);
+    return res.status(405).send("Method not allowed");
+  }
+
+  const raw = (req.query.url || "").toString();
+  if (!raw) {
+    setCors(res, origin);
+    return res.status(400).send("Missing ?url=");
+  }
+
+  let target;
+  try {
+    target = new URL(raw);
+  } catch {
+    setCors(res, origin);
+    return res.status(400).send("Invalid url");
+  }
+
+  if (!["https:", "http:"].includes(target.protocol)) {
+    setCors(res, origin);
+    return res.status(400).send("Bad protocol");
+  }
+
+  if (isPrivateOrLocalHost(target.hostname) || !ALLOWED_HOSTS.has(target.hostname)) {
+    setCors(res, origin);
+    return res.status(403).send("Upstream not allowed");
+  }
+
+  const headers = {};
+  if (req.headers.accept) headers["accept"] = req.headers.accept;
+  if (req.headers.range) headers["range"] = req.headers.range;
+  if (req.headers["if-none-match"]) headers["if-none-match"] = req.headers["if-none-match"];
+  if (req.headers.authorization) headers["authorization"] = req.headers.authorization;
+
+  const upstream = await fetch(target.toString(), {
+    method: req.method,
+    headers,
+    redirect: "follow",
+  });
+
+  setCors(res, origin);
+  res.status(upstream.status);
+
+  const ct = upstream.headers.get("content-type");
+  if (ct) res.setHeader("content-type", ct);
+
+  const buf = Buffer.from(await upstream.arrayBuffer());
+  return res.send(buf);
+}
+</script>
