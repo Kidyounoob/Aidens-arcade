@@ -1,1 +1,92 @@
+/* /emulation/emulation.css */
+
+/* Fix: dropdown options invisible on some Chromebooks */
+.select option {
+  background: #ffffff !important;
+  color: #0b0f1a !important;
+}
+
+.emuShell {
+  display: grid;
+  gap: 12px;
+}
+
+.emuControlsCard {
+  padding: 14px;
+}
+
+.emuControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.emuLabel {
+  display: grid;
+  gap: 6px;
+  font-weight: 900;
+  color: var(--muted);
+}
+
+.emuFile {
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  padding: 8px 10px;
+  font-weight: 850;
+  min-width: 220px;
+}
+
+.emuStatusRow {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.emuStatus {
+  font-weight: 900;
+  color: var(--text);
+  opacity: 0.92;
+}
+
+.emuHint {
+  color: var(--muted);
+  font-weight: 820;
+  font-size: 13px;
+}
+
+.emuStageCard {
+  padding: 0;
+  overflow: hidden;
+}
+
+.emuRatio {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.emuGame {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+}
+
+.emuInfoGrid {
+  gap: 12px;
+}
+
+@media (max-width: 520px) {
+  .emuFile {
+    min-width: 100%;
+  }
+}
 
