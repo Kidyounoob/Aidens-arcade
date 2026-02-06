@@ -1,1 +1,105 @@
+<!doctype html>
+<html lang="en" data-mode="dark" data-theme="darkwater">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Watch • Aiden’s Arcade</title>
+    <link rel="stylesheet" href="../styles.css?v=2" />
+    <script defer src="../app.js?v=2"></script>
+    <script defer src="./watch.js?v=2"></script>
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <div class="bg" aria-hidden="true">
+      <div class="pattern"></div>
+      <div class="grain"></div>
+      <div class="blob a"></div>
+      <div class="blob b"></div>
+      <div class="blob c"></div>
+    </div>
+
+    <header>
+      <div class="container nav">
+        <a class="brand" href="../" aria-label="Aiden’s Arcade home">
+          <span class="mark" aria-hidden="true">🌊</span>
+          <span>Aiden’s <span class="accent">Arcade</span></span>
+        </a>
+
+        <nav class="links" aria-label="Pages">
+          <a class="link" href="../games/">Games</a>
+          <a class="link" href="./" aria-current="true">Watch</a>
+          <a class="link" href="../emulation/">Emulation</a>
+          <a class="link" href="../portal/">Portal</a>
+        </nav>
+
+        <div class="actions">
+          <select class="select" id="themeSelect" aria-label="Theme">
+            <option value="darkwater" selected>Dark Water</option>
+            <option value="greatwave">Great Wave</option>
+            <option value="deepsea">Deep Sea</option>
+            <option value="ink">Ink + Water</option>
+          </select>
+
+          <button class="icon" id="modeBtn" type="button" aria-label="Toggle mode">
+            <span id="modeIcon" aria-hidden="true">☾</span>
+          </button>
+
+          <button class="icon burger" id="burgerBtn" type="button" aria-label="Open menu" aria-expanded="false">
+            <span aria-hidden="true">≡</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="container mobile" id="mobileMenu" hidden>
+        <a href="../games/">Games</a>
+        <a href="./">Watch</a>
+        <a href="../emulation/">Emulation</a>
+        <a href="../portal/">Portal</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="section container">
+        <div class="head">
+          <h2>Watch</h2>
+          <p>Paste a YouTube link or video ID and it loads in the player.</p>
+        </div>
+
+        <div class="card" style="padding:14px; margin-bottom:12px;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <input class="input" id="ytInput" placeholder="Paste YouTube link or video ID…" />
+            <button class="btn primary" id="loadBtn" type="button">Load</button>
+            <button class="btn" id="resetBtn" type="button">Reset</button>
+          </div>
+        </div>
+
+        <div class="card" style="padding:0; overflow:hidden;">
+          <div class="ratio">
+            <iframe
+              id="ytFrame"
+              src="https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ"
+              title="YouTube player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container foot">
+        <div>
+          <div class="footBrand">Aiden’s Arcade</div>
+          <div class="small">Watch • <span id="year"></span></div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
 
