@@ -1,1 +1,74 @@
+/* /games/games.css */
+
+/* Fix: dropdown options invisible on some Chromebooks */
+.select option {
+  background: #ffffff !important;
+  color: #0b0f1a !important;
+}
+
+.gamesToolbar {
+  padding: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.gamesToolbar .input {
+  flex: 1 1 280px;
+  min-width: 220px;
+}
+
+.gamesHelp {
+  margin-top: 12px;
+}
+
+.tagsRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.tag {
+  font-size: 12px;
+  font-weight: 900;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2), transparent 10%);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 950;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--a), var(--b));
+  opacity: 0.9;
+}
+
+.actionsRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.miniNote {
+  margin-top: 10px;
+  color: var(--muted);
+  font-weight: 820;
+  line-height: 1.5;
+}
 
