@@ -1,17 +1,15 @@
-<!-- =========================================================
-FILE: /index.html
-- Full single-file site
-- Emulator status + error panel + debug log
-- EmulatorJS CDN fallback (tries local first, then CDN)
-========================================================= -->
+<!-- FILE: /index.html -->
 <!doctype html>
 <html lang="en" data-mode="dark" data-theme="greatwave">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark light" />
-    <title>Arcade Hub</title>
-    <meta name="description" content="Arcade Hub — dark water Japanese wave UI + games + YouTube + legal emulation shell." />
+    <title>Aiden’s Arcade</title>
+    <meta
+      name="description"
+      content="Aiden’s Arcade — games hub, YouTube watch room, and a clean emulator setup (bring your own legal ROMs)."
+    />
 
     <style>
       :root {
@@ -242,27 +240,6 @@ FILE: /index.html
         mask-image: radial-gradient(900px 420px at 40% 35%, black 55%, transparent 92%);
       }
 
-      .pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 12px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: var(--panel2);
-        width: fit-content;
-        color: var(--muted);
-        font-weight: 950;
-      }
-
-      .dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 999px;
-        background: linear-gradient(135deg, var(--a), var(--b));
-        box-shadow: 0 0 0 4px rgba(56,189,248,0.12);
-      }
-
       h1 {
         margin: 10px 0 6px;
         font-size: clamp(34px, 4.2vw, 62px);
@@ -416,10 +393,6 @@ FILE: /index.html
         background: var(--panel);
       }
       .inputRow { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; width: 100%; }
-
-      .faqGrid { display: grid; gap: 12px; }
-      .faqGrid summary { cursor: pointer; font-weight: 950; }
-      .faqGrid p { margin: 10px 0 0; color: var(--muted); line-height: 1.55; }
 
       .emuShell { display: grid; gap: 12px; }
       .emuTop {
@@ -577,7 +550,7 @@ FILE: /index.html
 
     <header>
       <div class="container nav">
-        <a class="brand" href="#top" aria-label="Arcade Hub home">
+        <a class="brand" href="#top" aria-label="Aiden’s Arcade home">
           <span class="mark" aria-hidden="true">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
               <path d="M3 15c2.2 0 2.2-2 4.4-2s2.2 2 4.4 2 2.2-2 4.4-2 2.2 2 4.4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
@@ -585,7 +558,7 @@ FILE: /index.html
               <path d="M4 19h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
             </svg>
           </span>
-          <span>Arcade <span class="accent">Hub</span></span>
+          <span>Aiden’s <span class="accent">Arcade</span></span>
         </a>
 
         <nav class="links" aria-label="Sections">
@@ -660,34 +633,35 @@ FILE: /index.html
 
         <div class="container hero">
           <div>
-            <div class="pill"><span class="dot"></span> Great Wave vibe • dark water default</div>
-
             <h1>
-              Japanese wave vibes.
-              <span class="accent">Dark water</span>.
+              Welcome to <span class="accent">Aiden’s Arcade</span>.
             </h1>
 
             <p class="sub">
-              Games hub + YouTube + a legal emulation shell (ROM upload only). Add your own games later.
+              A clean game hub to mess around with friends: quick picks, a YouTube watch spot, and a built-in emulator setup.
             </p>
 
             <div class="cta">
-              <a class="btn primary" href="#games">Browse Games</a>
-              <a class="btn" href="#watch">Open YouTube</a>
-              <a class="btn" href="#emulation">Emulation</a>
+              <a class="btn primary" href="#games">Play</a>
+              <a class="btn" href="#watch">Watch</a>
+              <a class="btn" href="#emulation">Emulator</a>
             </div>
+
+            <p class="sub tiny" style="margin-top:10px;">
+              Tip: you can switch themes in the top-right.
+            </p>
           </div>
 
           <aside class="panel" aria-label="Preview panel">
             <div class="panelTop">
               <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
-              <div class="panelTitle">Dark Water UI</div>
+              <div class="panelTitle">Aiden’s Arcade</div>
             </div>
 
             <div class="panelBody">
               <div class="card">
-                <h3>Everything in one file</h3>
-                <p>CSS + JS inline for fewer “missing file” issues.</p>
+                <h3>All-in-one hub</h3>
+                <p>Games, YouTube, and emulation in one place.</p>
               </div>
 
               <div class="miniGrid">
@@ -696,12 +670,12 @@ FILE: /index.html
                   <div class="v" id="modeLabel">Dark</div>
                 </div>
                 <div class="mini">
-                  <div class="k">Load</div>
-                  <div class="v">&lt; 1s</div>
+                  <div class="k">Theme</div>
+                  <div class="v" id="themeLabel">Great Wave</div>
                 </div>
               </div>
 
-              <p class="sub tiny">Tip: theme + mode save automatically.</p>
+              <p class="sub tiny">Your theme + mode are saved automatically.</p>
             </div>
           </aside>
         </div>
@@ -710,11 +684,11 @@ FILE: /index.html
       <section class="section container" id="games">
         <div class="head">
           <h2>Games</h2>
-          <p>Starter library (placeholders). Later you can swap these cards to your own hosted HTML5 games.</p>
+          <p>Pick something and go. I’ll be adding more over time.</p>
         </div>
 
         <div class="toolbar">
-          <input class="input" id="gameSearch" placeholder="Search games (e.g., Snake, 2048)..." />
+          <input class="input" id="gameSearch" placeholder="Search games..." />
           <select class="select" id="gameSort" aria-label="Sort games">
             <option value="az">Sort A → Z</option>
             <option value="za">Sort Z → A</option>
@@ -726,8 +700,8 @@ FILE: /index.html
 
       <section class="section container" id="watch">
         <div class="head">
-          <h2>Watch (YouTube)</h2>
-          <p>Paste a YouTube link or 11-char video ID. If YouTube is blocked, embeds won’t load.</p>
+          <h2>Watch</h2>
+          <p>Paste a YouTube link or video ID and it’ll load below.</p>
         </div>
 
         <div class="watch">
@@ -755,10 +729,9 @@ FILE: /index.html
 
       <section class="section container" id="emulation">
         <div class="head">
-          <h2>Emulation (Nintendo)</h2>
+          <h2>Emulator</h2>
           <p>
-            This runs only if you add emulator files to your repo (or use CDN fallback). ROM upload only (legal ROMs you own / homebrew / public-domain).
-            N64/DS are heavy on Chromebooks.
+            Choose a system, upload your ROM, press Start. (No games are included — bring your own legal ROMs / homebrew.)
           </p>
         </div>
 
@@ -806,7 +779,7 @@ FILE: /index.html
                 <div><strong>Core:</strong> <span id="emuMetaCore">gba</span></div>
                 <div><strong>ROM:</strong> <span id="emuMetaRom">—</span></div>
                 <div><strong>BIOS:</strong> <span id="emuMetaBios">—</span></div>
-                <div><strong>Mode:</strong> <span id="emuMetaSource">—</span></div>
+                <div><strong>Source:</strong> <span id="emuMetaSource">—</span></div>
               </div>
 
               <pre class="emuError" id="emuError" hidden></pre>
@@ -829,13 +802,9 @@ FILE: /index.html
           </details>
 
           <div class="card">
-            <h3>One-time setup</h3>
-            <p>
-              Optional local install: put emulator files at: <code>/emulatorjs/data/loader.js</code> + the rest of the <code>data/</code> folder.
-              This site is static, so emulator assets must be static too.
-            </p>
+            <h3>Quick note</h3>
             <p class="emuLegal">
-              Use only ROMs you own or explicit homebrew/public-domain. No ROMs are included here.
+              This is a “bring-your-own-ROM” setup. Use only ROMs you own or homebrew/public-domain.
             </p>
           </div>
         </div>
@@ -844,23 +813,39 @@ FILE: /index.html
       <section class="section container" id="faq">
         <div class="head">
           <h2>FAQ</h2>
-          <p>Quick answers.</p>
+          <p>Stuff people actually ask.</p>
         </div>
 
         <div class="faqGrid">
           <details class="card">
-            <summary>Can I embed Netflix / everything inside my site?</summary>
-            <p>Most sites block embedding for security. YouTube often works; many “mainstream” sites refuse iframes.</p>
+            <summary>How do I play a game here?</summary>
+            <p>Go to <strong>Games</strong>, hit <strong>Open</strong>. I’ll keep adding more games over time.</p>
           </details>
 
           <details class="card">
-            <summary>Why might emulation not load?</summary>
-            <p>If the emulator loader/data isn’t present (or blocked), the emulator can’t start. Open “Emulator Debug Log”.</p>
+            <summary>How does the emulator work?</summary>
+            <p>
+              Pick a system, upload your ROM, and press <strong>Start</strong>. The ROM stays on your device (it’s uploaded into the page, not stored on the site).
+            </p>
           </details>
 
           <details class="card">
-            <summary>Does it remember my theme?</summary>
-            <p>Yes — theme + mode are saved in your browser.</p>
+            <summary>My ROM won’t load — what should I try?</summary>
+            <p>
+              For N64, use <code>.z64</code> format if possible. If it still fails, switch N64 cores (Mupen vs ParaLLEl) and open <strong>Emulator Debug Log</strong> to see what file or core is missing.
+            </p>
+          </details>
+
+          <details class="card">
+            <summary>Why might YouTube not load?</summary>
+            <p>
+              Some schools/networks block YouTube embeds. If it’s blocked, the player won’t show — try a different network.
+            </p>
+          </details>
+
+          <details class="card">
+            <summary>Does it remember my theme and mode?</summary>
+            <p>Yes. Theme + mode are saved in your browser.</p>
           </details>
         </div>
       </section>
@@ -869,11 +854,11 @@ FILE: /index.html
     <footer>
       <div class="container foot">
         <div>
-          <div class="footBrand">Arcade Hub</div>
-          <div class="small">Built for Vercel/Static hosting • <span id="year"></span></div>
+          <div class="footBrand">Aiden’s Arcade</div>
+          <div class="small">Made to share • <span id="year"></span></div>
         </div>
         <div class="small footLinks">
-          <a href="#top">Top</a><span aria-hidden="true">•</span><a href="#games">Games</a><span aria-hidden="true">•</span><a href="#emulation">Emulation</a>
+          <a href="#top">Top</a><span aria-hidden="true">•</span><a href="#games">Games</a><span aria-hidden="true">•</span><a href="#emulation">Emulator</a>
         </div>
       </div>
     </footer>
@@ -885,6 +870,7 @@ FILE: /index.html
       const modeBtn = document.getElementById("modeBtn");
       const modeIcon = document.getElementById("modeIcon");
       const modeLabel = document.getElementById("modeLabel");
+      const themeLabel = document.getElementById("themeLabel");
       const themeSelect = document.getElementById("themeSelect");
 
       const burgerBtn = document.getElementById("burgerBtn");
@@ -947,10 +933,10 @@ FILE: /index.html
       let emuBootTimer = null;
 
       const GAME_LIST = [
-        { title: "Snake (placeholder)", desc: "Add a self-hosted HTML5 Snake later.", tags: ["Classic", "Arcade"], action: { type: "note" } },
-        { title: "2048 (placeholder)", desc: "Drop a licensed open-source 2048 into your repo.", tags: ["Puzzle", "Classic"], action: { type: "note" } },
-        { title: "Minesweeper (placeholder)", desc: "Host your own HTML5 version (licensed).", tags: ["Puzzle", "Classic"], action: { type: "note" } },
-        { title: "Emulation (Nintendo)", desc: "Upload legal ROMs you own/homebrew/public-domain.", tags: ["Emulation", "ROM Upload"], action: { type: "scroll", target: "#emulation" } },
+        { title: "Snake", desc: "Classic quick reflex game.", tags: ["Classic", "Arcade"], action: { type: "note" } },
+        { title: "2048", desc: "Slide tiles and try to hit 2048.", tags: ["Puzzle", "Classic"], action: { type: "note" } },
+        { title: "Minesweeper", desc: "Clear the board without hitting a mine.", tags: ["Puzzle", "Classic"], action: { type: "note" } },
+        { title: "Emulator", desc: "Play your own ROMs (legal/homebrew).", tags: ["Emulation", "ROM Upload"], action: { type: "scroll", target: "#emulation" } },
       ];
 
       function emuLog(...args) {
@@ -963,10 +949,6 @@ FILE: /index.html
 
       emuDebugClear?.addEventListener("click", () => {
         if (emuDebugLog) emuDebugLog.textContent = "";
-      });
-
-      emuDebugCheck?.addEventListener("click", async () => {
-        await emuCheckFiles();
       });
 
       window.addEventListener("error", (e) => {
@@ -1019,6 +1001,10 @@ FILE: /index.html
         emuLog("---- EMU FILE CHECK END ----");
       }
 
+      emuDebugCheck?.addEventListener("click", async () => {
+        await emuCheckFiles();
+      });
+
       function setMode(mode) {
         document.documentElement.setAttribute("data-mode", mode);
         localStorage.setItem(STORAGE_MODE, mode);
@@ -1039,10 +1025,21 @@ FILE: /index.html
         setMode(current === "dark" ? "light" : "dark");
       }
 
+      function themeName(theme) {
+        const map = {
+          greatwave: "Great Wave",
+          darkwater: "Dark Water",
+          deepsea: "Deep Sea",
+          ink: "Ink + Water",
+        };
+        return map[theme] || theme;
+      }
+
       function setTheme(theme) {
         document.documentElement.setAttribute("data-theme", theme);
         localStorage.setItem(STORAGE_THEME, theme);
         if (themeSelect) themeSelect.value = theme;
+        if (themeLabel) themeLabel.textContent = themeName(theme);
       }
 
       function initTheme() {
@@ -1171,7 +1168,7 @@ FILE: /index.html
           el.className = "card";
 
           const tags = g.tags
-            .map((t) => `<span class="tag">${t}</span>`)
+            .map((t) => `<span class="tag">${escapeHtml(t)}</span>`)
             .join("");
 
           el.innerHTML = `
@@ -1188,7 +1185,7 @@ FILE: /index.html
             if (g.action.type === "scroll") {
               document.querySelector(g.action.target)?.scrollIntoView({ behavior: "smooth" });
             } else {
-              alert("This is a placeholder. Add a real self-hosted HTML5 game later.");
+              alert("This spot is ready — I’m still adding the actual game files.");
             }
           });
 
@@ -1306,8 +1303,8 @@ FILE: /index.html
           emulatorFilesOk = true;
           startEmuBtn.disabled = false;
           updateEmuMeta();
-          setEmuStatus("Ready", "Local emulator files detected ✅", { spinning: false });
-          setEmuNote("Emulator files detected ✅ Upload a ROM to start.");
+          setEmuStatus("Ready", "Emulator ready ✅", { spinning: false });
+          setEmuNote("Ready ✅ Upload a ROM to start.");
           emuLog("Using LOCAL EmulatorJS:", EMULATOR_LOADER);
           return;
         }
@@ -1320,8 +1317,8 @@ FILE: /index.html
           emulatorFilesOk = true;
           startEmuBtn.disabled = false;
           updateEmuMeta();
-          setEmuStatus("Ready", "Using CDN emulator files ✅", { spinning: false });
-          setEmuNote("CDN emulator files detected ✅ Upload a ROM to start.");
+          setEmuStatus("Ready", "Emulator ready ✅ (CDN)", { spinning: false });
+          setEmuNote("Ready ✅ Upload a ROM to start.");
           emuLog("Using CDN EmulatorJS:", EMULATOR_LOADER);
           return;
         }
@@ -1338,7 +1335,7 @@ FILE: /index.html
             `Tried CDN:\n- ${EMULATOR_CDN_LOADER}\n\n` +
             `Fix: add EmulatorJS /emulatorjs/data/* OR allow CDN access.`
         });
-        setEmuNote("Missing emulator files. Add /emulatorjs/data/loader.js + data/ folder, or use CDN.");
+        setEmuNote("Emulator missing. Add emulator files or allow CDN.");
         emuLog("EmulatorJS missing both local and CDN.");
       }
 
@@ -1346,12 +1343,9 @@ FILE: /index.html
         updateEmuMeta();
 
         if (!emulatorFilesOk) {
-          setEmuStatus("Error", "Emulator files not detected.", {
+          setEmuStatus("Error", "Emulator not ready.", {
             spinning: false,
-            error:
-              `Emulator files not detected.\n\n` +
-              `Open "Emulator Debug Log" → "Check files" to see 404s.\n` +
-              `Or enable CDN access.`
+            error: "Open Emulator Debug Log → Check files."
           });
           return;
         }
@@ -1360,9 +1354,9 @@ FILE: /index.html
         if (!romFile) {
           setEmuStatus("Error", "No ROM selected.", {
             spinning: false,
-            error: "Pick a ROM file first (legal ROM you own / homebrew / public-domain)."
+            error: "Pick a ROM file first (legal/homebrew/public-domain)."
           });
-          setEmuNote("Pick a ROM file first (legal ROM you own / homebrew / public-domain).");
+          setEmuNote("Pick a ROM file first.");
           return;
         }
 
@@ -1378,18 +1372,18 @@ FILE: /index.html
         window.EJS_pathtodata = EMULATOR_DATA;
         window.EJS_biosUrl = emuBiosUrl || "";
 
-        setEmuStatus("Loading", "Loading emulator engine…", { spinning: true });
-        setEmuNote("Loading emulator… (first load can take a bit)");
+        setEmuStatus("Loading", "Loading emulator…", { spinning: true });
+        setEmuNote("Loading…");
+
         emuLog("START core:", window.EJS_core);
         emuLog("pathtodata:", window.EJS_pathtodata);
         emuLog("loader:", EMULATOR_LOADER);
 
         emuBootTimer = setTimeout(() => {
-          setEmuStatus("Error", "Emulator did not start (timeout).", {
+          setEmuStatus("Error", "Didn’t start (timeout).", {
             spinning: false,
             error:
-              `Timeout: loader loaded, but emulator UI did not appear.\n\n` +
-              `Try:\n- Switch N64 core (Mupen vs ParaLLEl)\n- Use .z64 ROM format for N64\n- Check Debug Log for WASM/core errors\n- Try a desktop browser`
+              `If this is N64:\n- Use .z64 ROM format\n- Try the other N64 core\n- Open Debug Log for errors`
           });
           setEmuNote("Timeout. Open Debug Log.");
         }, 20000);
@@ -1397,8 +1391,8 @@ FILE: /index.html
         injectLoader(EMULATOR_LOADER)
           .then(() => {
             emuLog("loader.js loaded OK");
-            setEmuStatus("Booting", "Engine loaded. Starting game…", { spinning: true });
-            setEmuNote("Engine loaded. Starting…");
+            setEmuStatus("Booting", "Starting…", { spinning: true });
+            setEmuNote("Starting…");
 
             setTimeout(() => {
               const hasCanvas = !!emuGame?.querySelector("canvas");
@@ -1406,10 +1400,8 @@ FILE: /index.html
               if (hasCanvas || hasIframe) {
                 if (emuBootTimer) clearTimeout(emuBootTimer);
                 emuBootTimer = null;
-                setEmuStatus("Running", "Emulator is running ✅", { spinning: false });
+                setEmuStatus("Running", "Running ✅", { spinning: false });
                 setEmuNote("Running ✅");
-              } else {
-                emuLog("No canvas/iframe detected yet...");
               }
             }, 1400);
           })
@@ -1418,21 +1410,24 @@ FILE: /index.html
             emuBootTimer = null;
 
             emuLog("loader.js FAILED:", String(err));
-            setEmuStatus("Error", "Failed to load emulator loader.", {
+            setEmuStatus("Error", "Loader failed.", {
               spinning: false,
               error:
                 `${String(err)}\n\n` +
-                `Fix:\n- If local: confirm ${EMULATOR_LOCAL_LOADER} exists in deployment\n- If CDN: your network might block cdn.emulatorjs.org\n- Open Debug Log → Check files`
+                `If CDN is blocked, you’ll need local emulator files.`
             });
-            setEmuNote("Failed to load emulator loader.");
+            setEmuNote("Loader failed.");
           });
       }
+
+      modeBtn?.addEventListener("click", toggleMode);
+      themeSelect?.addEventListener("change", (e) => setTheme(e.target.value));
 
       loadBtn?.addEventListener("click", () => {
         const id = parseYouTubeId(ytInput.value);
         if (!id) {
           ytInput.value = "";
-          ytInput.placeholder = "Invalid link/ID. Try again (YouTube link or 11-char ID).";
+          ytInput.placeholder = "Invalid link/ID. Try again.";
           return;
         }
         loadYouTube(id);
@@ -1450,15 +1445,13 @@ FILE: /index.html
       startEmuBtn?.addEventListener("click", emuStart);
       stopEmuBtn?.addEventListener("click", emuCleanup);
 
-      function initGames() { renderGames(); }
-
       (async () => {
         initMode();
         initTheme();
         initYear();
         initMobileMenu();
         initScrollSpy();
-        initGames();
+        renderGames();
 
         await chooseEmulatorSource();
         updateEmuMeta();
@@ -1466,109 +1459,3 @@ FILE: /index.html
     </script>
   </body>
 </html>
-
-
-<!-- =========================================================
-FILE: /api/proxy.js  (Vercel)
-- Only works if you deploy on Vercel (or any Node serverless that supports /api)
-- SAFE allowlist proxy (NOT an open proxy)
-========================================================= -->
-<script type="text/plain" data-filename="/api/proxy.js">
-/**
- * Safe allowlist proxy for Vercel.
- * Call:
- *   /api/proxy?url=https%3A%2F%2Fapi.yourdomain.com%2Fv1%2Fstatus
- *
- * IMPORTANT:
- * - Replace ALLOWED_HOSTS with domains you own/control.
- * - This is NOT an open proxy.
- */
-
-const ALLOWED_HOSTS = new Set([
-  "api.yourdomain.com", // <-- CHANGE THIS
-]);
-
-function isPrivateOrLocalHost(hostname) {
-  const h = (hostname || "").toLowerCase();
-  if (h === "localhost" || h.endsWith(".local")) return true;
-
-  const m = h.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-  if (!m) return false;
-
-  const a = Number(m[1]);
-  const b = Number(m[2]);
-  if (a === 10) return true;
-  if (a === 127) return true;
-  if (a === 192 && b === 168) return true;
-  if (a === 172 && b >= 16 && b <= 31) return true;
-  if (a === 169 && b === 254) return true;
-  return false;
-}
-
-function setCors(res, origin) {
-  res.setHeader("Access-Control-Allow-Origin", origin || "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Range, If-None-Match");
-  res.setHeader("Access-Control-Max-Age", "86400");
-  res.setHeader("Vary", "Origin");
-}
-
-export default async function handler(req, res) {
-  const origin = req.headers.origin || "";
-
-  if (req.method === "OPTIONS") {
-    setCors(res, origin);
-    return res.status(204).end();
-  }
-
-  if (!["GET", "HEAD"].includes(req.method)) {
-    setCors(res, origin);
-    return res.status(405).send("Method not allowed");
-  }
-
-  const raw = (req.query.url || "").toString();
-  if (!raw) {
-    setCors(res, origin);
-    return res.status(400).send("Missing ?url=");
-  }
-
-  let target;
-  try {
-    target = new URL(raw);
-  } catch {
-    setCors(res, origin);
-    return res.status(400).send("Invalid url");
-  }
-
-  if (!["https:", "http:"].includes(target.protocol)) {
-    setCors(res, origin);
-    return res.status(400).send("Bad protocol");
-  }
-
-  if (isPrivateOrLocalHost(target.hostname) || !ALLOWED_HOSTS.has(target.hostname)) {
-    setCors(res, origin);
-    return res.status(403).send("Upstream not allowed");
-  }
-
-  const headers = {};
-  if (req.headers.accept) headers["accept"] = req.headers.accept;
-  if (req.headers.range) headers["range"] = req.headers.range;
-  if (req.headers["if-none-match"]) headers["if-none-match"] = req.headers["if-none-match"];
-  if (req.headers.authorization) headers["authorization"] = req.headers.authorization;
-
-  const upstream = await fetch(target.toString(), {
-    method: req.method,
-    headers,
-    redirect: "follow",
-  });
-
-  setCors(res, origin);
-  res.status(upstream.status);
-
-  const ct = upstream.headers.get("content-type");
-  if (ct) res.setHeader("content-type", ct);
-
-  const buf = Buffer.from(await upstream.arrayBuffer());
-  return res.send(buf);
-}
-</script>
