@@ -337,14 +337,6 @@
       .head h2 { margin: 0; font-size: clamp(22px, 2.2vw, 30px); letter-spacing: -0.03em; }
       .head p { margin: 8px 0 0; color: var(--muted); max-width: 72ch; }
 
-      .featureList {
-        margin: 12px 0 0;
-        padding-left: 18px;
-        color: var(--muted);
-        line-height: 1.55;
-        font-weight: 780;
-      }
-
       .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
       @media (min-width: 740px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
       @media (min-width: 980px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
@@ -774,13 +766,31 @@
           </details>
         </div>
       </section>
+
+      <!-- Optional: quick proxy tester UI (keep or delete) -->
+      <section class="section container" id="proxytest">
+        <div class="head">
+          <h2>Proxy test</h2>
+          <p>Paste a URL from an allowed domain and click Fetch (this uses /api/proxy).</p>
+        </div>
+
+        <div class="toolbar">
+          <input class="input" id="proxyInput" placeholder="https://api.yourdomain.com/v1/status" inputmode="url" />
+          <button class="btn primary" id="proxyFetchBtn" type="button">Fetch</button>
+        </div>
+
+        <details class="card">
+          <summary>Proxy response</summary>
+          <pre id="proxyOut" style="white-space:pre-wrap; margin:10px 0 0; color:var(--muted)"></pre>
+        </details>
+      </section>
     </main>
 
     <footer>
       <div class="container foot">
         <div>
           <div class="footBrand">Arcade Hub</div>
-          <div class="small">Built for GitHub Pages • <span id="year"></span></div>
+          <div class="small">Hosted on Vercel • <span id="year"></span></div>
         </div>
         <div class="small footLinks">
           <a href="#top">Top</a><span aria-hidden="true">•</span><a href="#games">Games</a><span aria-hidden="true">•</span><a href="#emulation">Emulation</a>
@@ -791,6 +801,11 @@
     <script>
       const STORAGE_MODE = "arcadehub-mode";
       const STORAGE_THEME = "arcadehub-theme";
+
+      // ✅ Proxy helper (Vercel serverless function)
+      function proxyUrl(targetUrl) {
+        return `/api/proxy?url=${encodeURIComponent(targetUrl)}`;
+      }
 
       const modeBtn = document.getElementById("modeBtn");
       const modeIcon = document.getElementById("modeIcon");
@@ -824,6 +839,10 @@
       const stopEmuBtn = document.getElementById("stopEmuBtn");
       const emuNote = document.getElementById("emuNote");
       const emuGame = document.getElementById("emuGame");
+
+      const proxyInput = document.getElementById("proxyInput");
+      const proxyFetchBtn = document.getElementById("proxyFetchBtn");
+      const proxyOut = document.getElementById("proxyOut");
 
       const DEFAULT_VIDEO = "aqz-KE-bpKQ";
 
@@ -957,9 +976,7 @@
           if (idxEmbed !== -1 && /^[a-zA-Z0-9_-]{11}$/.test(parts[idxEmbed + 1] || "")) {
             return parts[idxEmbed + 1];
           }
-        } catch {
-          // not a URL
-        }
+        } catch {}
 
         return null;
       }
@@ -993,9 +1010,7 @@
           const el = document.createElement("article");
           el.className = "card";
 
-          const tags = g.tags
-            .map((t) => `<span class="tag">${t}</span>`)
-            .join("");
+          const tags = g.tags.map((t) => `<span class="tag">${t}</span>`).join("");
 
           el.innerHTML = `
             <h3>${escapeHtml(g.title)}</h3>
@@ -1089,6 +1104,19 @@
         emuInjectLoader();
       }
 
+      async function proxyFetch() {
+        const u = (proxyInput?.value || "").trim();
+        if (!u) return;
+        proxyOut.textContent = "Loading…";
+        try {
+          const r = await fetch(proxyUrl(u));
+          const text = await r.text();
+          proxyOut.textContent = `HTTP ${r.status}\n\n${text.slice(0, 8000)}`;
+        } catch (e) {
+          proxyOut.textContent = String(e);
+        }
+      }
+
       modeBtn?.addEventListener("click", toggleMode);
       themeSelect?.addEventListener("change", (e) => setTheme(e.target.value));
 
@@ -1107,6 +1135,8 @@
         ytInput.placeholder = "Paste YouTube link or video ID...";
         loadYouTube(DEFAULT_VIDEO);
       });
+
+      proxyFetchBtn?.addEventListener("click", proxyFetch);
 
       gameSearch?.addEventListener("input", renderGames);
       gameSort?.addEventListener("change", renderGames);
