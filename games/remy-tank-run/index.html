@@ -8,10 +8,10 @@
 
     <link rel="stylesheet" href="../../styles.css?v=2" />
     <!-- IMPORTANT: bump this v= number to kill cache -->
-    <link rel="stylesheet" href="./remy.css?v=999" />
+    <link rel="stylesheet" href="./remy.css?v=1000" />
 
     <script defer src="../../app.js?v=2"></script>
-    <script defer src="./remy.js?v=2"></script>
+    <script defer src="./remy.js?v=3"></script>
   </head>
 
   <body>
@@ -69,7 +69,7 @@
       <section class="section container">
         <div class="head">
           <h2>Remy Tank Run</h2>
-          <p>Jump the tank over cars. ↑ / click / tap to jump. Space to shoot (10s cooldown).</p>
+          <p>Jump: ↑ / W / click / tap • Duck: ↓ / S / hold Duck • Shoot: Space (cooldown)</p>
         </div>
 
         <div class="remyWrap">
@@ -87,35 +87,152 @@
                 <div class="remyStatLabel">Speed</div>
                 <div class="remyStatValue"><span id="speed">1.0</span>x</div>
               </div>
+              <div class="remyStat">
+                <div class="remyStatLabel">Coins</div>
+                <div class="remyStatValue"><span id="coinsRun">0</span></div>
+              </div>
+              <div class="remyStat">
+                <div class="remyStatLabel">Streak</div>
+                <div class="remyStatValue"><span id="streak">0</span></div>
+              </div>
+              <div class="remyStat">
+                <div class="remyStatLabel">Shield</div>
+                <div class="remyStatValue" id="shield">Off</div>
+              </div>
             </div>
 
             <div class="remyBtns">
               <button class="btn primary" id="startBtn" type="button">Start</button>
               <button class="btn" id="pauseBtn" type="button">Pause</button>
               <button class="btn" id="resetBtn" type="button">Reset</button>
+              <button class="btn" id="settingsBtn" type="button">Settings</button>
             </div>
 
-            <div class="remyHint">Tip: cars get faster over time. Space shoots every 10 seconds.</div>
+            <div class="remyHint">
+              Tip: coins buy upgrades + skins. Power-ups: ⚡ rapid fire • 🛡 shield • ⇈ double jump. Boss car appears sometimes.
+            </div>
           </div>
 
           <div class="card remyStage">
             <canvas id="game" width="960" height="420" aria-label="Remy Tank Run canvas"></canvas>
 
-            <!-- ✅ Live scoreboard bar on top of the canvas -->
+            <!-- ✅ Live top scoreboard bar on the canvas -->
             <div class="remyTopBar" aria-hidden="true">
               <div class="remyTopItem">Score <span id="topScore">0</span></div>
               <div class="remyTopItem">High <span id="topHigh">0</span></div>
+              <div class="remyTopItem">Coins <span id="topCoins">0</span></div>
+              <div class="remyTopItem">Streak <span id="topStreak">0</span></div>
               <div class="remyTopItem">Speed <span id="topSpeed">1.0</span>x</div>
               <div class="remyTopItem">Shot <span id="shotStatus">—</span></div>
+              <div class="remyTopItem">Power <span id="powerStatus">None</span></div>
             </div>
+
+            <div class="remyToast" id="toast" hidden aria-live="polite"></div>
 
             <div class="remyOverlay" id="overlay" hidden>
               <div class="remyOverlayBox">
                 <div class="remyTitle" id="overlayTitle">Remy Tank Run</div>
                 <div class="remySub" id="overlaySub">Press Start. Jump with ↑ / tap. Shoot with Space.</div>
+
+                <div class="remyScoreSubmit" id="scoreSubmit" hidden>
+                  <div class="remyField">
+                    <div class="remyFieldLabel">Save your score</div>
+                    <input class="input" id="playerName" maxlength="14" placeholder="Your name" />
+                  </div>
+                  <button class="btn primary" id="saveScoreBtn" type="button">Save to Top 10</button>
+                </div>
+
                 <div class="remyOverlayBtns">
                   <button class="btn primary" id="overlayStart" type="button">Start</button>
+                  <button class="btn" id="overlaySettings" type="button">Settings</button>
                   <a class="btn" href="../">Back to Games</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- ✅ Settings / Leaderboard / Achievements modal -->
+            <div class="remyModal" id="settingsModal" hidden>
+              <div class="remyModalBox" role="dialog" aria-modal="true" aria-label="Settings">
+                <div class="remyModalHead">
+                  <div class="remyModalTitle">Settings</div>
+                  <button class="icon" id="closeSettings" type="button" aria-label="Close">✕</button>
+                </div>
+
+                <div class="remyModalGrid">
+                  <div class="remyPanel">
+                    <div class="remyPanelTitle">Game</div>
+                    <label class="remyField">
+                      <div class="remyFieldLabel">Difficulty</div>
+                      <select class="select" id="difficultySelect">
+                        <option value="easy">Easy</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="hard">Hard</option>
+                      </select>
+                    </label>
+
+                    <label class="remyField">
+                      <div class="remyFieldLabel">Skin</div>
+                      <select class="select" id="skinSelect"></select>
+                    </label>
+
+                    <div class="remyRow">
+                      <button class="btn" id="resetHighBtn" type="button">Reset High</button>
+                      <button class="btn" id="clearDataBtn" type="button">Clear Data</button>
+                    </div>
+
+                    <div class="small remySmall" id="dataNote"></div>
+                  </div>
+
+                  <div class="remyPanel">
+                    <div class="remyPanelTitle">Audio</div>
+                    <label class="remyField">
+                      <div class="remyFieldLabel">Volume</div>
+                      <input id="volumeRange" type="range" min="0" max="1" step="0.01" />
+                    </label>
+                    <div class="small remySmall" id="volumeLabel"></div>
+                  </div>
+
+                  <div class="remyPanel">
+                    <div class="remyPanelTitle">Visual</div>
+                    <label class="remyCheck"><input id="motionBlurToggle" type="checkbox" /> Motion blur</label>
+                    <label class="remyCheck"><input id="alwaysRainToggle" type="checkbox" /> Always rain</label>
+                    <div class="small remySmall">Day/night + weather cycle runs automatically.</div>
+                  </div>
+
+                  <div class="remyPanel">
+                    <div class="remyPanelTitle">Shop</div>
+                    <div class="small remySmall">Coins: <b><span id="totalCoins">0</span></b></div>
+
+                    <div class="remyShopRow">
+                      <button class="btn primary" id="buyShotUpBtn" type="button">Upgrade Shot (-1s)</button>
+                      <div class="small remySmall" id="shotUpInfo"></div>
+                    </div>
+
+                    <div class="remyShopRow">
+                      <button class="btn" id="unlockSkinsBtn" type="button">Unlock All Skins</button>
+                      <div class="small remySmall" id="skinsInfo"></div>
+                    </div>
+                  </div>
+
+                  <div class="remyPanel">
+                    <div class="remyPanelTitle">Leaderboard (Top 10)</div>
+                    <ol class="remyList" id="leaderboardList"></ol>
+                  </div>
+
+                  <div class="remyPanel">
+                    <div class="remyPanelTitle">Achievements</div>
+                    <ul class="remyList" id="achList"></ul>
+                  </div>
+
+                  <div class="remyPanel">
+                    <div class="remyPanelTitle">Controls</div>
+                    <div class="small remySmall">
+                      Jump: ↑ / W / tap<br />
+                      Duck: ↓ / S / hold Duck<br />
+                      Shoot: Space / Shoot button<br />
+                      Pause: P • Reset: R
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -125,8 +242,9 @@
             <div class="remyMobileRow">
               <button class="btn primary remyBigBtn" id="jumpBtn" type="button">Jump</button>
               <button class="btn remyBigBtn" id="duckBtn" type="button">Duck</button>
+              <button class="btn remyBigBtn" id="shootBtn" type="button">Shoot</button>
             </div>
-            <div class="remyHint">Mobile: tap Jump • hold Duck to lower the hitbox.</div>
+            <div class="remyHint">Mobile: tap Jump • hold Duck • tap Shoot (cooldown shows on top bar).</div>
           </div>
         </div>
       </section>
