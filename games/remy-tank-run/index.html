@@ -1,60 +1,160 @@
-// ==============================
-// /games/remy-tank-run/index.html
-// (only the changed parts shown)
-// ==============================
+/* /games/remy-tank-run/remy.css */
 
-...
-<div class="head">
-  <h2>Remy Tank Run</h2>
-  <p>Jump the tank over cars. ↑ / click / tap to jump. Space to shoot (10s cooldown).</p>
-</div>
-
-...
-
-<div class="card remyStage">
-  <canvas id="game" width="960" height="420" aria-label="Remy Tank Run canvas"></canvas>
-
-  <!-- ✅ NEW: Live top scoreboard over the canvas -->
-  <div class="remyTopBar" aria-hidden="true">
-    <div class="remyTopItem">Score <span id="topScore">0</span></div>
-    <div class="remyTopItem">High <span id="topHigh">0</span></div>
-    <div class="remyTopItem">Speed <span id="topSpeed">1.0</span>x</div>
-    <div class="remyTopItem">Shot <span id="shotStatus">Ready</span></div>
-  </div>
-
-  <div class="remyOverlay" id="overlay" hidden>
-    <div class="remyOverlayBox">
-      <div class="remyTitle" id="overlayTitle">Remy Tank Run</div>
-      <div class="remySub" id="overlaySub">Press Start. Jump with ↑ / tap. Shoot with Space.</div>
-      <div class="remyOverlayBtns">
-        <button class="btn primary" id="overlayStart" type="button">Start</button>
-        <a class="btn" href="../">Back to Games</a>
-      </div>
-    </div>
-  </div>
-</div>
-...
-
-
-// ==============================
-// /games/remy-tank-run/remy.css
-// (append these styles)
-// ==============================
-
-.remyTopBar{
-  position:absolute;
-  left:10px;
-  right:10px;
-  top:10px;
-  z-index:3;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  pointer-events:none;
+.select option {
+  background: #ffffff !important;
+  color: #0b0f1a !important;
 }
 
-.remyTopItem{
-  border:1px solid var(--border);
+.remyWrap {
+  display: grid;
+  gap: 12px;
+}
+
+.remyHud {
+  padding: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.remyStats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.remyStat {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 16px;
+  padding: 10px 12px;
+  min-width: 120px;
+}
+
+.remyStatLabel {
+  color: var(--muted);
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: -0.01em;
+}
+
+.remyStatValue {
+  font-weight: 980;
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.remyBtns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.remyHint {
+  color: var(--muted);
+  font-weight: 850;
+  line-height: 1.5;
+  flex-basis: 100%;
+}
+
+.remyStage {
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.remyStage canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: manipulation;
+}
+
+.remyOverlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+  z-index: 4;
+}
+
+/* ✅ Fix: make hidden overlay actually disappear */
+.remyOverlay[hidden] {
+  display: none !important;
+  pointer-events: none;
+}
+
+.remyOverlayBox {
+  width: min(520px, calc(100% - 36px));
+  border: 1px solid var(--border);
+  border-radius: calc(var(--r) + 10px);
+  background: color-mix(in oklab, var(--panel2), transparent 0%);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.remyTitle {
+  font-weight: 980;
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+
+.remySub {
+  color: var(--muted);
+  font-weight: 850;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.remyOverlayBtns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.remyMobile {
+  padding: 14px;
+}
+
+.remyMobileRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.remyBigBtn {
+  height: 56px;
+  border-radius: 18px;
+  font-size: 16px;
+}
+
+@media (min-width: 860px) {
+  .remyMobile {
+    display: none;
+  }
+}
+
+/* ✅ NEW: Live scoreboard bar on top of canvas */
+.remyTopBar {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 10px;
+  z-index: 3;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  pointer-events: none;
+}
+
+.remyTopItem {
+  border: 1px solid var(--border);
   background: color-mix(in oklab, var(--panel2), transparent 15%);
   backdrop-filter: blur(8px);
   border-radius: 14px;
@@ -64,636 +164,8 @@
   color: var(--muted);
 }
 
-.remyTopItem span{
-  margin-left:6px;
+.remyTopItem span {
+  margin-left: 6px;
   color: var(--text, #fff);
   font-weight: 980;
 }
-
-.remyOverlay{ z-index: 4; } /* keep overlay above top bar */
-
-
-// ==============================
-// /games/remy-tank-run/remy.js
-// (FULL updated file)
-// ==============================
-
-const STORAGE_HIGH = "aidensarcade-remy-tank-high";
-
-// ✅ Car obstacle image
-const OBSTACLE_IMG_SRC =
-  "https://image2url.com/r2/default/images/1770830164179-3e663839-842b-4e92-9a7b-1cacc46b26c3.png";
-
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-
-const scoreEl = document.getElementById("score");
-const highEl = document.getElementById("high");
-const speedEl = document.getElementById("speed");
-
-const topScoreEl = document.getElementById("topScore");
-const topHighEl = document.getElementById("topHigh");
-const topSpeedEl = document.getElementById("topSpeed");
-const shotStatusEl = document.getElementById("shotStatus");
-
-const startBtn = document.getElementById("startBtn");
-const pauseBtn = document.getElementById("pauseBtn");
-const resetBtn = document.getElementById("resetBtn");
-
-const overlay = document.getElementById("overlay");
-const overlayTitle = document.getElementById("overlayTitle");
-const overlaySub = document.getElementById("overlaySub");
-const overlayStart = document.getElementById("overlayStart");
-
-const jumpBtn = document.getElementById("jumpBtn");
-const duckBtn = document.getElementById("duckBtn");
-
-// --- image load ---
-const obstacleImg = new Image();
-obstacleImg.crossOrigin = "anonymous";
-obstacleImg.src = OBSTACLE_IMG_SRC;
-let obstacleAspect = 2.0; // fallback until loaded
-obstacleImg.onload = () => {
-  if (obstacleImg.naturalWidth && obstacleImg.naturalHeight) {
-    obstacleAspect = obstacleImg.naturalWidth / obstacleImg.naturalHeight;
-  }
-};
-
-const WORLD = {
-  w: 960,
-  h: 420,
-  groundY: 330,
-};
-
-const PLAYER = {
-  x: 160,
-  y: WORLD.groundY,
-  w: 74,
-  h: 46,
-  vy: 0,
-  gravity: 2400,
-  jumpV: 860,
-  onGround: true,
-  ducking: false,
-};
-
-const GAME = {
-  running: false,
-  paused: false,
-  gameOver: false,
-  t: 0,
-  score: 0,
-  speed: 520,
-  speedMult: 1,
-  spawnTimer: 0,
-  nextSpawn: 1.0,
-  obstacles: [],
-  particles: [],
-  projectiles: [],
-  lastTs: 0,
-
-  // ✅ shooting cooldown
-  shotCooldown: 10.0,
-  shotTimer: 0, // counts down to 0
-};
-
-function setOverlay(show, title = "", sub = "") {
-  overlay.hidden = !show;
-  if (title) overlayTitle.textContent = title;
-  if (sub) overlaySub.textContent = sub;
-}
-
-function syncTopBar() {
-  if (topScoreEl) topScoreEl.textContent = String(GAME.score);
-  if (topHighEl) topHighEl.textContent = highEl.textContent || "0";
-  if (topSpeedEl) topSpeedEl.textContent = GAME.speedMult.toFixed(1);
-
-  if (!shotStatusEl) return;
-  if (!GAME.running) {
-    shotStatusEl.textContent = "—";
-    return;
-  }
-  if (GAME.shotTimer <= 0) shotStatusEl.textContent = "Ready";
-  else shotStatusEl.textContent = `${GAME.shotTimer.toFixed(1)}s`;
-}
-
-function loadHigh() {
-  const v = Number(localStorage.getItem(STORAGE_HIGH) || "0");
-  highEl.textContent = String(Number.isFinite(v) ? v : 0);
-  syncTopBar();
-}
-
-function saveHighIfNeeded() {
-  const high = Number(highEl.textContent || "0");
-  if (GAME.score > high) {
-    localStorage.setItem(STORAGE_HIGH, String(GAME.score));
-    highEl.textContent = String(GAME.score);
-  }
-}
-
-function resetState() {
-  GAME.running = false;
-  GAME.paused = false;
-  GAME.gameOver = false;
-  GAME.t = 0;
-  GAME.score = 0;
-  GAME.speed = 520;
-  GAME.speedMult = 1;
-  GAME.spawnTimer = 0;
-  GAME.nextSpawn = 0.9;
-  GAME.obstacles = [];
-  GAME.particles = [];
-  GAME.projectiles = [];
-  GAME.lastTs = 0;
-  GAME.shotTimer = 0;
-
-  PLAYER.y = WORLD.groundY;
-  PLAYER.vy = 0;
-  PLAYER.onGround = true;
-  PLAYER.ducking = false;
-
-  scoreEl.textContent = "0";
-  speedEl.textContent = "1.0";
-  setOverlay(false);
-  draw(0);
-  syncTopBar();
-}
-
-function startGame() {
-  if (GAME.gameOver) resetState();
-  if (!GAME.running) {
-    GAME.running = true;
-    GAME.paused = false;
-    setOverlay(false);
-    requestAnimationFrame(loop);
-  }
-  syncTopBar();
-}
-
-function pauseToggle() {
-  if (!GAME.running) return;
-  GAME.paused = !GAME.paused;
-  if (GAME.paused) {
-    setOverlay(true, "Paused", "Press Pause again or Start to continue.");
-  } else {
-    setOverlay(false);
-    requestAnimationFrame(loop);
-  }
-}
-
-function gameOver() {
-  GAME.running = false;
-  GAME.paused = false;
-  GAME.gameOver = true;
-  saveHighIfNeeded();
-  syncTopBar();
-  setOverlay(true, "Game Over", "Hit Start to run it back.");
-}
-
-function jump() {
-  if (GAME.gameOver) return;
-  if (!GAME.running) startGame();
-  if (!PLAYER.onGround) return;
-
-  PLAYER.vy = -PLAYER.jumpV;
-  PLAYER.onGround = false;
-  PLAYER.ducking = false;
-
-  burst(PLAYER.x + PLAYER.w * 0.25, PLAYER.y + 24, 10);
-}
-
-function duck(down) {
-  PLAYER.ducking = Boolean(down);
-}
-
-// ✅ shoot (Space) every 10 seconds
-function shoot() {
-  if (GAME.gameOver) return;
-  if (!GAME.running) startGame();
-  if (GAME.paused) return;
-  if (GAME.shotTimer > 0) return;
-
-  GAME.shotTimer = GAME.shotCooldown;
-
-  const yBase = PLAYER.y - PLAYER.h + (PLAYER.ducking ? 14 : 6);
-  GAME.projectiles.push({
-    x: PLAYER.x + PLAYER.w + 8,
-    y: yBase + 18,
-    w: 16,
-    h: 6,
-    vx: 980, // projectile speed to the right
-  });
-
-  burst(PLAYER.x + PLAYER.w + 10, yBase + 18, 8);
-}
-
-function burst(x, y, n) {
-  for (let i = 0; i < n; i++) {
-    GAME.particles.push({
-      x,
-      y,
-      vx: (Math.random() - 0.5) * 260,
-      vy: -Math.random() * 240,
-      life: 0.35 + Math.random() * 0.35,
-    });
-  }
-}
-
-function rand(min, max) {
-  return min + Math.random() * (max - min);
-}
-
-function spawnObstacle() {
-  // ✅ Use image aspect so it doesn’t look squished.
-  // Two size bands for variety.
-  const big = Math.random() < 0.45;
-  const h = big ? rand(54, 76) : rand(42, 60);
-  const w = Math.max(80, Math.min(150, h * obstacleAspect));
-
-  const y = WORLD.groundY - h + 2;
-
-  GAME.obstacles.push({
-    x: WORLD.w + 40,
-    y,
-    w,
-    h,
-    kind: "carimg",
-    glow: rand(0.55, 0.9),
-  });
-}
-
-function rectsOverlap(a, b) {
-  return (
-    a.x < b.x + b.w &&
-    a.x + a.w > b.x &&
-    a.y < b.y + b.h &&
-    a.y + a.h > b.y
-  );
-}
-
-function update(dt) {
-  GAME.t += dt;
-
-  GAME.speedMult = Math.min(2.35, 1 + GAME.t / 55);
-  speedEl.textContent = GAME.speedMult.toFixed(1);
-
-  if (GAME.shotTimer > 0) GAME.shotTimer = Math.max(0, GAME.shotTimer - dt);
-
-  GAME.spawnTimer += dt;
-  if (GAME.spawnTimer >= GAME.nextSpawn) {
-    GAME.spawnTimer = 0;
-    spawnObstacle();
-    const base = 1.05 - Math.min(0.45, GAME.t / 120);
-    GAME.nextSpawn = rand(base, base + 0.55);
-  }
-
-  PLAYER.vy += PLAYER.gravity * dt;
-  PLAYER.y += PLAYER.vy * dt;
-
-  const duckBonus = PLAYER.ducking ? 10 : 0;
-  const ground = WORLD.groundY + duckBonus;
-
-  if (PLAYER.y >= ground) {
-    PLAYER.y = ground;
-    PLAYER.vy = 0;
-    PLAYER.onGround = true;
-  }
-
-  const vx = GAME.speed * GAME.speedMult;
-
-  for (const o of GAME.obstacles) {
-    o.x -= vx * dt;
-  }
-
-  // projectiles move right
-  for (const pr of GAME.projectiles) {
-    pr.x += pr.vx * dt;
-  }
-
-  GAME.obstacles = GAME.obstacles.filter((o) => o.x + o.w > -60);
-  GAME.projectiles = GAME.projectiles.filter((p) => p.x < WORLD.w + 80);
-
-  // projectile vs obstacle
-  for (let i = GAME.projectiles.length - 1; i >= 0; i--) {
-    const p = GAME.projectiles[i];
-    for (let j = GAME.obstacles.length - 1; j >= 0; j--) {
-      const o = GAME.obstacles[j];
-      if (rectsOverlap(p, o)) {
-        burst(o.x + o.w * 0.5, o.y + o.h * 0.5, 16);
-        GAME.projectiles.splice(i, 1);
-        GAME.obstacles.splice(j, 1);
-        GAME.score += 200; // bonus for hit
-        break;
-      }
-    }
-  }
-
-  for (const p of GAME.particles) {
-    p.life -= dt;
-    p.x += p.vx * dt;
-    p.y += p.vy * dt;
-    p.vy += 1200 * dt;
-  }
-  GAME.particles = GAME.particles.filter((p) => p.life > 0);
-
-  GAME.score += Math.floor(vx * dt * 0.05);
-  scoreEl.textContent = String(GAME.score);
-
-  const playerHitbox = {
-    x: PLAYER.x + 10,
-    y: PLAYER.y - PLAYER.h + (PLAYER.ducking ? 12 : 0),
-    w: PLAYER.w - 20,
-    h: PLAYER.h - (PLAYER.ducking ? 16 : 0),
-  };
-
-  for (const o of GAME.obstacles) {
-    if (rectsOverlap(playerHitbox, o)) {
-      burst(PLAYER.x + PLAYER.w * 0.5, PLAYER.y - 24, 18);
-      return gameOver();
-    }
-  }
-
-  syncTopBar();
-}
-
-function drawSky() {
-  const g = ctx.createLinearGradient(0, 0, 0, WORLD.h);
-  g.addColorStop(0, "rgba(2,6,17,1)");
-  g.addColorStop(0.55, "rgba(3,22,43,1)");
-  g.addColorStop(1, "rgba(1,10,20,1)");
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, WORLD.w, WORLD.h);
-
-  ctx.globalAlpha = 0.25;
-  ctx.fillStyle = "rgba(14,165,233,1)";
-  for (let i = 0; i < 10; i++) {
-    const x = (i * 120 + (GAME.t * 40) % 120) % WORLD.w;
-    ctx.fillRect(WORLD.w - x, 60 + (i % 3) * 26, 60, 2);
-  }
-  ctx.globalAlpha = 1;
-}
-
-function drawGround() {
-  const y = WORLD.groundY + 22;
-  const g = ctx.createLinearGradient(0, y - 50, 0, y + 70);
-  g.addColorStop(0, "rgba(20,184,166,0.10)");
-  g.addColorStop(1, "rgba(0,0,0,0.35)");
-  ctx.fillStyle = g;
-  ctx.fillRect(0, y - 80, WORLD.w, 140);
-
-  ctx.strokeStyle = "rgba(255,255,255,0.08)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(0, y);
-  ctx.lineTo(WORLD.w, y);
-  ctx.stroke();
-
-  const dash = (GAME.t * 260) % 60;
-  ctx.strokeStyle = "rgba(14,165,233,0.35)";
-  ctx.lineWidth = 2;
-  for (let x = -dash; x < WORLD.w; x += 60) {
-    ctx.beginPath();
-    ctx.moveTo(x, y + 18);
-    ctx.lineTo(x + 26, y + 18);
-    ctx.stroke();
-  }
-}
-
-function roundRect(x, y, w, h, r) {
-  const rr = Math.min(r, w / 2, h / 2);
-  ctx.beginPath();
-  ctx.moveTo(x + rr, y);
-  ctx.arcTo(x + w, y, x + w, y + h, rr);
-  ctx.arcTo(x + w, y + h, x, y + h, rr);
-  ctx.arcTo(x, y + h, x, y, rr);
-  ctx.arcTo(x, y, x + w, y, rr);
-  ctx.closePath();
-}
-
-function drawTankKid() {
-  const baseY = PLAYER.y;
-  const h = PLAYER.h;
-  const w = PLAYER.w;
-  const x = PLAYER.x;
-  const y = baseY - h + (PLAYER.ducking ? 12 : 0);
-
-  const neon = ctx.createLinearGradient(x, y, x + w, y + h);
-  neon.addColorStop(0, "rgba(14,165,233,0.95)");
-  neon.addColorStop(1, "rgba(20,184,166,0.9)");
-
-  ctx.fillStyle = "rgba(255,255,255,0.08)";
-  ctx.fillRect(x - 2, y - 2, w + 4, h + 4);
-
-  const tankH = PLAYER.ducking ? 26 : 30;
-  const tankY = baseY - tankH;
-
-  ctx.fillStyle = "rgba(255,255,255,0.10)";
-  roundRect(x, tankY, w, tankH, 10);
-  ctx.fill();
-
-  ctx.strokeStyle = "rgba(255,255,255,0.22)";
-  ctx.lineWidth = 2;
-  roundRect(x, tankY, w, tankH, 10);
-  ctx.stroke();
-
-  ctx.fillStyle = neon;
-  roundRect(x + 8, tankY + 8, w - 16, tankH - 16, 8);
-  ctx.fill();
-
-  const wheelY = baseY - 6;
-  ctx.fillStyle = "rgba(0,0,0,0.55)";
-  for (let i = 0; i < 4; i++) {
-    const wx = x + 12 + i * 16;
-    ctx.beginPath();
-    ctx.arc(wx, wheelY, 6, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = "rgba(255,255,255,0.18)";
-    ctx.stroke();
-  }
-
-  if (!PLAYER.ducking) {
-    const kidX = x + 22;
-    const kidY = tankY - 22;
-
-    ctx.fillStyle = "rgba(255,255,255,0.12)";
-    roundRect(kidX - 6, kidY - 6, 34, 26, 10);
-    ctx.fill();
-
-    ctx.fillStyle = "rgba(255,255,255,0.92)";
-    ctx.beginPath();
-    ctx.arc(kidX + 10, kidY + 10, 10, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "rgba(0,0,0,0.55)";
-    ctx.beginPath();
-    ctx.arc(kidX + 6, kidY + 8, 2.2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(kidX + 13, kidY + 8, 2.2, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = "rgba(0,0,0,0.5)";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(kidX + 10, kidY + 12, 5, 0.12 * Math.PI, 0.88 * Math.PI);
-    ctx.stroke();
-  }
-
-  // barrel
-  ctx.strokeStyle = "rgba(14,165,233,0.35)";
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(x + 40, tankY + 10);
-  ctx.lineTo(x + 70, tankY - (PLAYER.ducking ? 0 : 10));
-  ctx.stroke();
-}
-
-function drawCarObstacle(o) {
-  // glow frame
-  ctx.fillStyle = "rgba(255,255,255,0.10)";
-  roundRect(o.x - 2, o.y - 2, o.w + 4, o.h + 4, 14);
-  ctx.fill();
-
-  // image (fallback if not loaded)
-  if (obstacleImg.complete && obstacleImg.naturalWidth > 0) {
-    ctx.globalAlpha = 0.95;
-    ctx.drawImage(obstacleImg, o.x, o.y, o.w, o.h);
-    ctx.globalAlpha = 1;
-
-    // subtle highlight
-    ctx.strokeStyle = `rgba(14,165,233,${0.22 * o.glow})`;
-    ctx.lineWidth = 2;
-    roundRect(o.x + 1, o.y + 1, o.w - 2, o.h - 2, 12);
-    ctx.stroke();
-    return;
-  }
-
-  // fallback simple shape if image fails
-  ctx.fillStyle = "rgba(0,0,0,0.45)";
-  roundRect(o.x, o.y, o.w, o.h, 14);
-  ctx.fill();
-}
-
-function drawProjectiles() {
-  for (const p of GAME.projectiles) {
-    ctx.fillStyle = "rgba(14,165,233,0.95)";
-    roundRect(p.x, p.y, p.w, p.h, 3);
-    ctx.fill();
-
-    ctx.globalAlpha = 0.35;
-    ctx.fillStyle = "rgba(20,184,166,1)";
-    roundRect(p.x - 8, p.y + 1, 8, p.h - 2, 3);
-    ctx.fill();
-    ctx.globalAlpha = 1;
-  }
-}
-
-function drawParticles() {
-  for (const p of GAME.particles) {
-    const a = Math.max(0, Math.min(1, p.life));
-    ctx.globalAlpha = a * 0.8;
-    ctx.fillStyle = "rgba(14,165,233,1)";
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-}
-
-function draw() {
-  ctx.clearRect(0, 0, WORLD.w, WORLD.h);
-  drawSky();
-  drawGround();
-
-  for (const o of GAME.obstacles) drawCarObstacle(o);
-  drawProjectiles();
-  drawTankKid();
-  drawParticles();
-
-  if (!GAME.running && !GAME.gameOver) {
-    ctx.fillStyle = "rgba(255,255,255,0.75)";
-    ctx.font = "900 20px ui-sans-serif, system-ui";
-    ctx.fillText("Press Start — Jump: ↑ / tap — Shoot: Space", 28, 42);
-  }
-}
-
-function loop(ts) {
-  if (!GAME.running || GAME.paused) return;
-
-  const t = ts / 1000;
-  const last = GAME.lastTs || t;
-  let dt = t - last;
-  GAME.lastTs = t;
-
-  dt = Math.min(dt, 0.03);
-
-  update(dt);
-  draw();
-
-  if (GAME.running) requestAnimationFrame(loop);
-}
-
-function onKey(e) {
-  const k = e.key.toLowerCase();
-
-  // ✅ Space = shoot
-  if (k === " ") {
-    e.preventDefault();
-    shoot();
-    return;
-  }
-
-  // ✅ Jump = ArrowUp/W
-  if (k === "arrowup" || k === "w") {
-    e.preventDefault();
-    jump();
-  }
-
-  if (k === "arrowdown" || k === "s") duck(true);
-  if (k === "p") pauseToggle();
-  if (k === "r") resetState();
-}
-
-function onKeyUp(e) {
-  const k = e.key.toLowerCase();
-  if (k === "arrowdown" || k === "s") duck(false);
-}
-
-function onTap() {
-  jump();
-}
-
-startBtn?.addEventListener("click", startGame);
-pauseBtn?.addEventListener("click", pauseToggle);
-resetBtn?.addEventListener("click", resetState);
-
-overlayStart?.addEventListener("click", startGame);
-
-jumpBtn?.addEventListener("click", jump);
-duckBtn?.addEventListener("mousedown", () => duck(true));
-duckBtn?.addEventListener("mouseup", () => duck(false));
-duckBtn?.addEventListener("mouseleave", () => duck(false));
-duckBtn?.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  duck(true);
-});
-duckBtn?.addEventListener("touchend", () => duck(false));
-
-window.addEventListener("keydown", onKey, { passive: false });
-window.addEventListener("keyup", onKeyUp);
-
-canvas.addEventListener("pointerdown", onTap);
-
-function fitCanvas() {
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = Math.floor(WORLD.w * dpr);
-  canvas.height = Math.floor(WORLD.h * dpr);
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-}
-
-loadHigh();
-fitCanvas();
-resetState();
-setOverlay(true, "Remy Tank Run", "Press Start. Jump: ↑ / tap. Shoot: Space (10s cooldown).");
-
-window.addEventListener("resize", fitCanvas);
