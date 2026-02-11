@@ -1,0 +1,134 @@
+/* /games/remy-tank-run/remy.css */
+
+.select option {
+  background: #ffffff !important;
+  color: #0b0f1a !important;
+}
+
+.remyWrap {
+  display: grid;
+  gap: 12px;
+}
+
+.remyHud {
+  padding: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.remyStats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.remyStat {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 16px;
+  padding: 10px 12px;
+  min-width: 120px;
+}
+
+.remyStatLabel {
+  color: var(--muted);
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: -0.01em;
+}
+
+.remyStatValue {
+  font-weight: 980;
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.remyBtns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.remyHint {
+  color: var(--muted);
+  font-weight: 850;
+  line-height: 1.5;
+  flex-basis: 100%;
+}
+
+.remyStage {
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.remyStage canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: manipulation;
+}
+
+.remyOverlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+}
+
+.remyOverlayBox {
+  width: min(520px, calc(100% - 36px));
+  border: 1px solid var(--border);
+  border-radius: calc(var(--r) + 10px);
+  background: color-mix(in oklab, var(--panel2), transparent 0%);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.remyTitle {
+  font-weight: 980;
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+
+.remySub {
+  color: var(--muted);
+  font-weight: 850;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.remyOverlayBtns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.remyMobile {
+  padding: 14px;
+}
+
+.remyMobileRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.remyBigBtn {
+  height: 56px;
+  border-radius: 18px;
+  font-size: 16px;
+}
+
+@media (min-width: 860px) {
+  .remyMobile {
+    display: none;
+  }
+}
