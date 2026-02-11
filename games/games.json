@@ -1,14 +1,21 @@
 [
   {
+    "title": "Remy Tank Run",
+    "desc": "A gift  for remy",
+    "tags": ["Runner", "Arcade"],
+    "status": "ready",
+    "href": "./remy-tank-run/"
+  },
+  {
     "title": "CrazyGames",
-    "desc": "Huge web arcade. If embed is blocked, it opens in a new tab.",
+    "desc": "Huge web arcade. If embed is blocked, it opens in a new tab. doesnt work ",
     "tags": ["Web Arcade", "Launcher"],
     "status": "ready",
     "href": "./crazygames/"
   },
   {
     "title": "Emulation",
-    "desc": "Play classic Nintendo systems (bring-your-own legal files).",
+    "desc": "Play classic Nintendo systems (bring-your-own legal files or dont idc).",
     "tags": ["Nintendo", "ROM Upload"],
     "status": "ready",
     "href": "../emulation/"
@@ -24,19 +31,19 @@
     "title": "Portal",
     "desc": "Launch/embed-friendly sites. If a site blocks embeds, it opens in a new tab.",
     "tags": ["Launcher", "Web"],
-    "status": "ready",
+    "status": "Dont even to lazy to do this",
     "href": "../portal/"
   },
   {
     "title": "Snake",
-    "desc": "Classic Snake. Add your own HTML5 version later.",
+    "desc": "Complete dog shit",
     "tags": ["Classic", "Arcade"],
     "status": "soon",
     "href": null
   },
   {
     "title": "2048",
-    "desc": "Puzzle grid game. Drop a licensed version into /games/2048/.",
+    "desc": "koa is a nerd he will like it",
     "tags": ["Puzzle", "Classic"],
     "status": "soon",
     "href": null
