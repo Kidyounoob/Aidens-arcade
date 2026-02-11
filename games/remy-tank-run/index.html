@@ -1,795 +1,136 @@
-=========================================
-FILE: /games/remy-tank-run/index.html
-(ONLY change these parts)
-=========================================
-
-A) In the stats row (inside <div class="remyStats"> ... ), ADD this block:
-------------------------------------------------
-<div class="remyStat">
-  <div class="remyStatLabel">Shot</div>
-  <div class="remyStatValue"><span id="shotCd">Ready</span></div>
-</div>
-------------------------------------------------
-
-B) In the buttons row (inside <div class="remyBtns"> ... ), ADD this button:
-------------------------------------------------
-<button class="btn" id="shootBtn" type="button">Shoot</button>
-------------------------------------------------
-
-C) In the mobile buttons (inside <div class="remyMobileRow"> ... ), ADD this button:
-------------------------------------------------
-<button class="btn remyBigBtn" id="shootBtnMobile" type="button">Shoot</button>
-------------------------------------------------
-
-
-
-=========================================
-FILE: /games/remy-tank-run/remy.css
-(REPLACE ENTIRE FILE with this)
-=========================================
-/* /games/remy-tank-run/remy.css */
-
-.select option {
-  background: #ffffff !important;
-  color: #0b0f1a !important;
-}
-
-.remyWrap {
-  display: grid;
-  gap: 12px;
-}
-
-.remyHud {
-  padding: 14px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.remyStats {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.remyStat {
-  border: 1px solid var(--border);
-  background: var(--panel);
-  border-radius: 16px;
-  padding: 10px 12px;
-  min-width: 120px;
-}
-
-.remyStatLabel {
-  color: var(--muted);
-  font-weight: 900;
-  font-size: 12px;
-  letter-spacing: -0.01em;
-}
-
-.remyStatValue {
-  font-weight: 980;
-  font-size: 18px;
-  margin-top: 2px;
-}
-
-.remyBtns {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.remyHint {
-  color: var(--muted);
-  font-weight: 850;
-  line-height: 1.5;
-  flex-basis: 100%;
-}
-
-.remyStage {
-  padding: 0;
-  overflow: hidden;
-  position: relative;
-}
-
-.remyStage canvas {
-  display: block;
-  width: 100%;
-  height: auto;
-  touch-action: manipulation;
-}
-
-.remyOverlay {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(10px);
-}
-
-/* ✅ Fix: make hidden overlay actually disappear */
-.remyOverlay[hidden] {
-  display: none !important;
-  pointer-events: none;
-}
-
-.remyOverlayBox {
-  width: min(520px, calc(100% - 36px));
-  border: 1px solid var(--border);
-  border-radius: calc(var(--r) + 10px);
-  background: color-mix(in oklab, var(--panel2), transparent 0%);
-  box-shadow: var(--shadow);
-  padding: 16px;
-}
-
-.remyTitle {
-  font-weight: 980;
-  font-size: 24px;
-  letter-spacing: -0.03em;
-}
-
-.remySub {
-  color: var(--muted);
-  font-weight: 850;
-  margin-top: 6px;
-  line-height: 1.5;
-}
-
-.remyOverlayBtns {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 14px;
-}
-
-.remyMobile {
-  padding: 14px;
-}
-
-.remyMobileRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-}
-
-.remyBigBtn {
-  height: 56px;
-  border-radius: 18px;
-  font-size: 16px;
-}
-
-@media (min-width: 860px) {
-  .remyMobile {
-    display: none;
-  }
-}
-
-
-
-=========================================
-FILE: /games/remy-tank-run/remy.js
-(REPLACE ENTIRE FILE with this)
-=========================================
-/* /games/remy-tank-run/remy.js */
-
-const STORAGE_HIGH = "aidensarcade-remy-tank-high";
-
-/**
- * Your obstacle image (external). If it ever fails to load, the game falls back to a drawn truck.
- * Best practice: upload it into /games/remy-tank-run/assets/obstacle.png and set:
- *   const OBSTACLE_IMG_SRC = "./assets/obstacle.png";
- */
-const OBSTACLE_IMG_SRC =
-  "https://image2url.com/r2/default/images/1770830164179-3e663839-842b-4e92-9a7b-1cacc46b26c3.png";
-
-const SHOT_COOLDOWN_SEC = 10;
-
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-
-const scoreEl = document.getElementById("score");
-const highEl = document.getElementById("high");
-const speedEl = document.getElementById("speed");
-const shotCdEl = document.getElementById("shotCd");
-
-const startBtn = document.getElementById("startBtn");
-const pauseBtn = document.getElementById("pauseBtn");
-const resetBtn = document.getElementById("resetBtn");
-
-const shootBtn = document.getElementById("shootBtn");
-const shootBtnMobile = document.getElementById("shootBtnMobile");
-
-const overlay = document.getElementById("overlay");
-const overlayTitle = document.getElementById("overlayTitle");
-const overlaySub = document.getElementById("overlaySub");
-const overlayStart = document.getElementById("overlayStart");
-
-const jumpBtn = document.getElementById("jumpBtn");
-const duckBtn = document.getElementById("duckBtn");
-
-const WORLD = { w: 960, h: 420, groundY: 330 };
-
-const PLAYER = {
-  x: 160,
-  y: WORLD.groundY,
-  w: 74,
-  h: 46,
-  vy: 0,
-  gravity: 2400,
-  jumpV: 860,
-  onGround: true,
-  ducking: false,
-};
-
-const GAME = {
-  running: false,
-  paused: false,
-  gameOver: false,
-  t: 0,
-  score: 0,
-  speed: 520,
-  speedMult: 1,
-  spawnTimer: 0,
-  nextSpawn: 1.0,
-  obstacles: [],
-  shots: [],
-  particles: [],
-  lastTs: 0,
-  shotCd: 0,
-};
-
-const obstacleImg = new Image();
-obstacleImg.crossOrigin = "anonymous";
-let obstacleImgOk = false;
-let obstacleAspect = 1.8;
-
-obstacleImg.onload = () => {
-  obstacleImgOk = true;
-  obstacleAspect = obstacleImg.width / obstacleImg.height || 1.8;
-};
-obstacleImg.onerror = () => {
-  obstacleImgOk = false;
-};
-obstacleImg.src = OBSTACLE_IMG_SRC;
-
-function setOverlay(show, title = "", sub = "") {
-  overlay.hidden = !show;
-  if (title) overlayTitle.textContent = title;
-  if (sub) overlaySub.textContent = sub;
-}
-
-function loadHigh() {
-  const v = Number(localStorage.getItem(STORAGE_HIGH) || "0");
-  highEl.textContent = String(Number.isFinite(v) ? v : 0);
-}
-
-function saveHighIfNeeded() {
-  const high = Number(highEl.textContent || "0");
-  if (GAME.score > high) {
-    localStorage.setItem(STORAGE_HIGH, String(GAME.score));
-    highEl.textContent = String(GAME.score);
-  }
-}
-
-function setShotLabel() {
-  if (!shotCdEl) return;
-  if (GAME.shotCd <= 0) shotCdEl.textContent = "Ready";
-  else shotCdEl.textContent = `${GAME.shotCd.toFixed(1)}s`;
-}
-
-function resetState() {
-  GAME.running = false;
-  GAME.paused = false;
-  GAME.gameOver = false;
-  GAME.t = 0;
-  GAME.score = 0;
-  GAME.speed = 520;
-  GAME.speedMult = 1;
-  GAME.spawnTimer = 0;
-  GAME.nextSpawn = 0.9;
-  GAME.obstacles = [];
-  GAME.shots = [];
-  GAME.particles = [];
-  GAME.lastTs = 0;
-  GAME.shotCd = 0;
-
-  PLAYER.y = WORLD.groundY;
-  PLAYER.vy = 0;
-  PLAYER.onGround = true;
-  PLAYER.ducking = false;
-
-  scoreEl.textContent = "0";
-  speedEl.textContent = "1.0";
-  setShotLabel();
-
-  setOverlay(true, "Remy Tank Run", "Press Start / Space to begin. Shoot every 10s.");
-  draw();
-}
-
-function startGame() {
-  if (GAME.gameOver) resetState();
-  if (!GAME.running) {
-    GAME.running = true;
-    GAME.paused = false;
-    setOverlay(false);
-    requestAnimationFrame(loop);
-  } else if (GAME.paused) {
-    GAME.paused = false;
-    setOverlay(false);
-    requestAnimationFrame(loop);
-  }
-}
-
-function pauseToggle() {
-  if (!GAME.running) return;
-  GAME.paused = !GAME.paused;
-
-  if (GAME.paused) setOverlay(true, "Paused", "Press Pause again or Start to continue.");
-  else {
-    setOverlay(false);
-    requestAnimationFrame(loop);
-  }
-}
-
-function gameOver() {
-  GAME.running = false;
-  GAME.paused = false;
-  GAME.gameOver = true;
-  saveHighIfNeeded();
-  setOverlay(true, "Game Over", "Press Start to try again.");
-}
-
-function jump() {
-  if (GAME.gameOver) return;
-  if (!GAME.running) startGame();
-  if (!PLAYER.onGround) return;
-
-  PLAYER.vy = -PLAYER.jumpV;
-  PLAYER.onGround = false;
-  PLAYER.ducking = false;
-
-  burst(PLAYER.x + PLAYER.w * 0.25, PLAYER.y + 24, 10);
-}
-
-function duck(down) {
-  PLAYER.ducking = Boolean(down);
-}
-
-function shoot() {
-  if (GAME.gameOver) return;
-  if (!GAME.running) startGame();
-  if (GAME.shotCd > 0) return;
-
-  const tankTop = PLAYER.y - (PLAYER.ducking ? 26 : 30);
-  const barrelX = PLAYER.x + PLAYER.w - 2;
-  const barrelY = tankTop + 6;
-
-  GAME.shots.push({
-    x: barrelX,
-    y: barrelY,
-    w: 18,
-    h: 6,
-    vx: 980,
-  });
-
-  GAME.shotCd = SHOT_COOLDOWN_SEC;
-  setShotLabel();
-}
-
-function burst(x, y, n) {
-  for (let i = 0; i < n; i++) {
-    GAME.particles.push({
-      x,
-      y,
-      vx: (Math.random() - 0.5) * 260,
-      vy: -Math.random() * 240,
-      life: 0.35 + Math.random() * 0.35,
-    });
-  }
-}
-
-function rand(min, max) {
-  return min + Math.random() * (max - min);
-}
-
-function spawnObstacle() {
-  const tall = Math.random() < 0.45;
-
-  const h = tall ? rand(78, 110) : rand(52, 68);
-  const w = obstacleImgOk ? h * obstacleAspect : (tall ? rand(78, 96) : rand(92, 128));
-
-  const y = WORLD.groundY - h + 2;
-
-  GAME.obstacles.push({
-    x: WORLD.w + 40,
-    y,
-    w,
-    h,
-    kind: obstacleImgOk ? "img" : "fallback",
-    glow: rand(0.55, 0.9),
-  });
-}
-
-function rectsOverlap(a, b) {
-  return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
-}
-
-function update(dt) {
-  GAME.t += dt;
-
-  GAME.speedMult = Math.min(2.35, 1 + GAME.t / 55);
-  speedEl.textContent = GAME.speedMult.toFixed(1);
-
-  if (GAME.shotCd > 0) {
-    GAME.shotCd = Math.max(0, GAME.shotCd - dt);
-    setShotLabel();
-  }
-
-  GAME.spawnTimer += dt;
-  if (GAME.spawnTimer >= GAME.nextSpawn) {
-    GAME.spawnTimer = 0;
-    spawnObstacle();
-    const base = 1.05 - Math.min(0.45, GAME.t / 120);
-    GAME.nextSpawn = rand(base, base + 0.55);
-  }
-
-  PLAYER.vy += PLAYER.gravity * dt;
-  PLAYER.y += PLAYER.vy * dt;
-
-  const duckBonus = PLAYER.ducking ? 10 : 0;
-  const ground = WORLD.groundY + duckBonus;
-
-  if (PLAYER.y >= ground) {
-    PLAYER.y = ground;
-    PLAYER.vy = 0;
-    PLAYER.onGround = true;
-  }
-
-  const vx = GAME.speed * GAME.speedMult;
-
-  for (const o of GAME.obstacles) o.x -= vx * dt;
-  GAME.obstacles = GAME.obstacles.filter((o) => o.x + o.w > -100);
-
-  for (const s of GAME.shots) s.x += s.vx * dt;
-  GAME.shots = GAME.shots.filter((s) => s.x < WORLD.w + 100);
-
-  for (const p of GAME.particles) {
-    p.life -= dt;
-    p.x += p.vx * dt;
-    p.y += p.vy * dt;
-    p.vy += 1200 * dt;
-  }
-  GAME.particles = GAME.particles.filter((p) => p.life > 0);
-
-  GAME.score += Math.floor(vx * dt * 0.05);
-  scoreEl.textContent = String(GAME.score);
-
-  const playerHitbox = {
-    x: PLAYER.x + 10,
-    y: PLAYER.y - PLAYER.h + (PLAYER.ducking ? 12 : 0),
-    w: PLAYER.w - 20,
-    h: PLAYER.h - (PLAYER.ducking ? 16 : 0),
-  };
-
-  for (const o of GAME.obstacles) {
-    if (rectsOverlap(playerHitbox, o)) {
-      burst(PLAYER.x + PLAYER.w * 0.5, PLAYER.y - 24, 18);
-      return gameOver();
-    }
-  }
-
-  // Shot vs obstacle collisions
-  for (let i = GAME.shots.length - 1; i >= 0; i--) {
-    const s = GAME.shots[i];
-    const shotBox = { x: s.x, y: s.y, w: s.w, h: s.h };
-
-    for (let j = GAME.obstacles.length - 1; j >= 0; j--) {
-      const o = GAME.obstacles[j];
-      if (!rectsOverlap(shotBox, o)) continue;
-
-      GAME.shots.splice(i, 1);
-      GAME.obstacles.splice(j, 1);
-
-      GAME.score += 250;
-      scoreEl.textContent = String(GAME.score);
-      burst(o.x + o.w * 0.5, o.y + o.h * 0.5, 16);
-      break;
-    }
-  }
-}
-
-function drawSky() {
-  const g = ctx.createLinearGradient(0, 0, 0, WORLD.h);
-  g.addColorStop(0, "rgba(2,6,17,1)");
-  g.addColorStop(0.55, "rgba(3,22,43,1)");
-  g.addColorStop(1, "rgba(1,10,20,1)");
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, WORLD.w, WORLD.h);
-
-  ctx.globalAlpha = 0.25;
-  ctx.fillStyle = "rgba(14,165,233,1)";
-  for (let i = 0; i < 10; i++) {
-    const x = (i * 120 + (GAME.t * 40) % 120) % WORLD.w;
-    ctx.fillRect(WORLD.w - x, 60 + (i % 3) * 26, 60, 2);
-  }
-  ctx.globalAlpha = 1;
-}
-
-function drawGround() {
-  const y = WORLD.groundY + 22;
-  const g = ctx.createLinearGradient(0, y - 50, 0, y + 70);
-  g.addColorStop(0, "rgba(20,184,166,0.10)");
-  g.addColorStop(1, "rgba(0,0,0,0.35)");
-  ctx.fillStyle = g;
-  ctx.fillRect(0, y - 80, WORLD.w, 140);
-
-  ctx.strokeStyle = "rgba(255,255,255,0.08)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(0, y);
-  ctx.lineTo(WORLD.w, y);
-  ctx.stroke();
-
-  const dash = (GAME.t * 260) % 60;
-  ctx.strokeStyle = "rgba(14,165,233,0.35)";
-  ctx.lineWidth = 2;
-  for (let x = -dash; x < WORLD.w; x += 60) {
-    ctx.beginPath();
-    ctx.moveTo(x, y + 18);
-    ctx.lineTo(x + 26, y + 18);
-    ctx.stroke();
-  }
-}
-
-function roundRect(x, y, w, h, r) {
-  const rr = Math.min(r, w / 2, h / 2);
-  ctx.beginPath();
-  ctx.moveTo(x + rr, y);
-  ctx.arcTo(x + w, y, x + w, y + h, rr);
-  ctx.arcTo(x + w, y + h, x, y + h, rr);
-  ctx.arcTo(x, y + h, x, y, rr);
-  ctx.arcTo(x, y, x + w, y, rr);
-  ctx.closePath();
-}
-
-function drawTankKid() {
-  const baseY = PLAYER.y;
-  const h = PLAYER.h;
-  const w = PLAYER.w;
-  const x = PLAYER.x;
-  const y = baseY - h + (PLAYER.ducking ? 12 : 0);
-
-  const neon = ctx.createLinearGradient(x, y, x + w, y + h);
-  neon.addColorStop(0, "rgba(14,165,233,0.95)");
-  neon.addColorStop(1, "rgba(20,184,166,0.9)");
-
-  ctx.fillStyle = "rgba(255,255,255,0.08)";
-  ctx.fillRect(x - 2, y - 2, w + 4, h + 4);
-
-  const tankH = PLAYER.ducking ? 26 : 30;
-  const tankY = baseY - tankH;
-
-  ctx.fillStyle = "rgba(255,255,255,0.10)";
-  roundRect(x, tankY, w, tankH, 10);
-  ctx.fill();
-
-  ctx.strokeStyle = "rgba(255,255,255,0.22)";
-  ctx.lineWidth = 2;
-  roundRect(x, tankY, w, tankH, 10);
-  ctx.stroke();
-
-  ctx.fillStyle = neon;
-  roundRect(x + 8, tankY + 8, w - 16, tankH - 16, 8);
-  ctx.fill();
-
-  const wheelY = baseY - 6;
-  ctx.fillStyle = "rgba(0,0,0,0.55)";
-  for (let i = 0; i < 4; i++) {
-    const wx = x + 12 + i * 16;
-    ctx.beginPath();
-    ctx.arc(wx, wheelY, 6, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = "rgba(255,255,255,0.18)";
-    ctx.stroke();
-  }
-
-  if (!PLAYER.ducking) {
-    const kidX = x + 22;
-    const kidY = tankY - 22;
-
-    ctx.fillStyle = "rgba(255,255,255,0.12)";
-    roundRect(kidX - 6, kidY - 6, 34, 26, 10);
-    ctx.fill();
-
-    ctx.fillStyle = "rgba(255,255,255,0.92)";
-    ctx.beginPath();
-    ctx.arc(kidX + 10, kidY + 10, 10, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "rgba(0,0,0,0.55)";
-    ctx.beginPath();
-    ctx.arc(kidX + 6, kidY + 8, 2.2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(kidX + 13, kidY + 8, 2.2, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = "rgba(0,0,0,0.5)";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(kidX + 10, kidY + 12, 5, 0.12 * Math.PI, 0.88 * Math.PI);
-    ctx.stroke();
-  }
-
-  // barrel
-  ctx.strokeStyle = "rgba(14,165,233,0.55)";
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(x + 40, tankY + 10);
-  ctx.lineTo(x + 74, tankY - (PLAYER.ducking ? 0 : 10));
-  ctx.stroke();
-}
-
-function drawFallbackTruck(o) {
-  const neon = ctx.createLinearGradient(o.x, o.y, o.x + o.w, o.y + o.h);
-  neon.addColorStop(0, `rgba(14,165,233,${0.85 * o.glow})`);
-  neon.addColorStop(1, `rgba(20,184,166,${0.75 * o.glow})`);
-
-  ctx.fillStyle = "rgba(255,255,255,0.10)";
-  roundRect(o.x - 2, o.y - 2, o.w + 4, o.h + 4, 14);
-  ctx.fill();
-
-  ctx.fillStyle = "rgba(0,0,0,0.45)";
-  roundRect(o.x, o.y, o.w, o.h, 14);
-  ctx.fill();
-
-  ctx.fillStyle = neon;
-  const cabH = Math.max(18, o.h * 0.38);
-  roundRect(o.x + 8, o.y + 8, o.w - 16, cabH, 12);
-  ctx.fill();
-}
-
-function drawObstacle(o) {
-  if (o.kind === "img" && obstacleImgOk) {
-    ctx.globalAlpha = 0.98;
-    ctx.drawImage(obstacleImg, o.x, o.y, o.w, o.h);
-    ctx.globalAlpha = 1;
-
-    // subtle neon outline
-    ctx.strokeStyle = `rgba(14,165,233,${0.28 * o.glow})`;
-    ctx.lineWidth = 3;
-    roundRect(o.x + 2, o.y + 2, o.w - 4, o.h - 4, 14);
-    ctx.stroke();
-    return;
-  }
-
-  drawFallbackTruck(o);
-}
-
-function drawShots() {
-  for (const s of GAME.shots) {
-    const g = ctx.createLinearGradient(s.x, s.y, s.x + s.w, s.y);
-    g.addColorStop(0, "rgba(14,165,233,0.95)");
-    g.addColorStop(1, "rgba(20,184,166,0.9)");
-    ctx.fillStyle = g;
-    roundRect(s.x, s.y, s.w, s.h, 4);
-    ctx.fill();
-
-    ctx.globalAlpha = 0.25;
-    ctx.fillStyle = "rgba(14,165,233,1)";
-    ctx.fillRect(s.x - 18, s.y + 1, 18, s.h - 2);
-    ctx.globalAlpha = 1;
-  }
-}
-
-function drawParticles() {
-  for (const p of GAME.particles) {
-    const a = Math.max(0, Math.min(1, p.life));
-    ctx.globalAlpha = a * 0.8;
-    ctx.fillStyle = "rgba(14,165,233,1)";
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-}
-
-function draw() {
-  ctx.clearRect(0, 0, WORLD.w, WORLD.h);
-  drawSky();
-  drawGround();
-
-  for (const o of GAME.obstacles) drawObstacle(o);
-  drawTankKid();
-  drawShots();
-  drawParticles();
-
-  if (!GAME.running && !GAME.gameOver) {
-    ctx.fillStyle = "rgba(255,255,255,0.75)";
-    ctx.font = "900 20px ui-sans-serif, system-ui";
-    ctx.fillText("Start / Space to begin • F / K to shoot (10s cooldown)", 28, 42);
-  }
-}
-
-function loop(ts) {
-  if (!GAME.running || GAME.paused) return;
-
-  const t = ts / 1000;
-  const last = GAME.lastTs || t;
-  let dt = t - last;
-  GAME.lastTs = t;
-
-  dt = Math.min(dt, 0.03);
-
-  update(dt);
-  draw();
-
-  if (GAME.running) requestAnimationFrame(loop);
-}
-
-function onKey(e) {
-  const k = e.key.toLowerCase();
-
-  if (k === " " || k === "arrowup" || k === "w") {
-    e.preventDefault();
-    jump();
-  }
-
-  if (k === "arrowdown" || k === "s") duck(true);
-
-  if (k === "p") pauseToggle();
-
-  // Shoot keys
-  if (k === "f" || k === "k") shoot();
-}
-
-function onKeyUp(e) {
-  const k = e.key.toLowerCase();
-  if (k === "arrowdown" || k === "s") duck(false);
-}
-
-function onTap() {
-  jump();
-}
-
-startBtn?.addEventListener("click", startGame);
-pauseBtn?.addEventListener("click", pauseToggle);
-resetBtn?.addEventListener("click", resetState);
-
-overlayStart?.addEventListener("click", startGame);
-
-jumpBtn?.addEventListener("click", jump);
-shootBtn?.addEventListener("click", shoot);
-shootBtnMobile?.addEventListener("click", shoot);
-
-duckBtn?.addEventListener("mousedown", () => duck(true));
-duckBtn?.addEventListener("mouseup", () => duck(false));
-duckBtn?.addEventListener("mouseleave", () => duck(false));
-duckBtn?.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  duck(true);
-});
-duckBtn?.addEventListener("touchend", () => duck(false));
-
-window.addEventListener("keydown", onKey, { passive: false });
-window.addEventListener("keyup", onKeyUp);
-
-canvas.addEventListener("pointerdown", onTap);
-
-function fitCanvas() {
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = Math.floor(WORLD.w * dpr);
-  canvas.height = Math.floor(WORLD.h * dpr);
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-}
-
-loadHigh();
-fitCanvas();
-resetState();
-setShotLabel();
-
-window.addEventListener("resize", fitCanvas);
+<!doctype html>
+<html lang="en" data-mode="dark" data-theme="darkwater">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Remy Tank Run • Aiden’s Arcade</title>
+
+    <link rel="stylesheet" href="../../styles.css?v=2" />
+    <!-- IMPORTANT: bump this v= number to kill cache -->
+    <link rel="stylesheet" href="./remy.css?v=999" />
+
+    <script defer src="../../app.js?v=2"></script>
+    <script defer src="./remy.js?v=2"></script>
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <div class="bg" aria-hidden="true">
+      <div class="pattern"></div>
+      <div class="grain"></div>
+      <div class="blob a"></div>
+      <div class="blob b"></div>
+      <div class="blob c"></div>
+    </div>
+
+    <header>
+      <div class="container nav">
+        <a class="brand" href="../../" aria-label="Aiden’s Arcade home">
+          <span class="mark" aria-hidden="true">🌊</span>
+          <span>Aiden’s <span class="accent">Arcade</span></span>
+        </a>
+
+        <nav class="links" aria-label="Pages">
+          <a class="link" href="../">Games</a>
+          <a class="link" href="../../watch/">Watch</a>
+          <a class="link" href="../../emulation/">Emulation</a>
+          <a class="link" href="../../portal/">Portal</a>
+        </nav>
+
+        <div class="actions">
+          <select class="select" id="themeSelect" aria-label="Theme">
+            <option value="darkwater" selected>Dark Water</option>
+            <option value="greatwave">Great Wave</option>
+            <option value="deepsea">Deep Sea</option>
+            <option value="ink">Ink + Water</option>
+          </select>
+
+          <button class="icon" id="modeBtn" type="button" aria-label="Toggle mode">
+            <span id="modeIcon" aria-hidden="true">☾</span>
+          </button>
+
+          <button class="icon burger" id="burgerBtn" type="button" aria-label="Open menu" aria-expanded="false">
+            <span aria-hidden="true">≡</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="container mobile" id="mobileMenu" hidden>
+        <a href="../">Games</a>
+        <a href="../../watch/">Watch</a>
+        <a href="../../emulation/">Emulation</a>
+        <a href="../../portal/">Portal</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="section container">
+        <div class="head">
+          <h2>Remy Tank Run</h2>
+          <p>Jump the tank over cyber trucks. Space / ↑ / click / tap to jump.</p>
+        </div>
+
+        <div class="remyWrap">
+          <div class="card remyHud">
+            <div class="remyStats">
+              <div class="remyStat">
+                <div class="remyStatLabel">Score</div>
+                <div class="remyStatValue" id="score">0</div>
+              </div>
+              <div class="remyStat">
+                <div class="remyStatLabel">High</div>
+                <div class="remyStatValue" id="high">0</div>
+              </div>
+              <div class="remyStat">
+                <div class="remyStatLabel">Speed</div>
+                <div class="remyStatValue"><span id="speed">1.0</span>x</div>
+              </div>
+            </div>
+
+            <div class="remyBtns">
+              <button class="btn primary" id="startBtn" type="button">Start</button>
+              <button class="btn" id="pauseBtn" type="button">Pause</button>
+              <button class="btn" id="resetBtn" type="button">Reset</button>
+            </div>
+
+            <div class="remyHint">Tip: trucks get faster over time.</div>
+          </div>
+
+          <div class="card remyStage">
+            <canvas id="game" width="960" height="420" aria-label="Remy Tank Run canvas"></canvas>
+
+            <div class="remyOverlay" id="overlay" hidden>
+              <div class="remyOverlayBox">
+                <div class="remyTitle" id="overlayTitle">Remy Tank Run</div>
+                <div class="remySub" id="overlaySub">Press Start or Space to begin.</div>
+                <div class="remyOverlayBtns">
+                  <button class="btn primary" id="overlayStart" type="button">Start</button>
+                  <a class="btn" href="../">Back to Games</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card remyMobile">
+            <div class="remyMobileRow">
+              <button class="btn primary remyBigBtn" id="jumpBtn" type="button">Jump</button>
+              <button class="btn remyBigBtn" id="duckBtn" type="button">Duck</button>
+            </div>
+            <div class="remyHint">Mobile: tap Jump • hold Duck to lower the hitbox.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container foot">
+        <div>
+          <div class="footBrand">Aiden’s Arcade</div>
+          <div class="small">Remy Tank Run • <span id="year"></span></div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
