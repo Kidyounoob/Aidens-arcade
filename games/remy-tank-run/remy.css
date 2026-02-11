@@ -80,6 +80,7 @@
   place-items: center;
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(10px);
+  z-index: 4;
 }
 
 /* ✅ Fix: make hidden overlay actually disappear */
@@ -137,4 +138,34 @@
   .remyMobile {
     display: none;
   }
+}
+
+/* ✅ NEW: Live scoreboard bar on top of canvas */
+.remyTopBar {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 10px;
+  z-index: 3;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  pointer-events: none;
+}
+
+.remyTopItem {
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2), transparent 15%);
+  backdrop-filter: blur(8px);
+  border-radius: 14px;
+  padding: 8px 10px;
+  font-weight: 900;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.remyTopItem span {
+  margin-left: 6px;
+  color: var(--text, #fff);
+  font-weight: 980;
 }
