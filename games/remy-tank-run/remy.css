@@ -10,6 +10,29 @@
   gap: 12px;
 }
 
+@media (min-width: 980px) {
+  .remyWrap {
+    grid-template-columns: 320px 1fr;
+    align-items: start;
+  }
+
+  .remyHud {
+    grid-column: 1 / -1;
+  }
+
+  .remyBoard {
+    grid-column: 1;
+  }
+
+  .remyStage {
+    grid-column: 2;
+  }
+
+  .remyMobile {
+    grid-column: 1 / -1;
+  }
+}
+
 .remyHud {
   padding: 14px;
   display: flex;
@@ -81,7 +104,7 @@
   place-items: center;
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(10px);
-  z-index: 6;
+  z-index: 4;
 }
 
 /* make hidden overlay actually disappear */
@@ -91,7 +114,7 @@
 }
 
 .remyOverlayBox {
-  width: min(560px, calc(100% - 36px));
+  width: min(520px, calc(100% - 36px));
   border: 1px solid var(--border);
   border-radius: calc(var(--r) + 10px);
   background: color-mix(in oklab, var(--panel2), transparent 0%);
@@ -119,65 +142,13 @@
   margin-top: 14px;
 }
 
-/* score submit */
-.remyScoreSubmit {
-  margin-top: 12px;
-  display: grid;
-  gap: 10px;
-}
-
-.remyFieldLabel {
-  font-weight: 900;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.input {
-  width: 100%;
-  margin-top: 6px;
-  border: 1px solid var(--border);
-  background: var(--panel);
-  border-radius: 14px;
-  padding: 10px 12px;
-  color: inherit;
-  font-weight: 850;
-  outline: none;
-}
-
-.input:focus {
-  border-color: color-mix(in oklab, var(--border), white 20%);
-}
-
-/* mobile controls */
-.remyMobile {
-  padding: 14px;
-}
-
-.remyMobileRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-}
-
-.remyBigBtn {
-  height: 56px;
-  border-radius: 18px;
-  font-size: 16px;
-}
-
-@media (min-width: 860px) {
-  .remyMobile {
-    display: none;
-  }
-}
-
 /* top bar over canvas */
 .remyTopBar {
   position: absolute;
   left: 10px;
   right: 10px;
   top: 10px;
-  z-index: 4;
+  z-index: 3;
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
@@ -201,125 +172,93 @@
   font-weight: 980;
 }
 
-/* toast */
-.remyToast {
-  position: fixed;
-  left: 50%;
-  bottom: 16px;
-  transform: translateX(-50%);
-  z-index: 30;
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--panel2), transparent 5%);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--shadow);
-  border-radius: 16px;
-  padding: 10px 12px;
-  font-weight: 900;
-  color: var(--text, #fff);
-}
-
-/* settings modal */
-.remyModal {
-  position: fixed;
-  inset: 0;
-  z-index: 25;
-  display: grid;
-  place-items: center;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(10px);
-}
-
-.remyModal[hidden] {
-  display: none !important;
-}
-
-.remyModalBox {
-  width: min(1040px, calc(100% - 22px));
-  max-height: calc(100% - 22px);
-  overflow: auto;
-  border: 1px solid var(--border);
-  background: color-mix(in oklab, var(--panel2), transparent 0%);
-  box-shadow: var(--shadow);
-  border-radius: calc(var(--r) + 12px);
+.remyMobile {
   padding: 14px;
 }
 
-.remyModalHead {
+.remyMobileRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.remyBigBtn {
+  height: 56px;
+  border-radius: 18px;
+  font-size: 16px;
+}
+
+@media (min-width: 860px) {
+  .remyMobile {
+    display: none;
+  }
+}
+
+/* leaderboard */
+.remyBoard {
+  padding: 14px;
+}
+
+.remyBoardHead {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
-}
-
-.remyModalTitle {
-  font-weight: 980;
-  font-size: 18px;
-  letter-spacing: -0.02em;
-}
-
-.remyModalGrid {
-  margin-top: 12px;
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-}
-
-.remyPanel {
-  border: 1px solid var(--border);
-  background: var(--panel);
-  border-radius: 16px;
-  padding: 12px;
-}
-
-.remyPanelTitle {
-  font-weight: 980;
-  letter-spacing: -0.02em;
   margin-bottom: 10px;
 }
 
-.remyField {
-  display: grid;
-  gap: 6px;
-  margin-top: 10px;
+.remyBoardTitle {
+  font-weight: 980;
+  letter-spacing: -0.02em;
 }
 
-.remyRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.remyCheck {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
+.remyBoardStatus {
   font-weight: 900;
   color: var(--muted);
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 6px 10px;
+  border-radius: 999px;
 }
 
-.remySmall {
-  margin-top: 8px;
-  line-height: 1.45;
-}
-
-.remyShopRow {
-  margin-top: 10px;
-  display: grid;
-  gap: 6px;
-}
-
-.remyList {
+.remyBoardList {
   margin: 0;
   padding-left: 18px;
   display: grid;
   gap: 6px;
+  max-height: 320px;
+  overflow: auto;
 }
 
-.remyList li {
+.remyBoardList li {
+  font-weight: 850;
+  color: var(--muted);
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 10px 12px;
+  color: inherit;
+  font-weight: 850;
+  outline: none;
+}
+
+.input:focus {
+  border-color: color-mix(in oklab, var(--border), white 20%);
+}
+
+.remyBoardSubmit {
+  margin-top: 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.remyBoardHint {
+  margin-top: 8px;
   color: var(--muted);
   font-weight: 850;
 }
