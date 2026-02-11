@@ -2,12 +2,22 @@
 
 const STORAGE_HIGH = "aidensarcade-remy-tank-high";
 
+// ✅ Car obstacle image
+const OBSTACLE_IMG_SRC =
+  "https://image2url.com/r2/default/images/1770830164179-3e663839-842b-4e92-9a7b-1cacc46b26c3.png";
+
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 const scoreEl = document.getElementById("score");
 const highEl = document.getElementById("high");
 const speedEl = document.getElementById("speed");
+
+// ✅ Top bar elements
+const topScoreEl = document.getElementById("topScore");
+const topHighEl = document.getElementById("topHigh");
+const topSpeedEl = document.getElementById("topSpeed");
+const shotStatusEl = document.getElementById("shotStatus");
 
 const startBtn = document.getElementById("startBtn");
 const pauseBtn = document.getElementById("pauseBtn");
@@ -20,6 +30,17 @@ const overlayStart = document.getElementById("overlayStart");
 
 const jumpBtn = document.getElementById("jumpBtn");
 const duckBtn = document.getElementById("duckBtn");
+
+// --- obstacle image load ---
+const obstacleImg = new Image();
+obstacleImg.crossOrigin = "anonymous";
+obstacleImg.src = OBSTACLE_IMG_SRC;
+let obstacleAspect = 2.0; // fallback until loaded
+obstacleImg.onload = () => {
+  if (obstacleImg.naturalWidth && obstacleImg.naturalHeight) {
+    obstacleAspect = obstacleImg.naturalWidth / obstacleImg.naturalHeight;
+  }
+};
 
 const WORLD = {
   w: 960,
@@ -51,7 +72,12 @@ const GAME = {
   nextSpawn: 1.0,
   obstacles: [],
   particles: [],
+  projectiles: [],
   lastTs: 0,
+
+  // ✅ shooting cooldown
+  shotCooldown: 10.0,
+  shotTimer: 0, // counts down to 0
 };
 
 function setOverlay(show, title = "", sub = "") {
@@ -60,9 +86,24 @@ function setOverlay(show, title = "", sub = "") {
   if (sub) overlaySub.textContent = sub;
 }
 
+function syncTopBar() {
+  if (topScoreEl) topScoreEl.textContent = String(GAME.score);
+  if (topHighEl) topHighEl.textContent = highEl.textContent || "0";
+  if (topSpeedEl) topSpeedEl.textContent = GAME.speedMult.toFixed(1);
+
+  if (!shotStatusEl) return;
+  if (!GAME.running) {
+    shotStatusEl.textContent = "—";
+    return;
+  }
+  if (GAME.shotTimer <= 0) shotStatusEl.textContent = "Ready";
+  else shotStatusEl.textContent = `${GAME.shotTimer.toFixed(1)}s`;
+}
+
 function loadHigh() {
   const v = Number(localStorage.getItem(STORAGE_HIGH) || "0");
   highEl.textContent = String(Number.isFinite(v) ? v : 0);
+  syncTopBar();
 }
 
 function saveHighIfNeeded() {
@@ -85,7 +126,9 @@ function resetState() {
   GAME.nextSpawn = 0.9;
   GAME.obstacles = [];
   GAME.particles = [];
+  GAME.projectiles = [];
   GAME.lastTs = 0;
+  GAME.shotTimer = 0;
 
   PLAYER.y = WORLD.groundY;
   PLAYER.vy = 0;
@@ -96,6 +139,7 @@ function resetState() {
   speedEl.textContent = "1.0";
   setOverlay(false);
   draw(0);
+  syncTopBar();
 }
 
 function startGame() {
@@ -106,6 +150,7 @@ function startGame() {
     setOverlay(false);
     requestAnimationFrame(loop);
   }
+  syncTopBar();
 }
 
 function pauseToggle() {
@@ -124,6 +169,7 @@ function gameOver() {
   GAME.paused = false;
   GAME.gameOver = true;
   saveHighIfNeeded();
+  syncTopBar();
   setOverlay(true, "Game Over", "Hit Start to run it back.");
 }
 
@@ -143,6 +189,27 @@ function duck(down) {
   PLAYER.ducking = Boolean(down);
 }
 
+// ✅ shoot (Space) every 10 seconds
+function shoot() {
+  if (GAME.gameOver) return;
+  if (!GAME.running) startGame();
+  if (GAME.paused) return;
+  if (GAME.shotTimer > 0) return;
+
+  GAME.shotTimer = GAME.shotCooldown;
+
+  const yBase = PLAYER.y - PLAYER.h + (PLAYER.ducking ? 14 : 6);
+  GAME.projectiles.push({
+    x: PLAYER.x + PLAYER.w + 8,
+    y: yBase + 18,
+    w: 16,
+    h: 6,
+    vx: 980,
+  });
+
+  burst(PLAYER.x + PLAYER.w + 10, yBase + 18, 8);
+}
+
 function burst(x, y, n) {
   for (let i = 0; i < n; i++) {
     GAME.particles.push({
@@ -160,18 +227,17 @@ function rand(min, max) {
 }
 
 function spawnObstacle() {
-  const tall = Math.random() < 0.45;
-  const baseW = tall ? rand(78, 96) : rand(92, 128);
-  const baseH = tall ? rand(78, 104) : rand(46, 58);
-
-  const y = WORLD.groundY - baseH + 2;
+  const big = Math.random() < 0.45;
+  const h = big ? rand(54, 76) : rand(42, 60);
+  const w = Math.max(80, Math.min(150, h * obstacleAspect));
+  const y = WORLD.groundY - h + 2;
 
   GAME.obstacles.push({
     x: WORLD.w + 40,
     y,
-    w: baseW,
-    h: baseH,
-    kind: "cybertruck",
+    w,
+    h,
+    kind: "carimg",
     glow: rand(0.55, 0.9),
   });
 }
@@ -190,6 +256,8 @@ function update(dt) {
 
   GAME.speedMult = Math.min(2.35, 1 + GAME.t / 55);
   speedEl.textContent = GAME.speedMult.toFixed(1);
+
+  if (GAME.shotTimer > 0) GAME.shotTimer = Math.max(0, GAME.shotTimer - dt);
 
   GAME.spawnTimer += dt;
   if (GAME.spawnTimer >= GAME.nextSpawn) {
@@ -213,11 +281,26 @@ function update(dt) {
 
   const vx = GAME.speed * GAME.speedMult;
 
-  for (const o of GAME.obstacles) {
-    o.x -= vx * dt;
-  }
+  for (const o of GAME.obstacles) o.x -= vx * dt;
+  for (const pr of GAME.projectiles) pr.x += pr.vx * dt;
 
   GAME.obstacles = GAME.obstacles.filter((o) => o.x + o.w > -60);
+  GAME.projectiles = GAME.projectiles.filter((p) => p.x < WORLD.w + 80);
+
+  // projectile vs obstacle
+  for (let i = GAME.projectiles.length - 1; i >= 0; i--) {
+    const p = GAME.projectiles[i];
+    for (let j = GAME.obstacles.length - 1; j >= 0; j--) {
+      const o = GAME.obstacles[j];
+      if (rectsOverlap(p, o)) {
+        burst(o.x + o.w * 0.5, o.y + o.h * 0.5, 16);
+        GAME.projectiles.splice(i, 1);
+        GAME.obstacles.splice(j, 1);
+        GAME.score += 200;
+        break;
+      }
+    }
+  }
 
   for (const p of GAME.particles) {
     p.life -= dt;
@@ -243,6 +326,8 @@ function update(dt) {
       return gameOver();
     }
   }
+
+  syncTopBar();
 }
 
 function drawSky() {
@@ -286,6 +371,17 @@ function drawGround() {
     ctx.lineTo(x + 26, y + 18);
     ctx.stroke();
   }
+}
+
+function roundRect(x, y, w, h, r) {
+  const rr = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + rr, y);
+  ctx.arcTo(x + w, y, x + w, y + h, rr);
+  ctx.arcTo(x + w, y + h, x, y + h, rr);
+  ctx.arcTo(x, y + h, x, y, rr);
+  ctx.arcTo(x, y, x + w, y, rr);
+  ctx.closePath();
 }
 
 function drawTankKid() {
@@ -365,51 +461,39 @@ function drawTankKid() {
   ctx.stroke();
 }
 
-function roundRect(x, y, w, h, r) {
-  const rr = Math.min(r, w / 2, h / 2);
-  ctx.beginPath();
-  ctx.moveTo(x + rr, y);
-  ctx.arcTo(x + w, y, x + w, y + h, rr);
-  ctx.arcTo(x + w, y + h, x, y + h, rr);
-  ctx.arcTo(x, y + h, x, y, rr);
-  ctx.arcTo(x, y, x + w, y, rr);
-  ctx.closePath();
-}
-
-function drawCyberTruck(o) {
-  const neon = ctx.createLinearGradient(o.x, o.y, o.x + o.w, o.y + o.h);
-  neon.addColorStop(0, `rgba(14,165,233,${0.85 * o.glow})`);
-  neon.addColorStop(1, `rgba(20,184,166,${0.75 * o.glow})`);
-
+function drawCarObstacle(o) {
   ctx.fillStyle = "rgba(255,255,255,0.10)";
   roundRect(o.x - 2, o.y - 2, o.w + 4, o.h + 4, 14);
   ctx.fill();
 
+  if (obstacleImg.complete && obstacleImg.naturalWidth > 0) {
+    ctx.globalAlpha = 0.95;
+    ctx.drawImage(obstacleImg, o.x, o.y, o.w, o.h);
+    ctx.globalAlpha = 1;
+
+    ctx.strokeStyle = `rgba(14,165,233,${0.22 * o.glow})`;
+    ctx.lineWidth = 2;
+    roundRect(o.x + 1, o.y + 1, o.w - 2, o.h - 2, 12);
+    ctx.stroke();
+    return;
+  }
+
   ctx.fillStyle = "rgba(0,0,0,0.45)";
   roundRect(o.x, o.y, o.w, o.h, 14);
   ctx.fill();
+}
 
-  ctx.fillStyle = neon;
-  const cabH = Math.max(18, o.h * 0.38);
-  roundRect(o.x + 8, o.y + 8, o.w - 16, cabH, 12);
-  ctx.fill();
-
-  ctx.strokeStyle = "rgba(255,255,255,0.18)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(o.x + 10, o.y + cabH + 18);
-  ctx.lineTo(o.x + o.w - 10, o.y + cabH + 18);
-  ctx.stroke();
-
-  ctx.fillStyle = "rgba(0,0,0,0.65)";
-  const wy = o.y + o.h - 6;
-  for (let i = 0; i < 2; i++) {
-    const wx = o.x + 18 + i * (o.w - 36);
-    ctx.beginPath();
-    ctx.arc(wx, wy, 7, 0, Math.PI * 2);
+function drawProjectiles() {
+  for (const p of GAME.projectiles) {
+    ctx.fillStyle = "rgba(14,165,233,0.95)";
+    roundRect(p.x, p.y, p.w, p.h, 3);
     ctx.fill();
-    ctx.strokeStyle = "rgba(255,255,255,0.16)";
-    ctx.stroke();
+
+    ctx.globalAlpha = 0.35;
+    ctx.fillStyle = "rgba(20,184,166,1)";
+    roundRect(p.x - 8, p.y + 1, 8, p.h - 2, 3);
+    ctx.fill();
+    ctx.globalAlpha = 1;
   }
 }
 
@@ -430,14 +514,15 @@ function draw() {
   drawSky();
   drawGround();
 
-  for (const o of GAME.obstacles) drawCyberTruck(o);
+  for (const o of GAME.obstacles) drawCarObstacle(o);
+  drawProjectiles();
   drawTankKid();
   drawParticles();
 
   if (!GAME.running && !GAME.gameOver) {
     ctx.fillStyle = "rgba(255,255,255,0.75)";
     ctx.font = "900 20px ui-sans-serif, system-ui";
-    ctx.fillText("Press Start / Space to begin", 28, 42);
+    ctx.fillText("Press Start — Jump: ↑ / tap — Shoot: Space", 28, 42);
   }
 }
 
@@ -459,10 +544,20 @@ function loop(ts) {
 
 function onKey(e) {
   const k = e.key.toLowerCase();
-  if (k === " " || k === "arrowup" || k === "w") {
+
+  // ✅ Space = shoot
+  if (k === " ") {
+    e.preventDefault();
+    shoot();
+    return;
+  }
+
+  // ✅ Jump = ArrowUp / W
+  if (k === "arrowup" || k === "w") {
     e.preventDefault();
     jump();
   }
+
   if (k === "arrowdown" || k === "s") duck(true);
   if (k === "p") pauseToggle();
   if (k === "r") resetState();
@@ -499,7 +594,6 @@ window.addEventListener("keyup", onKeyUp);
 canvas.addEventListener("pointerdown", onTap);
 
 function fitCanvas() {
-  const rect = canvas.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
   canvas.width = Math.floor(WORLD.w * dpr);
   canvas.height = Math.floor(WORLD.h * dpr);
@@ -509,6 +603,6 @@ function fitCanvas() {
 loadHigh();
 fitCanvas();
 resetState();
-setOverlay(true, "Remy Tank Run", "Press Start or Space to begin.");
+setOverlay(true, "Remy Tank Run", "Press Start. Jump: ↑ / tap. Shoot: Space (10s cooldown).");
 
 window.addEventListener("resize", fitCanvas);
