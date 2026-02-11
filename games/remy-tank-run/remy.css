@@ -1,4 +1,4 @@
-/* /games/remy-tank-run/remy.css */
+/* FILE: /games/remy-tank-run/remy.css */
 
 .select option {
   background: #ffffff !important;
@@ -80,6 +80,12 @@
   place-items: center;
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(10px);
+}
+
+/* ✅ Fix: make hidden overlay actually disappear */
+.remyOverlay[hidden] {
+  display: none !important;
+  pointer-events: none;
 }
 
 .remyOverlayBox {
