@@ -2,33 +2,25 @@ const btnGo = document.getElementById("portalGo");
 const input = document.getElementById("portalInput");
 const frame = document.getElementById("portalFrame");
 
-function launchProxy() {
+function launchProxy(e) {
+    if (e) e.preventDefault(); // STOPS the "disappearing" reload
+    
     let url = input.value.trim();
     if (!url) return;
 
-    // Fix the URL if it's just a word
+    // Convert search terms to a Google search
     if (!url.includes(".") || url.includes(" ")) {
         url = "https://www.google.com/search?q=" + encodeURIComponent(url);
     } else if (!url.startsWith("http")) {
         url = "https://" + url;
     }
 
-    // Encode it for Ultraviolet
+    // The special "Ultraviolet" way of loading links
     const encoded = btoa(url).replace(/\//g, "_").replace(/\+/g, "-").replace(/=/g, "");
-    
-    // Send it to the frame
     frame.src = "https://fast-proxy.happydumbjunkday.workers.dev/uv/service/" + encoded;
 }
 
-// These lines stop the "disappearing" issue
-btnGo.addEventListener("click", (e) => {
-    e.preventDefault();
-    launchProxy();
-});
-
+btnGo.addEventListener("click", launchProxy);
 input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-        e.preventDefault();
-        launchProxy();
-    }
+    if (e.key === "Enter") launchProxy(e);
 });
