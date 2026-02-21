@@ -5,7 +5,7 @@ const frame = document.getElementById("portalFrame");
 const msg = document.getElementById("portalMsg");
 
 // This is your secure Cloudflare proxy link!
-const PROXY_URL = "https://arcade-proxy.happydumbjunkday.workers.dev/uv/service/";
+const PROXY_URL = "https://fast-proxy.happydumbjunkday.workers.dev/uv/service/";
 
 function setMsg(text) {
     msg.textContent = text;
