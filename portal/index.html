@@ -1,98 +1,46 @@
 <!doctype html>
 <html lang="en" data-mode="dark" data-theme="darkwater">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="dark light" />
     <title>Portal • Aiden’s Arcade</title>
     <link rel="stylesheet" href="../styles.css?v=2" />
     <script defer src="../app.js?v=2"></script>
     <script defer src="./portal.js?v=2"></script>
-  </head>
-
-  <body>
-    <a class="skip" href="#main">Skip to content</a>
-
-    <div class="bg" aria-hidden="true">
-      <div class="pattern"></div>
-      <div class="grain"></div>
-      <div class="blob a"></div>
-      <div class="blob b"></div>
-      <div class="blob c"></div>
-    </div>
-
+</head>
+<body>
     <header>
-      <div class="container nav">
-        <a class="brand" href="../" aria-label="Aiden’s Arcade home">
-          <span class="mark" aria-hidden="true">🌊</span>
-          <span>Aiden’s <span class="accent">Arcade</span></span>
-        </a>
-
-        <nav class="links" aria-label="Pages">
-          <a class="link" href="../games/">Games</a>
-          <a class="link" href="../watch/">Watch</a>
-          <a class="link" href="../emulation/">Emulation</a>
-          <a class="link" href="./" aria-current="true">Portal</a>
-        </nav>
-
-        <div class="actions">
-          <select class="select" id="themeSelect" aria-label="Theme">
-            <option value="darkwater" selected>Dark Water</option>
-            <option value="greatwave">Great Wave</option>
-            <option value="deepsea">Deep Sea</option>
-            <option value="ink">Ink + Water</option>
-          </select>
-
-          <button class="icon" id="modeBtn" type="button" aria-label="Toggle mode">
-            <span id="modeIcon" aria-hidden="true">☾</span>
-          </button>
-
-          <button class="icon burger" id="burgerBtn" type="button" aria-label="Open menu" aria-expanded="false">
-            <span aria-hidden="true">≡</span>
-          </button>
+        <div class="container nav">
+            <a class="brand" href="../">🌊 Aiden’s <span class="accent">Arcade</span></a>
+            <nav class="links">
+                <a class="link" href="../games/">Games</a>
+                <a class="link" href="./" aria-current="true">Portal</a>
+            </nav>
         </div>
-      </div>
-
-      <div class="container mobile" id="mobileMenu" hidden>
-        <a href="../games/">Games</a>
-        <a href="../watch/">Watch</a>
-        <a href="../emulation/">Emulation</a>
-        <a href="./">Portal</a>
-      </div>
     </header>
 
     <main id="main">
-      <section class="section container">
-        <div class="head">
-          <h2>Portal</h2>
-          <p>Loads sites that allow embedding. If embed isn’t allowed, it opens in a new tab.</p>
-        </div>
+        <section class="section container">
+            <div class="head">
+                <h2>Web Portal</h2>
+                <p>Enter a URL to load it inside the arcade using a CORS proxy.</p>
+            </div>
 
-        <div class="card" style="padding:14px; margin-bottom:12px;">
-          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-            <input class="input" id="portalInput" placeholder="Paste a URL…" />
-            <button class="btn primary" id="portalGo" type="button">Go</button>
-            <button class="btn" id="portalClear" type="button">Clear</button>
-          </div>
-          <p class="sub tiny" id="portalMsg" style="margin-top:10px;"></p>
-        </div>
+            <div class="card" style="padding:14px; margin-bottom:12px;">
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <input class="input" id="portalInput" placeholder="https://example.com" style="flex:1" />
+                    <button class="btn primary" id="portalGo">Go</button>
+                    <button class="btn" id="portalClear">Clear</button>
+                </div>
+                <p class="sub tiny" id="portalMsg" style="margin-top:10px; color: var(--accent);"></p>
+            </div>
 
-        <div class="card" style="padding:0; overflow:hidden;">
-          <div class="ratio">
-            <iframe id="portalFrame" src="about:blank" title="Embedded site" loading="lazy"></iframe>
-          </div>
-        </div>
-      </section>
+            <div class="card" style="padding:0; overflow:hidden; background: #000;">
+                <div class="ratio" style="position:relative; padding-bottom:56.25%; height:0;">
+                    <iframe id="portalFrame" src="about:blank" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" loading="lazy"></iframe>
+                </div>
+            </div>
+        </section>
     </main>
-
-    <footer>
-      <div class="container foot">
-        <div>
-          <div class="footBrand">Aiden’s Arcade</div>
-          <div class="small">Portal • <span id="year"></span></div>
-        </div>
-      </div>
-    </footer>
-  </body>
+</body>
 </html>
-
