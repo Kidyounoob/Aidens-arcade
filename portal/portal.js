@@ -22,6 +22,10 @@ function normalizeUrl(raw) {
   if (!s) return null;
 
   try {
+    // If it starts with / or ./ it's a relative internal link
+    if (s.startsWith("/") || s.startsWith("./")) {
+        return new URL(s, window.location.origin);
+    }
     const withScheme = /^https?:\/\//i.test(s) ? s : `https://${s}`;
     return new URL(withScheme);
   } catch {
@@ -31,7 +35,10 @@ function normalizeUrl(raw) {
 
 function canEmbed(urlObj) {
   const host = urlObj.hostname.toLowerCase();
-  return EMBED_ALLOWLIST.some((d) => host === d || host.endsWith(`.${d}`));
+  const currentHost = window.location.hostname.toLowerCase();
+
+  // Allow if it's the same website OR in the allowlist
+  return host === currentHost || EMBED_ALLOWLIST.some((d) => host === d || host.endsWith(`.${d}`));
 }
 
 function go() {
@@ -59,4 +66,3 @@ function clear() {
 
 goBtn?.addEventListener("click", go);
 clearBtn?.addEventListener("click", clear);
-
