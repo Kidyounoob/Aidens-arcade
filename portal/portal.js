@@ -1,34 +1,34 @@
 const btnGo = document.getElementById("portalGo");
-const btnClear = document.getElementById("portalClear");
+const input = document.getElementById("portalInput");
 const frame = document.getElementById("portalFrame");
-const input = document.querySelector(".portalInput");
 
-function launchProxy(e) {
-    if (e) e.preventDefault(); // This stops the "disappearing" page reload!
-    
-    let query = input.value.trim();
-    if (!query) return;
-    
-    // If they didn't type http, add it so the proxy doesn't crash
-    if (!query.includes(".") || query.includes(" ")) {
-        query = "https://www.google.com/search?q=" + encodeURIComponent(query);
-    } else if (!query.startsWith("http")) {
-        query = "https://" + query;
+function launchProxy() {
+    let url = input.value.trim();
+    if (!url) return;
+
+    // Fix the URL if it's just a word
+    if (!url.includes(".") || url.includes(" ")) {
+        url = "https://www.google.com/search?q=" + encodeURIComponent(url);
+    } else if (!url.startsWith("http")) {
+        url = "https://" + url;
     }
 
-    // Turn the URL into the special proxy format
-    const encoded = btoa(query).replace(/\//g, "_").replace(/\+/g, "-").replace(/=/g, "");
+    // Encode it for Ultraviolet
+    const encoded = btoa(url).replace(/\//g, "_").replace(/\+/g, "-").replace(/=/g, "");
+    
+    // Send it to the frame
     frame.src = "https://fast-proxy.happydumbjunkday.workers.dev/uv/service/" + encoded;
 }
 
-btnGo.addEventListener("click", launchProxy);
-
-// This makes the "Enter" key work too!
-input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") launchProxy(e);
+// These lines stop the "disappearing" issue
+btnGo.addEventListener("click", (e) => {
+    e.preventDefault();
+    launchProxy();
 });
 
-btnClear.addEventListener("click", () => {
-    input.value = "";
-    frame.src = "https://fast-proxy.happydumbjunkday.workers.dev/";
+input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        launchProxy();
+    }
 });
