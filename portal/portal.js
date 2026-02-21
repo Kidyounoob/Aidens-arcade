@@ -4,9 +4,6 @@ const btnClear = document.getElementById("portalClear");
 const frame = document.getElementById("portalFrame");
 const msg = document.getElementById("portalMsg");
 
-// The Free Proxy URL
-const PROXY_URL = "https://api.allorigins.win/raw?url=";
-
 function setMsg(text) {
     msg.textContent = text;
 }
@@ -33,12 +30,11 @@ function go() {
         return;
     }
 
-    setMsg("Loading via proxy...");
+    setMsg("Loading with layout fixes...");
     
-    // Encode the target URL and attach it to the proxy
-    const proxiedUrl = PROXY_URL + encodeURIComponent(urlObj.toString());
-    
-    frame.src = proxiedUrl;
+    // With x-frame-bypass, we just set the URL directly.
+    // The component handles the proxying for us!
+    frame.src = urlObj.toString();
 }
 
 function clear() {
