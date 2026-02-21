@@ -4,8 +4,8 @@ const btnClear = document.getElementById("portalClear");
 const frame = document.getElementById("portalFrame");
 const msg = document.getElementById("portalMsg");
 
-// This is your new working proxy link!
-const PROXY_URL = "http://178.128.74.223:8080/uv/service/";
+// This is your secure Cloudflare proxy link!
+const PROXY_URL = "https://arcade-proxy.happydumbjunkday.workers.dev/uv/service/";
 
 function setMsg(text) {
     msg.textContent = text;
@@ -26,30 +26,25 @@ function normalizeUrl(url) {
 
 async function go() {
     const urlObj = normalizeUrl(input.value);
-    
     if (!urlObj) {
         setMsg("Please enter a valid URL.");
         return;
     }
-
     setMsg("Fetching via private proxy...");
-    
     try {
         const target = PROXY_URL + encodeURIComponent(urlObj.toString());
         const response = await fetch(target);
         let html = await response.text();
-
+        
         const baseTag = `<base href="${urlObj.href}">`;
         if (html.includes('<head>')) {
             html = html.replace('<head>', '<head>' + baseTag);
         } else {
             html = baseTag + html;
         }
-
         frame.removeAttribute('src');
         frame.srcdoc = html;
-        setMsg(""); 
-        
+        setMsg("");
     } catch (err) {
         setMsg("Error: Could not fetch the website.");
         console.error(err);
