@@ -5,7 +5,7 @@ const frame = document.getElementById("portalFrame");
 const msg = document.getElementById("portalMsg");
 
 // This is your new working proxy link!
-const PROXY_URL = "https://fast-proxy.happydumbjunkday.workers.dev/?url=";
+const PROXY_URL = "http://178.128.74.223:8080/uv/service/";
 
 function setMsg(text) {
     msg.textContent = text;
