@@ -2,25 +2,30 @@ const btnGo = document.getElementById("portalGo");
 const input = document.getElementById("portalInput");
 const frame = document.getElementById("portalFrame");
 
+const PROXY_ORIGIN = "https://fast-proxy.happydumbjunkday.workers.dev";
+
+function normalizeUrl(raw) {
+  let url = (raw || "").trim();
+  if (!url) return "";
+
+  // search term -> google
+  if (!url.includes(".") || url.includes(" ")) {
+    return "https://www.google.com/search?q=" + encodeURIComponent(url);
+  }
+
+  if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+  return url;
+}
+
 function launchProxy(e) {
-    if (e) e.preventDefault(); // STOPS the "disappearing" reload
-    
-    let url = input.value.trim();
-    if (!url) return;
+  if (e) e.preventDefault();
+  const target = normalizeUrl(input.value);
+  if (!target) return;
 
-    // Convert search terms to a Google search
-    if (!url.includes(".") || url.includes(" ")) {
-        url = "https://www.google.com/search?q=" + encodeURIComponent(url);
-    } else if (!url.startsWith("http")) {
-        url = "https://" + url;
-    }
-
-    // The special "Ultraviolet" way of loading links
-    const encoded = btoa(url).replace(/\//g, "_").replace(/\+/g, "-").replace(/=/g, "");
-    frame.src = "https://fast-proxy.happydumbjunkday.workers.dev/uv/service/" + encoded;
+  frame.src = `${PROXY_ORIGIN}/go?url=${encodeURIComponent(target)}`;
 }
 
 btnGo.addEventListener("click", launchProxy);
-input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") launchProxy(e);
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") launchProxy(e);
 });
