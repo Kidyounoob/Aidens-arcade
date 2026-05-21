@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en" data-mode="dark" data-theme="darkwater">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>2048 • Aiden's Arcade</title>
+
+    <link rel="stylesheet" href="../../styles.css?v=2" />
+    <script defer src="../../app.js?v=2"></script>
+
+    <style>
+      .gameWrap { display: grid; gap: 12px; }
+
+      .gameHud {
+        padding: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .gameScores { display: flex; gap: 10px; flex-wrap: wrap; }
+
+      .scoreTile {
+        border: 1px solid var(--border);
+        background: var(--panel);
+        border-radius: 16px;
+        padding: 10px 16px;
+        min-width: 90px;
+        text-align: center;
+      }
+      .scoreTileLabel {
+        color: var(--muted);
+        font-weight: 900;
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .scoreTileValue {
+        font-weight: 980;
+        font-size: 22px;
+        margin-top: 2px;
+        letter-spacing: -0.02em;
+      }
+
+      .gameBtns { display: flex; gap: 10px; flex-wrap: wrap; }
+
+      /* board */
+      .boardOuter {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        position: relative;
+      }
+
+      .board {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        background: rgba(0, 0, 0, 0.30);
+        border-radius: 16px;
+        padding: 10px;
+        width: min(420px, 100%);
+        aspect-ratio: 1;
+      }
+
+      .cell {
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+
+      .tile {
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        font-weight: 980;
+        font-size: clamp(14px, 3.5vw, 26px);
+        letter-spacing: -0.02em;
+        animation: tileAppear 0.12s ease-out both;
+      }
+
+      .tile.merged {
+        animation: tileMerge 0.20s ease-out both;
+      }
+
+      @keyframes tileAppear {
+        0%  { transform: scale(0.45); opacity: 0; }
+        100%{ transform: scale(1);    opacity: 1; }
+      }
+      @keyframes tileMerge {
+        0%  { transform: scale(1);    }
+        45% { transform: scale(1.18); }
+        100%{ transform: scale(1);    }
+      }
+
+      /* tile colour ramp: ocean → teal → gold → fire */
+      .tile[data-val="2"]    { background: rgba(14,165,233,.22); color: rgba(255,255,255,.88); }
+      .tile[data-val="4"]    { background: rgba(14,165,233,.38); color: rgba(255,255,255,.95); }
+      .tile[data-val="8"]    { background: rgba(6,182,212,.55);  color: #fff; }
+      .tile[data-val="16"]   { background: rgba(20,184,166,.65); color: #fff; }
+      .tile[data-val="32"]   { background: rgba(16,185,129,.72); color: #fff; }
+      .tile[data-val="64"]   { background: rgba(5,150,105,.78);  color: #fff; }
+      .tile[data-val="128"] {
+        background: linear-gradient(135deg, rgba(14,165,233,.85), rgba(20,184,166,.85));
+        color: #fff;
+        box-shadow: 0 0 18px rgba(14,165,233,.35);
+      }
+      .tile[data-val="256"] {
+        background: linear-gradient(135deg, rgba(56,189,248,.9), rgba(45,212,191,.9));
+        color: #fff;
+        box-shadow: 0 0 22px rgba(56,189,248,.4);
+      }
+      .tile[data-val="512"] {
+        background: linear-gradient(135deg, rgba(251,191,36,.88), rgba(245,158,11,.88));
+        color: #fff;
+        box-shadow: 0 0 22px rgba(245,158,11,.38);
+      }
+      .tile[data-val="1024"] {
+        background: linear-gradient(135deg, rgba(249,115,22,.92), rgba(239,68,68,.92));
+        color: #fff;
+        box-shadow: 0 0 28px rgba(239,68,68,.4);
+        font-size: clamp(11px, 2.8vw, 20px);
+      }
+      .tile[data-val="2048"] {
+        background: linear-gradient(135deg, #f59e0b, #ef4444, #0ea5e9);
+        color: #fff;
+        box-shadow: 0 0 40px rgba(245,158,11,.55);
+        font-size: clamp(11px, 2.8vw, 20px);
+      }
+      .tile[data-val="high"] {
+        background: linear-gradient(135deg, #a855f7, #ec4899);
+        color: #fff;
+        font-size: clamp(10px, 2.5vw, 18px);
+      }
+
+      /* overlay */
+      .gameOverlay {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: rgba(0, 0, 0, 0.50);
+        backdrop-filter: blur(12px);
+        border-radius: var(--r);
+        z-index: 4;
+      }
+      .gameOverlay[hidden] { display: none !important; }
+
+      .overlayBox {
+        text-align: center;
+        padding: 28px 24px;
+        width: min(380px, calc(100% - 32px));
+        border: 1px solid var(--border);
+        border-radius: calc(var(--r) + 8px);
+        background: color-mix(in oklab, var(--panel2), transparent 0%);
+        box-shadow: var(--shadow);
+      }
+      .overlayTitle {
+        font-weight: 980;
+        font-size: 26px;
+        letter-spacing: -0.03em;
+        margin-bottom: 6px;
+      }
+      .overlaySub {
+        color: var(--muted);
+        font-weight: 850;
+        margin-bottom: 18px;
+        line-height: 1.5;
+      }
+
+      .hintRow {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 820;
+        margin-top: 8px;
+        text-align: center;
+      }
+
+      /* score pop animation */
+      @keyframes scorePop {
+        0%  { transform: scale(1); }
+        50% { transform: scale(1.25); color: var(--a); }
+        100%{ transform: scale(1); }
+      }
+      .pop { animation: scorePop 0.25s ease-out; }
+    </style>
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <div class="bg" aria-hidden="true">
+      <div class="pattern"></div>
+      <div class="grain"></div>
+      <div class="blob a"></div>
+      <div class="blob b"></div>
+      <div class="blob c"></div>
+    </div>
+
+    <header>
+      <div class="container nav">
+        <a class="brand" href="../../" aria-label="Aiden's Arcade home">
+          <span class="mark" aria-hidden="true">🌊</span>
+          <span>Aiden's <span class="accent">Arcade</span></span>
+        </a>
+
+        <nav class="links" aria-label="Pages">
+          <a class="link" href="../">Games</a>
+          <a class="link" href="../../watch/">Watch</a>
+          <a class="link" href="../../emulation/">Emulation</a>
+          <a class="link" href="../../portal/">Portal</a>
+        </nav>
+
+        <div class="actions">
+          <select class="select" id="themeSelect" aria-label="Theme">
+            <option value="darkwater" selected>Dark Water</option>
+            <option value="greatwave">Great Wave</option>
+            <option value="deepsea">Deep Sea</option>
+            <option value="ink">Ink + Water</option>
+          </select>
+
+          <button class="icon" id="modeBtn" type="button" aria-label="Toggle mode">
+            <span id="modeIcon" aria-hidden="true">☾</span>
+          </button>
+
+          <button class="icon burger" id="burgerBtn" type="button" aria-label="Open menu" aria-expanded="false">
+            <span aria-hidden="true">≡</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="container mobile" id="mobileMenu" hidden>
+        <a href="../">Games</a>
+        <a href="../../watch/">Watch</a>
+        <a href="../../emulation/">Emulation</a>
+        <a href="../../portal/">Portal</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="section container">
+        <div class="head">
+          <h2>2048</h2>
+          <p>Slide tiles to combine matching numbers. Reach 2048 to win!</p>
+        </div>
+
+        <div class="gameWrap">
+          <!-- HUD -->
+          <div class="card gameHud">
+            <div class="gameScores">
+              <div class="scoreTile">
+                <div class="scoreTileLabel">Score</div>
+                <div class="scoreTileValue" id="scoreEl">0</div>
+              </div>
+              <div class="scoreTile">
+                <div class="scoreTileLabel">Best</div>
+                <div class="scoreTileValue" id="bestEl">0</div>
+              </div>
+            </div>
+            <div class="gameBtns">
+              <button class="btn primary" id="newGameBtn" type="button">New Game</button>
+              <a class="btn" href="../">Back</a>
+            </div>
+          </div>
+
+          <!-- Board -->
+          <div class="card boardOuter">
+            <div class="board" id="board" role="grid" aria-label="2048 board"></div>
+
+            <div class="gameOverlay" id="gameOverlay" hidden>
+              <div class="overlayBox">
+                <div class="overlayTitle" id="overlayTitle">Game Over</div>
+                <div class="overlaySub" id="overlaySub">No moves left!</div>
+                <div class="cta" style="justify-content:center;">
+                  <button class="btn primary" id="overlayNew" type="button">Play Again</button>
+                  <a class="btn" href="../">Back to Games</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hintRow">Arrow keys or WASD to move &nbsp;•&nbsp; Swipe on mobile</div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container foot">
+        <div>
+          <div class="footBrand">Aiden's Arcade</div>
+          <div class="small">2048 • <span id="year"></span></div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (() => {
+        const SIZE = 4;
+        const BEST_KEY = "aidensarcade-2048-best";
+
+        let grid = [];      // SIZE×SIZE array of { val, id, merged }
+        let score = 0;
+        let best  = parseInt(localStorage.getItem(BEST_KEY) || "0", 10);
+        let won   = false;
+        let over  = false;
+        let nextId = 1;
+
+        const boardEl    = document.getElementById("board");
+        const scoreEl    = document.getElementById("scoreEl");
+        const bestEl     = document.getElementById("bestEl");
+        const overlayEl  = document.getElementById("gameOverlay");
+        const oTitle     = document.getElementById("overlayTitle");
+        const oSub       = document.getElementById("overlaySub");
+        const newBtn     = document.getElementById("newGameBtn");
+        const overlayNew = document.getElementById("overlayNew");
+
+        /* ── helpers ─────────────────────────────── */
+        function makeCell(val, merged = false) {
+          return { val, id: nextId++, merged };
+        }
+        function emptyGrid() {
+          return Array.from({ length: SIZE }, () => Array(SIZE).fill(null));
+        }
+        function emptySlots(g) {
+          const slots = [];
+          for (let r = 0; r < SIZE; r++)
+            for (let c = 0; c < SIZE; c++)
+              if (!g[r][c]) slots.push([r, c]);
+          return slots;
+        }
+        function spawnTile(g) {
+          const slots = emptySlots(g);
+          if (!slots.length) return;
+          const [r, c] = slots[Math.floor(Math.random() * slots.length)];
+          g[r][c] = makeCell(Math.random() < 0.9 ? 2 : 4);
+        }
+
+        /* ── slide one row left, return {row, gained} ─ */
+        function slideLeft(row) {
+          let arr = row.filter(Boolean);
+          let gained = 0;
+          for (let i = 0; i < arr.length - 1; i++) {
+            if (arr[i].val === arr[i + 1].val) {
+              const newVal = arr[i].val * 2;
+              gained += newVal;
+              arr[i] = makeCell(newVal, true);
+              arr.splice(i + 1, 1);
+            }
+          }
+          while (arr.length < SIZE) arr.push(null);
+          return { row: arr, gained };
+        }
+
+        /* ── generic move ─────────────────────────── */
+        function applyMove(dir) {
+          // Normalise everything to "move left" by rotating the grid
+          let g = grid.map(r => [...r]);
+
+          function rotCW(m) {
+            return m[0].map((_, c) => m.map(row => row[c]).reverse());
+          }
+          function rotCCW(m) {
+            return m[0].map((_, c) => m.map(row => row[SIZE - 1 - c]));
+          }
+
+          let rotations = 0;
+          if (dir === "right")  { rotations = 2; }
+          if (dir === "up")     { g = rotCCW(g); rotations = -1; } // undo with rotCW
+          if (dir === "down")   { g = rotCW(g);  rotations =  1; }
+
+          for (let i = 0; i < (dir === "right" ? 2 : (dir === "up" || dir === "down" ? 1 : 0)); i++) {
+            g = rotCW(g);
+          }
+
+          // Simpler: just handle all 4 directly
+          return applyMoveDir(dir);
+        }
+
+        function applyMoveDir(dir) {
+          let gained = 0;
+          let moved  = false;
+
+          // Clone
+          let g = grid.map(row => row.map(cell => cell ? { ...cell, merged: false } : null));
+
+          if (dir === "left" || dir === "right") {
+            for (let r = 0; r < SIZE; r++) {
+              let row = dir === "right" ? [...g[r]].reverse() : [...g[r]];
+              const { row: slid, gained: g2 } = slideLeft(row);
+              gained += g2;
+              const newRow = dir === "right" ? slid.reverse() : slid;
+              if (newRow.some((c, i) => {
+                const orig = g[r][i];
+                if (!c && !orig) return false;
+                if (!c || !orig) return true;
+                return c.val !== orig.val;
+              })) moved = true;
+              g[r] = newRow;
+            }
+          } else {
+            // up / down: transpose, slide, transpose back
+            for (let c = 0; c < SIZE; c++) {
+              let col = g.map(row => row[c]);
+              if (dir === "down") col = col.reverse();
+              const { row: slid, gained: g2 } = slideLeft(col);
+              gained += g2;
+              const newCol = dir === "down" ? slid.reverse() : slid;
+              newCol.forEach((cell, r) => {
+                if ((cell?.val || 0) !== (g[r][c]?.val || 0)) moved = true;
+                g[r][c] = cell;
+              });
+            }
+          }
+
+          if (!moved) return false;
+
+          score += gained;
+          if (score > best) {
+            best = score;
+            localStorage.setItem(BEST_KEY, best);
+          }
+
+          // check for 2048
+          if (!won) {
+            outer: for (let r = 0; r < SIZE; r++)
+              for (let c = 0; c < SIZE; c++)
+                if (g[r][c]?.val >= 2048) { won = true; break outer; }
+          }
+
+          grid = g;
+          spawnTile(grid);
+          return true;
+        }
+
+        function hasMovesLeft(g) {
+          for (let r = 0; r < SIZE; r++)
+            for (let c = 0; c < SIZE; c++) {
+              if (!g[r][c]) return true;
+              if (c < SIZE - 1 && g[r][c].val === g[r][c + 1]?.val) return true;
+              if (r < SIZE - 1 && g[r][c].val === g[r + 1][c]?.val) return true;
+            }
+          return false;
+        }
+
+        /* ── render ───────────────────────────────── */
+        function render() {
+          // scores
+          scoreEl.textContent = score;
+          bestEl.textContent  = best;
+
+          // board
+          boardEl.innerHTML = "";
+          for (let r = 0; r < SIZE; r++) {
+            for (let c = 0; c < SIZE; c++) {
+              const cell = document.createElement("div");
+              cell.className = "cell";
+              cell.setAttribute("role", "gridcell");
+
+              const data = grid[r][c];
+              if (data) {
+                const tile = document.createElement("div");
+                const displayVal = data.val >= 2048 ? (data.val === 2048 ? "2048" : "high") : data.val;
+                tile.className = data.merged ? "tile merged" : "tile";
+                tile.setAttribute("data-val", displayVal);
+                tile.setAttribute("aria-label", String(data.val));
+                tile.textContent = data.val >= 1000 ? data.val.toLocaleString() : data.val;
+                cell.appendChild(tile);
+              }
+              boardEl.appendChild(cell);
+            }
+          }
+
+          // overlay
+          if (won && !over) {
+            showOverlay("🎉 You hit 2048!", `Score: ${score.toLocaleString()} — keep going or start fresh.`);
+          } else if (over) {
+            showOverlay("Game Over", `Final score: ${score.toLocaleString()}`);
+          }
+        }
+
+        function showOverlay(title, sub) {
+          oTitle.textContent = title;
+          oSub.textContent   = sub;
+          overlayEl.hidden   = false;
+        }
+
+        /* ── new game ─────────────────────────────── */
+        function newGame() {
+          grid  = emptyGrid();
+          score = 0;
+          won   = false;
+          over  = false;
+          overlayEl.hidden = true;
+          spawnTile(grid);
+          spawnTile(grid);
+          render();
+        }
+
+        /* ── input ────────────────────────────────── */
+        function handleDir(dir) {
+          if (over) return;
+          const moved = applyMoveDir(dir);
+          if (moved) {
+            render();
+            if (!won && !hasMovesLeft(grid)) {
+              over = true;
+              render();
+            }
+          }
+        }
+
+        document.addEventListener("keydown", e => {
+          const map = {
+            ArrowLeft: "left",  ArrowRight: "right",
+            ArrowUp:   "up",    ArrowDown:  "down",
+            a: "left",  d: "right", w: "up",  s: "down",
+            A: "left",  D: "right", W: "up",  S: "down",
+          };
+          const dir = map[e.key];
+          if (dir) { e.preventDefault(); handleDir(dir); }
+        });
+
+        // touch swipe
+        let tx0 = 0, ty0 = 0;
+        boardEl.addEventListener("touchstart", e => {
+          tx0 = e.touches[0].clientX;
+          ty0 = e.touches[0].clientY;
+        }, { passive: true });
+        boardEl.addEventListener("touchend", e => {
+          const dx = e.changedTouches[0].clientX - tx0;
+          const dy = e.changedTouches[0].clientY - ty0;
+          if (Math.hypot(dx, dy) < 24) return;
+          if (Math.abs(dx) > Math.abs(dy)) handleDir(dx > 0 ? "right" : "left");
+          else                              handleDir(dy > 0 ? "down"  : "up");
+        }, { passive: true });
+
+        newBtn.addEventListener("click", newGame);
+        overlayNew.addEventListener("click", newGame);
+
+        // boot
+        bestEl.textContent = best;
+        newGame();
+      })();
+    </script>
+  </body>
+</html>
